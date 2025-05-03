@@ -1,0 +1,224 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-color: var(--dark-950, #020617);
+  --text-color: var(--dark-50, #f8fafc);
+  --accent-color: var(--accent-500, #f97316);
+  --secondary-color: var(--secondary-500, #14b8a6);
+  
+  /* Typography */
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-accent: 'Poppins', sans-serif;
+  
+  /* Light mode palette - updated with new colors */
+  --light-background: #FAFAFA;
+  --light-surface: #E4E5F1;
+  --light-muted: #D2D3DB;
+  --light-text: #484B6A;
+  --light-accent: #9394A5;
+}
+
+/* Light theme variables */
+[data-theme="light"] {
+  --bg-color: var(--light-background);
+  --text-color: var(--light-text);
+  --accent-color: var(--light-accent);
+  --secondary-color: var(--light-muted);
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 375px) {
+  html {
+    font-size: 13px;
+  }
+}
+
+body {
+  font-family: var(--font-body);
+  @apply bg-dark-950 text-dark-50 antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  padding-top: 1rem; /* Add padding for the scroll indicator */
+  overflow-x: hidden;
+}
+
+[data-theme="light"] body {
+  @apply bg-dark-50 text-dark-950;
+  background-color: var(--light-background);
+  color: var(--light-text);
+}
+
+.noise-bg {
+  @apply bg-noise bg-repeat;
+}
+
+.section {
+  @apply py-16 sm:py-20 md:py-24 lg:py-32;
+}
+
+.container {
+  @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+.reveal-text {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+}
+
+.parallax {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+html {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Light theme adjustments */
+[data-theme="light"] .section {
+  @apply bg-dark-50;
+  background-color: var(--light-background);
+}
+
+[data-theme="light"] .noise-bg {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIiB0eXBlPSJmcmFjdGFsTm9pc2UiLz48ZmVDb2xvck1hdHJpeCB0eXBlPSJzYXR1cmF0ZSIgdmFsdWVzPSIwIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDIiLz48L3N2Zz4=');
+}
+
+/* Text theme classes */
+.text-heading {
+  font-family: var(--font-heading);
+  color: var(--text-color);
+}
+
+.text-body {
+  font-family: var(--font-body);
+  color: var(--dark-300, #cbd5e1);
+}
+
+.text-accent {
+  font-family: var(--font-accent);
+  color: var(--accent-color);
+}
+
+[data-theme="light"] .text-body {
+  color: var(--light-text);
+}
+
+/* Animated underline for links */
+.animated-underline {
+  position: relative;
+}
+
+.animated-underline::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--accent-500, #f97316);
+  transition: width 0.3s ease;
+}
+
+.animated-underline:hover::after {
+  width: 100%;
+}
+
+/* Common styling */
+.section-title {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  font-weight: 300;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.section-title .dot {
+  color: var(--accent-500, #f97316);
+}
+
+.gradient-text {
+  background: linear-gradient(to right, var(--accent-500, #f97316), var(--secondary-500, #14b8a6));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Typography improvements */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  word-break: keep-all;
+  hyphens: none;
+  line-height: 1.2;
+}
+
+p, li, span, div {
+  word-break: normal;
+  hyphens: none;
+  line-height: 1.6;
+}
+
+/* Utility classes */
+.glass-bg {
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  border: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+[data-theme="light"] .glass-bg {
+  background: rgba(228, 229, 241, 0.7);
+  border: 1px solid rgba(210, 211, 219, 0.5);
+}
+
+/* Light mode specific adjustments */
+[data-theme="light"] .dot {
+  color: var(--light-accent);
+}
+
+[data-theme="light"] a:hover,
+[data-theme="light"] .active {
+  color: var(--light-accent) !important;
+}
+
+[data-theme="light"] button {
+  transition: all 0.3s ease;
+}
+
+/* Touch-friendly improvements */
+@media (max-width: 768px) {
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Improve spacing on mobile */
+@media (max-width: 375px) {
+  .container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
