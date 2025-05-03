@@ -1,11 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+<<<<<<< HEAD
+=======
+import SplitType from 'split-type';
+>>>>>>> my-changes
 import { Brain, Layout, Zap, PackagePlus } from 'lucide-react';
 import styled from 'styled-components';
 import { useTheme } from '../context/ThemeContext';
 import { skills, technologies } from '../config/siteConfig';
 
+<<<<<<< HEAD
 interface SkillCardProps {
   icon: React.ReactNode;
   title: string;
@@ -51,6 +56,57 @@ const SkillCard: React.FC<SkillCardProps> = ({ icon, title, description, delay, 
       <CardTitle className="text-heading">{title}</CardTitle>
       <CardDescription className="text-body">{description}</CardDescription>
     </StyledCard>
+=======
+interface SkillItemProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  index: number;
+}
+
+const SkillItem: React.FC<SkillItemProps> = ({ icon, title, description, index }) => {
+  const itemRef = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
+
+  useEffect(() => {
+    if (!itemRef.current) return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Create a one-way animation that doesn't reverse when scrolling backward
+    ScrollTrigger.create({
+      trigger: itemRef.current,
+      start: 'top bottom-=100',
+      onEnter: () => {
+        gsap.to(itemRef.current, { 
+          opacity: 1, 
+          y: 0, 
+          duration: 0.8, 
+          ease: 'power2.out' 
+        });
+      },
+      once: true // This ensures the animation only runs once
+    });
+    
+    // Set initial state
+    gsap.set(itemRef.current, { 
+      opacity: 0, 
+      y: 30 
+    });
+    
+  }, []);
+
+  return (
+    <StyledSkillItem ref={itemRef} data-theme={theme} className={`skill-item-${index}`}>
+      <SkillIconContainer data-theme={theme}>
+        {icon}
+      </SkillIconContainer>
+      <SkillContent>
+        <SkillTitle className="text-heading">{title}</SkillTitle>
+        <SkillDescription className="text-body">{description}</SkillDescription>
+      </SkillContent>
+    </StyledSkillItem>
+>>>>>>> my-changes
   );
 };
 
@@ -59,6 +115,10 @@ const About: React.FC = () => {
   const contentRef = useRef<HTMLDivElement>(null);
   const stickyTitleRef = useRef<HTMLDivElement>(null);
   const techGridRef = useRef<HTMLDivElement>(null);
+<<<<<<< HEAD
+=======
+  const paragraphRef = useRef<HTMLParagraphElement>(null);
+>>>>>>> my-changes
   const { theme } = useTheme();
 
   // Animate tech logos on scroll
@@ -67,6 +127,7 @@ const About: React.FC = () => {
 
     gsap.registerPlugin(ScrollTrigger);
 
+<<<<<<< HEAD
     gsap.fromTo(
       techGridRef.current.querySelectorAll('.tech-logo'),
       { 
@@ -86,12 +147,38 @@ const About: React.FC = () => {
         }
       }
     );
+=======
+    const techLogos = techGridRef.current.querySelectorAll('.tech-logo');
+    
+    // Set initial state for all tech logos
+    gsap.set(techLogos, { 
+      scale: 0.8, 
+      opacity: 0 
+    });
+
+    // Create a one-way animation that doesn't reverse when scrolling backward
+    ScrollTrigger.create({
+      trigger: techGridRef.current,
+      start: 'top bottom-=50',
+      onEnter: () => {
+        gsap.to(techLogos, {
+          scale: 1,
+          opacity: 1,
+          stagger: 0.05,
+          duration: 0.6,
+          ease: 'power2.out'
+        });
+      },
+      once: true // This ensures the animation only runs once
+    });
+>>>>>>> my-changes
   }, []);
 
   // Create parallax effect for the section
   useEffect(() => {
     if (!sectionRef.current) return;
 
+<<<<<<< HEAD
     gsap.to(sectionRef.current, {
       backgroundPosition: '50% 100%',
       ease: 'none',
@@ -104,6 +191,80 @@ const About: React.FC = () => {
     });
   }, []);
 
+=======
+    gsap.registerPlugin(ScrollTrigger);
+
+    // One-way background parallax
+    ScrollTrigger.create({
+      trigger: sectionRef.current,
+      start: 'top bottom',
+      end: 'bottom top',
+      scrub: 0.5, // Smoother scrub
+      onUpdate: (self) => {
+        // Only apply parallax when scrolling down
+        if (self.direction === 1) {
+          gsap.to(sectionRef.current, {
+            backgroundPosition: `50% ${self.progress * 20}%`,
+            ease: 'none',
+            overwrite: 'auto',
+            duration: 0.1
+          });
+        }
+      }
+    });
+  }, []);
+
+  // Text scribble reveal animation for paragraph
+  useEffect(() => {
+    if (!paragraphRef.current) return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Split text into characters for animation
+    const splitText = new SplitType(paragraphRef.current, { types: 'chars, words' });
+    const chars = splitText.chars;
+    
+    if (!chars) return;
+    
+    // Set initial state - faded text
+    gsap.set(chars, { 
+      color: theme === 'dark' ? 'rgba(203, 213, 225, 0.3)' : 'rgba(72, 75, 106, 0.3)',
+      opacity: 0.3,
+      scale: 0.95,
+      y: 15,
+      rotationX: -10,
+      transformOrigin: '0% 50%',
+    });
+    
+    // Create the scribble reveal animation
+    ScrollTrigger.create({
+      trigger: paragraphRef.current,
+      start: 'top bottom-=150',
+      end: 'bottom center',
+      onEnter: () => {
+        gsap.to(chars, {
+          color: theme === 'dark' ? 'rgba(203, 213, 225, 1)' : 'rgba(72, 75, 106, 0.85)', 
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          rotationX: 0,
+          stagger: 0.01,
+          duration: 0.8,
+          ease: 'power2.out'
+        });
+      },
+      once: true // Run only once to avoid "ghost animations"
+    });
+    
+    // Clean up SplitType when component unmounts
+    return () => {
+      if (splitText && typeof splitText.revert === 'function') {
+        splitText.revert();
+      }
+    };
+  }, [theme]);
+
+>>>>>>> my-changes
   const skillsConfig = [
     {
       icon: <Brain size={28} />,
@@ -141,7 +302,11 @@ const About: React.FC = () => {
             <HeadingTitle className="text-heading">
               About Me<span className="dot">.</span>
             </HeadingTitle>
+<<<<<<< HEAD
             <Paragraph className="text-body">
+=======
+            <Paragraph ref={paragraphRef} className="text-body">
+>>>>>>> my-changes
               I'm a passionate designer and developer with expertise in creating intuitive and engaging digital experiences. When I'm not coding or debugging something at 2AM, I'm probably analyzing AI trends, experimenting with design, or plotting my next side project.
             </Paragraph>
             <StickyCTA href="#work" data-theme={theme} className="text-accent">
@@ -154,6 +319,7 @@ const About: React.FC = () => {
         <ContentColumn ref={contentRef}>
           <ContentSection>
             <SectionSubtitle className="text-heading">My Expertise</SectionSubtitle>
+<<<<<<< HEAD
             <SkillsGrid>
               {skills.map((skill, index) => (
                 <SkillCard 
@@ -166,6 +332,21 @@ const About: React.FC = () => {
                 />
               ))}
             </SkillsGrid>
+=======
+            <SkillsList>
+              {skills.map((skill, index) => (
+                <React.Fragment key={index}>
+                  <SkillItem 
+                    icon={skillsConfig[index].icon}
+                    title={skill.title}
+                    description={skill.description}
+                    index={index}
+                  />
+                  {index < skills.length - 1 && <SkillDivider data-theme={theme} />}
+                </React.Fragment>
+              ))}
+            </SkillsList>
+>>>>>>> my-changes
             <SectionDivider data-theme={theme} />
           </ContentSection>
           
@@ -202,7 +383,11 @@ const AboutSection = styled.section`
   }
   
   &[data-theme="light"] {
+<<<<<<< HEAD
     background-color: var(--light-pale-lime, #F4F8D3);
+=======
+    background-color: var(--light-background, #FAFAFA);
+>>>>>>> my-changes
   }
 `;
 
@@ -268,10 +453,17 @@ const HeadingTitle = styled.h2`
   }
   
   [data-theme="light"] & {
+<<<<<<< HEAD
     color: #2d3748;
     
     .dot {
       color: var(--light-lavender, #8E7DBE);
+=======
+    color: var(--light-text, #484B6A);
+    
+    .dot {
+      color: var(--light-accent, #9394A5);
+>>>>>>> my-changes
     }
   }
 `;
@@ -289,7 +481,12 @@ const Paragraph = styled.p`
   }
   
   [data-theme="light"] & {
+<<<<<<< HEAD
     color: #4a5568;
+=======
+    color: var(--light-text, #484B6A);
+    opacity: 0.85;
+>>>>>>> my-changes
   }
 `;
 
@@ -316,6 +513,7 @@ const StickyCTA = styled.a`
   }
   
   &[data-theme="light"] {
+<<<<<<< HEAD
     background-color: var(--light-lavender, #8E7DBE);
     box-shadow: 0 2px 10px rgba(142, 125, 190, 0.2);
     color: white;
@@ -323,6 +521,15 @@ const StickyCTA = styled.a`
     &:hover {
       background-color: #7d6eb0;
       box-shadow: 0 6px 16px rgba(142, 125, 190, 0.3);
+=======
+    background-color: var(--light-accent, #9394A5);
+    box-shadow: 0 2px 10px rgba(147, 148, 165, 0.2);
+    color: white;
+    
+    &:hover {
+      background-color: #7F8091;
+      box-shadow: 0 6px 16px rgba(147, 148, 165, 0.3);
+>>>>>>> my-changes
     }
   }
 `;
@@ -343,7 +550,11 @@ const SectionSubtitle = styled.h3`
   }
   
   [data-theme="light"] & {
+<<<<<<< HEAD
     color: #4a5568;
+=======
+    color: var(--light-text, #484B6A);
+>>>>>>> my-changes
   }
 `;
 
@@ -353,6 +564,7 @@ const SectionDivider = styled.div`
   margin: 2rem 0;
   
   &[data-theme="light"] {
+<<<<<<< HEAD
     background: linear-gradient(90deg, rgba(142, 125, 190, 0.3), transparent);
   }
 `;
@@ -467,14 +679,94 @@ const CardTitle = styled.h3`
 `;
 
 const CardDescription = styled.p`
+=======
+    background: linear-gradient(90deg, rgba(147, 148, 165, 0.3), transparent);
+  }
+`;
+
+// New vertical list for skills instead of grid
+const SkillsList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: 100%;
+  margin: 0 auto;
+`;
+
+const StyledSkillItem = styled.div`
+  padding: 1.5rem 0;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  
+  @media (max-width: 640px) {
+    flex-direction: column;
+    gap: 1rem;
+  }
+`;
+
+const SkillDivider = styled.div`
+  height: 1px;
+  background-color: rgba(51, 65, 85, 0.2);
+  width: 100%;
+  
+  &[data-theme="light"] {
+    background-color: rgba(210, 211, 219, 0.5);
+  }
+`;
+
+const SkillIconContainer = styled.div`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(30, 41, 59, 0.5);
+  color: var(--accent-500, #f97316);
+  flex-shrink: 0;
+  
+  &[data-theme="light"] {
+    background-color: rgba(228, 229, 241, 0.7);
+    color: var(--light-accent, #9394A5);
+  }
+`;
+
+const SkillContent = styled.div`
+  flex: 1;
+`;
+
+const SkillTitle = styled.h4`
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  
+  [data-theme="light"] & {
+    color: var(--light-text, #484B6A);
+  }
+`;
+
+const SkillDescription = styled.p`
+>>>>>>> my-changes
   color: var(--dark-300, #cbd5e1);
   font-size: 0.875rem;
   line-height: 1.5;
   hyphens: none;
   word-break: normal;
   
+<<<<<<< HEAD
   [data-theme="light"] & {
     color: #4a5568;
+=======
+  @media (min-width: 640px) {
+    font-size: 0.9375rem;
+  }
+  
+  [data-theme="light"] & {
+    color: var(--light-text, #484B6A);
+    opacity: 0.85;
+>>>>>>> my-changes
   }
 `;
 
@@ -564,7 +856,11 @@ const TechName = styled.div`
   z-index: 5;
   
   &[data-theme="light"] {
+<<<<<<< HEAD
     background-color: var(--light-lavender, #8E7DBE);
+=======
+    background-color: var(--light-accent, #9394A5);
+>>>>>>> my-changes
   }
 `;
 

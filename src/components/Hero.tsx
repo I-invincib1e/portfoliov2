@@ -1,18 +1,30 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
+<<<<<<< HEAD
 import SplitType from 'split-type';
 import { Instagram, Linkedin, Github, Send } from 'lucide-react';
+=======
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Instagram, Linkedin, Github, Send, ChevronDown } from 'lucide-react';
+>>>>>>> my-changes
 import styled from 'styled-components';
 import { useTheme } from '../context/ThemeContext';
 import { Link } from 'react-router-dom';
 import { siteConfig } from '../config/siteConfig';
 
 const Hero: React.FC = () => {
+<<<<<<< HEAD
   const containerRef = useRef<HTMLDivElement>(null);
+=======
+  const sectionRef = useRef<HTMLElement>(null);
+  const heroContentRef = useRef<HTMLDivElement>(null);
+  const textColumnRef = useRef<HTMLDivElement>(null);
+>>>>>>> my-changes
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const socialsRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
+<<<<<<< HEAD
   const { theme } = useTheme();
 
   useEffect(() => {
@@ -61,10 +73,219 @@ const Hero: React.FC = () => {
       tl.kill();
     };
   }, []);
+=======
+  const bgBlobOneRef = useRef<HTMLDivElement>(null);
+  const bgBlobTwoRef = useRef<HTMLDivElement>(null);
+  const gridOverlayRef = useRef<HTMLDivElement>(null);
+  const arrowRef = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    
+    // Create master timeline for scroll-based animations
+    let master = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top top", // start when top of section hits top of viewport
+        end: "bottom top", // end when bottom of section hits top of viewport
+        pin: true, // pins the section during the animation
+        anticipatePin: 1, // prevents flash on pin
+        pinReparent: true, // moves pinned element to documentElement while pinned
+        pinSpacing: true, // creates space after element equal to its height
+        refreshPriority: 1, // high priority for refresh
+      }
+    });
+    
+    // Animate main title from left
+    master.fromTo(titleRef.current, 
+      { 
+        x: "-100%", 
+        opacity: 0 
+      }, 
+      { 
+        x: "0%", 
+        opacity: 1, 
+        duration: 0.4, 
+        ease: "power2.out" 
+      }, 0
+    );
+    
+    // Animate subtitle after title
+    master.fromTo(subtitleRef.current, 
+      { 
+        x: "-50%", 
+        opacity: 0 
+      }, 
+      { 
+        x: "0%", 
+        opacity: 1, 
+        duration: 0.4, 
+        ease: "power2.out" 
+      }, 0.2
+    );
+    
+    // Animate social icons from right
+    master.fromTo(socialsRef.current, 
+      { 
+        x: "100%", 
+        opacity: 0 
+      }, 
+      { 
+        x: "0%", 
+        opacity: 1, 
+        duration: 0.4, 
+        ease: "power2.out" 
+      }, 0.3
+    );
+    
+    // Animate CTA buttons from right
+    master.fromTo(ctaRef.current, 
+      { 
+        x: "100%", 
+        opacity: 0 
+      }, 
+      { 
+        x: "0%", 
+        opacity: 1, 
+        duration: 0.4, 
+        ease: "power2.out" 
+      }, 0.4
+    );
+    
+    // Animate background elements in parallel
+    master.fromTo([bgBlobOneRef.current, bgBlobTwoRef.current], 
+      { 
+        scale: 0.8, 
+        opacity: 0 
+      }, 
+      { 
+        scale: 1, 
+        opacity: theme === 'dark' ? 0.4 : 0.2, 
+        duration: 0.6, 
+        stagger: 0.2,
+        ease: "power1.out" 
+      }, 0.1
+    );
+    
+    // Animate grid overlay
+    master.fromTo(gridOverlayRef.current, 
+      { 
+        opacity: 0 
+      }, 
+      { 
+        opacity: 1, 
+        duration: 0.6 
+      }, 0.2
+    );
+
+    // Animate the arrow with a fade out as scroll progresses
+    master.fromTo(arrowRef.current,
+      {
+        opacity: 1,
+        y: 0
+      },
+      {
+        opacity: 0,
+        y: 20,
+        duration: 0.3,
+        ease: "power1.in"
+      }, 0.1
+    );
+    
+    // Animate the dot with a pulse effect
+    const dot = document.querySelector('.hero-dot');
+    const dotAnimation = dot ? gsap.to(dot, {
+      textShadow: theme === 'dark' 
+        ? '0 0 12px rgba(249,115,22,0.6)' 
+        : '0 0 12px rgba(147,148,165,0.6)',
+      scale: 1.05,
+      duration: 0.8,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
+      delay: 0.5
+    }) : null;
+    
+    // Setup background blob animations
+    const blobOneAnimation = gsap.to(bgBlobOneRef.current, {
+      x: "5%",
+      y: "3%",
+      scale: 1.05,
+      rotation: 5,
+      duration: 15,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut"
+    });
+    
+    const blobTwoAnimation = gsap.to(bgBlobTwoRef.current, {
+      x: "-5%",
+      y: "-3%",
+      scale: 0.95,
+      rotation: -5,
+      duration: 18,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
+      delay: 0.5
+    });
+    
+    // Set initial states before animation starts
+    gsap.set([titleRef.current, subtitleRef.current], { x: "-100%", opacity: 0 });
+    gsap.set([socialsRef.current, ctaRef.current], { x: "100%", opacity: 0 });
+    gsap.set([bgBlobOneRef.current, bgBlobTwoRef.current], { scale: 0.8, opacity: 0 });
+    gsap.set(gridOverlayRef.current, { opacity: 0 });
+    
+    // Collect all animations that need to be killed on cleanup
+    const animations = [
+      master,
+      dotAnimation,
+      blobOneAnimation,
+      blobTwoAnimation
+    ];
+    
+    const allScrollTriggers = ScrollTrigger.getAll();
+    
+    // Clean up function to run when component unmounts or animation completes
+    return () => {
+      // Kill all animations
+      animations.forEach(anim => anim && anim.kill());
+      
+      // Kill all ScrollTriggers
+      allScrollTriggers.forEach(trigger => trigger.kill());
+      
+      // Kill any remaining GSAP tweens associated with the refs
+      [
+        titleRef.current, 
+        subtitleRef.current, 
+        socialsRef.current, 
+        ctaRef.current,
+        bgBlobOneRef.current, 
+        bgBlobTwoRef.current, 
+        gridOverlayRef.current,
+        arrowRef.current
+      ].forEach(element => {
+        if (element) {
+          gsap.killTweensOf(element);
+        }
+      });
+      
+      // Kill any dot animation
+      if (dot) {
+        gsap.killTweensOf(dot);
+      }
+      
+      // Clear all contexts and memory
+      gsap.globalTimeline.clear();
+    };
+  }, [theme]);
+>>>>>>> my-changes
 
   return (
     <HeroSection
       id="home"
+<<<<<<< HEAD
       ref={containerRef}
       data-theme={theme}
     >
@@ -74,6 +295,19 @@ const Hero: React.FC = () => {
           <HeroTextColumn>
             <HeroTitle ref={titleRef} className="text-heading">
               Hello.<br />I'm {siteConfig.name.split(' ')[0]}<span className="dot">.</span>
+=======
+      ref={sectionRef}
+      data-theme={theme}
+    >
+      <HeroContent ref={heroContentRef}>
+        <HeroContentGrid>
+          {/* Left Column - Name and Description */}
+          <HeroTextColumn ref={textColumnRef}>
+            <HeroTitle ref={titleRef} className="text-heading">
+              Hello.<br />I'm <NameWrapper>
+                Rush<SpecialLetter>i</SpecialLetter>kesh
+              </NameWrapper>
+>>>>>>> my-changes
             </HeroTitle>
             <HeroSubtitle ref={subtitleRef} className="text-body">
               Aspiring Frontend Developer | React, TypeScript, Tailwind CSS | AI & LLM Enthusiast | Building Engaging AI-Driven Experiences | Data Science & Python Explorer
@@ -148,10 +382,23 @@ const Hero: React.FC = () => {
       </HeroContent>
       
       <HeroBackground data-theme={theme}>
+<<<<<<< HEAD
         <div className="blob blob-1"></div>
         <div className="blob blob-2"></div>
         <div className="grid-overlay"></div>
       </HeroBackground>
+=======
+        <div className="blob blob-1" ref={bgBlobOneRef}></div>
+        <div className="blob blob-2" ref={bgBlobTwoRef}></div>
+        <div className="grid-overlay" ref={gridOverlayRef}></div>
+      </HeroBackground>
+      
+      <ScrollIndicatorWrapper>
+        <ScrollArrow ref={arrowRef} data-theme={theme}>
+          <ChevronDown size={28} />
+        </ScrollArrow>
+      </ScrollIndicatorWrapper>
+>>>>>>> my-changes
     </HeroSection>
   );
 };
@@ -235,6 +482,7 @@ const HeroTitle = styled.h1`
     white-space: nowrap;
     word-break: keep-all;
   }
+<<<<<<< HEAD
   
   .dot {
     color: var(--accent-500, #f97316);
@@ -242,6 +490,23 @@ const HeroTitle = styled.h1`
   
   [data-theme="light"] & .dot {
     color: var(--light-lavender, #8E7DBE);
+=======
+`;
+
+const NameWrapper = styled.span`
+  display: inline-flex;
+  align-items: center;
+`;
+
+const SpecialLetter = styled.span`
+  color: var(--accent-500, #f97316);
+  font-weight: 500;
+  display: inline-block;
+  position: relative;
+  
+  [data-theme="light"] & {
+    color: var(--light-accent, #9394A5);
+>>>>>>> my-changes
   }
 `;
 
@@ -263,7 +528,11 @@ const HeroSubtitle = styled.p`
   }
   
   [data-theme="light"] & {
+<<<<<<< HEAD
     color: #4a5568;
+=======
+    color: var(--light-text, #484B6A);
+>>>>>>> my-changes
   }
 `;
 
@@ -503,12 +772,21 @@ const HireMeButton = styled(Link)`
   }
   
   &[data-theme="light"] {
+<<<<<<< HEAD
     background-color: var(--light-lavender, #8E7DBE);
     box-shadow: 0 4px 16px rgba(142, 125, 190, 0.2);
     color: white;
     
     &:hover {
       box-shadow: 0 8px 24px rgba(142, 125, 190, 0.3);
+=======
+    background-color: var(--light-accent, #9394A5);
+    box-shadow: 0 4px 16px rgba(147, 148, 165, 0.2);
+    color: white;
+    
+    &:hover {
+      box-shadow: 0 8px 24px rgba(147, 148, 165, 0.3);
+>>>>>>> my-changes
     }
   }
 `;
@@ -530,12 +808,21 @@ const ResumeButton = styled(HireMeButton)`
   
   &[data-theme="light"] {
     background-color: transparent;
+<<<<<<< HEAD
     color: var(--light-lavender, #8E7DBE);
     border: 1px solid var(--light-lavender, #8E7DBE);
     
     &:hover {
       background-color: rgba(142, 125, 190, 0.1);
       color: var(--light-lavender, #8E7DBE);
+=======
+    color: var(--light-accent, #9394A5);
+    border: 1px solid var(--light-accent, #9394A5);
+    
+    &:hover {
+      background-color: rgba(147, 148, 165, 0.1);
+      color: var(--light-accent, #9394A5);
+>>>>>>> my-changes
     }
   }
 `;
@@ -612,4 +899,24 @@ const HeroBackground = styled.div`
   }
 `;
 
+<<<<<<< HEAD
 export default Hero;
+=======
+const ScrollIndicatorWrapper = styled.div`
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+`;
+
+const ScrollArrow = styled.div`
+  color: ${props => props['data-theme'] === 'dark' ? 'rgba(248, 250, 252, 0.7)' : 'rgba(72, 75, 106, 0.7)'};
+  
+  &:hover {
+    color: ${props => props['data-theme'] === 'dark' ? 'rgba(248, 250, 252, 1)' : 'rgba(72, 75, 106, 1)'};
+  }
+`;
+
+export default Hero;
+>>>>>>> my-changes

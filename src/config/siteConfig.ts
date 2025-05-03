@@ -40,12 +40,22 @@ export const siteConfig = {
         600: "#ea580c"  // Darker orange
       }
     },
+<<<<<<< HEAD
     // For light mode
     light: {
       softPink: "#F7CFD8",
       paleLime: "#F4F8D3",
       teal: "#A6D6D6",
       lavender: "#8E7DBE"
+=======
+    // For light mode - updated colors
+    light: {
+      background: "#FAFAFA",
+      surface: "#E4E5F1",
+      muted: "#D2D3DB",
+      text: "#484B6A",
+      accent: "#9394A5"
+>>>>>>> my-changes
     }
   }
 };

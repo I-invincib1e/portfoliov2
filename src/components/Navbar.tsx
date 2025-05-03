@@ -69,8 +69,11 @@ const Navbar: React.FC = () => {
   useEffect(() => {
     if (location.pathname === '/contact') {
       setActiveSection('contact');
+<<<<<<< HEAD
     } else if (location.pathname === '/projects') {
       setActiveSection('projects');
+=======
+>>>>>>> my-changes
     } else if (location.pathname === '/') {
       // When back on homepage, try to detect the current section
       const sections = document.querySelectorAll('section[id]');
@@ -101,7 +104,11 @@ const Navbar: React.FC = () => {
   const handleNavigation = (sectionId: string) => {
     setMobileMenuOpen(false);
     
+<<<<<<< HEAD
     if (location.pathname !== '/' && sectionId !== 'contact' && sectionId !== 'projects') {
+=======
+    if (location.pathname !== '/' && sectionId !== 'contact') {
+>>>>>>> my-changes
       // Will navigate to homepage first, then scroll
       setActiveSection(sectionId);
     }
@@ -173,6 +180,7 @@ const Navbar: React.FC = () => {
             
             <NavItem
               as={Link}
+<<<<<<< HEAD
               to="/projects"
               className={`nav-item text-accent ${activeSection === 'projects' ? 'active' : ''}`}
               onClick={() => handleNavigation('projects')}
@@ -182,6 +190,8 @@ const Navbar: React.FC = () => {
             
             <NavItem
               as={Link}
+=======
+>>>>>>> my-changes
               to="/contact"
               className={`nav-item text-accent ${activeSection === 'contact' ? 'active' : ''}`}
               onClick={() => handleNavigation('contact')}
@@ -261,6 +271,7 @@ const Navbar: React.FC = () => {
           
           <MobileNavItem
             as={Link}
+<<<<<<< HEAD
             to="/projects"
             className={`${activeSection === 'projects' ? 'active' : ''}`}
             onClick={() => handleNavigation('projects')}
@@ -270,6 +281,8 @@ const Navbar: React.FC = () => {
           
           <MobileNavItem
             as={Link}
+=======
+>>>>>>> my-changes
             to="/contact"
             className={`${activeSection === 'contact' ? 'active' : ''}`}
             onClick={() => handleNavigation('contact')}
@@ -346,7 +359,11 @@ const Logo = styled(Link)`
   }
   
   [data-theme="light"] & .dot {
+<<<<<<< HEAD
     color: var(--light-lavender, #8E7DBE);
+=======
+    color: var(--light-accent, #9394A5);
+>>>>>>> my-changes
   }
 `;
 
@@ -404,11 +421,19 @@ const NavItem = styled.a`
     color: #2d3748;
     
     &:after {
+<<<<<<< HEAD
       background-color: var(--light-lavender, #8E7DBE);
     }
     
     &:hover, &.active {
       color: var(--light-lavender, #8E7DBE);
+=======
+      background-color: var(--light-accent, #9394A5);
+    }
+    
+    &:hover, &.active {
+      color: var(--light-accent, #9394A5);
+>>>>>>> my-changes
     }
   }
   
@@ -484,7 +509,11 @@ const MobileNavItem = styled.a`
     color: #2d3748;
     
     &:hover, &.active {
+<<<<<<< HEAD
       color: var(--light-lavender, #8E7DBE);
+=======
+      color: var(--light-accent, #9394A5);
+>>>>>>> my-changes
     }
   }
 `;

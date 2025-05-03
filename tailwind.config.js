@@ -76,12 +76,22 @@ export default {
           900: '#0f172a',
           950: '#020617',
         },
+<<<<<<< HEAD
         // Light mode palette
         light: {
           softPink: '#F7CFD8',
           paleLime: '#F4F8D3',
           teal: '#A6D6D6',
           lavender: '#8E7DBE',
+=======
+        // Updated Light mode palette
+        light: {
+          background: '#FAFAFA',
+          surface: '#E4E5F1',
+          muted: '#D2D3DB',
+          text: '#484B6A',
+          accent: '#9394A5'
+>>>>>>> my-changes
         }
       },
       keyframes: {

@@ -13,19 +13,35 @@
   --font-body: 'Inter', sans-serif;
   --font-accent: 'Poppins', sans-serif;
   
+<<<<<<< HEAD
   /* Light mode palette */
   --light-soft-pink: #F7CFD8;
   --light-pale-lime: #F4F8D3;
   --light-teal: #A6D6D6;
   --light-lavender: #8E7DBE;
+=======
+  /* Light mode palette - updated with new colors */
+  --light-background: #FAFAFA;
+  --light-surface: #E4E5F1;
+  --light-muted: #D2D3DB;
+  --light-text: #484B6A;
+  --light-accent: #9394A5;
+>>>>>>> my-changes
 }
 
 /* Light theme variables */
 [data-theme="light"] {
+<<<<<<< HEAD
   --bg-color: var(--light-pale-lime);
   --text-color: #2d3748;
   --accent-color: var(--light-lavender);
   --secondary-color: var(--light-teal);
+=======
+  --bg-color: var(--light-background);
+  --text-color: var(--light-text);
+  --accent-color: var(--light-accent);
+  --secondary-color: var(--light-muted);
+>>>>>>> my-changes
 }
 
 html {
@@ -55,8 +71,13 @@ body {
 
 [data-theme="light"] body {
   @apply bg-dark-50 text-dark-950;
+<<<<<<< HEAD
   background-color: var(--light-pale-lime);
   color: #2d3748;
+=======
+  background-color: var(--light-background);
+  color: var(--light-text);
+>>>>>>> my-changes
 }
 
 .noise-bg {
@@ -98,7 +119,11 @@ html {
 /* Light theme adjustments */
 [data-theme="light"] .section {
   @apply bg-dark-50;
+<<<<<<< HEAD
   background-color: var(--light-pale-lime);
+=======
+  background-color: var(--light-background);
+>>>>>>> my-changes
 }
 
 [data-theme="light"] .noise-bg {
@@ -122,7 +147,11 @@ html {
 }
 
 [data-theme="light"] .text-body {
+<<<<<<< HEAD
   color: #4a5568;
+=======
+  color: var(--light-text);
+>>>>>>> my-changes
 }
 
 /* Animated underline for links */
@@ -188,18 +217,31 @@ p, li, span, div {
 }
 
 [data-theme="light"] .glass-bg {
+<<<<<<< HEAD
   background: rgba(247, 207, 216, 0.4);
   border: 1px solid rgba(211, 184, 191, 0.5);
+=======
+  background: rgba(228, 229, 241, 0.7);
+  border: 1px solid rgba(210, 211, 219, 0.5);
+>>>>>>> my-changes
 }
 
 /* Light mode specific adjustments */
 [data-theme="light"] .dot {
+<<<<<<< HEAD
   color: var(--light-lavender);
+=======
+  color: var(--light-accent);
+>>>>>>> my-changes
 }
 
 [data-theme="light"] a:hover,
 [data-theme="light"] .active {
+<<<<<<< HEAD
   color: var(--light-lavender) !important;
+=======
+  color: var(--light-accent) !important;
+>>>>>>> my-changes
 }
 
 [data-theme="light"] button {
