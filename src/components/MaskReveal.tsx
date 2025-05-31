@@ -134,7 +134,7 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
     // Setup final particles canvas that stays visible during transition
     const finalCanvas = finalParticlesRef.current;
     finalCanvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    finalCanvas.height = window.innerHeight;
     const finalCtx = finalCanvas.getContext('2d');
     if (!finalCtx) return;
     
