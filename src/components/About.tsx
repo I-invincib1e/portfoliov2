@@ -4,7 +4,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SplitType from 'split-type';
 import { Brain, Layout, Zap, PackagePlus } from 'lucide-react';
 import styled from 'styled-components';
-import { useTheme } from '../context/ThemeContext';
 import { skills, technologies } from '../config/siteConfig';
 
 interface SkillItemProps {
@@ -16,7 +15,6 @@ interface SkillItemProps {
 
 const SkillItem: React.FC<SkillItemProps> = ({ icon, title, description, index }) => {
   const itemRef = useRef<HTMLDivElement>(null);
-  const { theme } = useTheme();
 
   useEffect(() => {
     if (!itemRef.current) return;
@@ -47,8 +45,8 @@ const SkillItem: React.FC<SkillItemProps> = ({ icon, title, description, index }
   }, []);
 
   return (
-    <StyledSkillItem ref={itemRef} data-theme={theme} className={`skill-item-${index}`}>
-      <SkillIconContainer data-theme={theme}>
+    <StyledSkillItem ref={itemRef} className={`skill-item-${index}`}>
+      <SkillIconContainer>
         {icon}
       </SkillIconContainer>
       <SkillContent>
@@ -65,7 +63,6 @@ const About: React.FC = () => {
   const stickyTitleRef = useRef<HTMLDivElement>(null);
   const techGridRef = useRef<HTMLDivElement>(null);
   const paragraphRef = useRef<HTMLParagraphElement>(null);
-  const { theme } = useTheme();
 
   // Animate tech logos on scroll
   useEffect(() => {
@@ -96,15 +93,39 @@ const About: React.FC = () => {
       },
       once: true // This ensures the animation only runs once
     });
+    
+    return () => {
+      // Clean up ScrollTrigger instance
+      ScrollTrigger.getAll().forEach(trigger => {
+        if (trigger.vars.trigger === techGridRef.current) {
+          trigger.kill();
+        }
+      });
+    };
   }, []);
 
-  // Create parallax effect for the section
+  // Create parallax effect for the section - OPTIMIZED
   useEffect(() => {
     if (!sectionRef.current) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
-    // One-way background parallax
+    // Use transform for better performance instead of backgroundPosition
+    const parallaxElement = document.createElement('div');
+    parallaxElement.style.position = 'absolute';
+    parallaxElement.style.top = '0';
+    parallaxElement.style.left = '0';
+    parallaxElement.style.width = '100%';
+    parallaxElement.style.height = '100%';
+    parallaxElement.style.backgroundImage = 'var(--bg-gradient, linear-gradient(135deg, rgba(15, 23, 42, 0), rgba(15, 23, 42, 0.1)))';
+    parallaxElement.style.backgroundSize = 'cover';
+    parallaxElement.style.zIndex = '-1';
+    
+    if (sectionRef.current) {
+      sectionRef.current.appendChild(parallaxElement);
+    }
+
+    // One-way parallax using transform for better performance
     ScrollTrigger.create({
       trigger: sectionRef.current,
       start: 'top bottom',
@@ -113,8 +134,8 @@ const About: React.FC = () => {
       onUpdate: (self) => {
         // Only apply parallax when scrolling down
         if (self.direction === 1) {
-          gsap.to(sectionRef.current, {
-            backgroundPosition: `50% ${self.progress * 20}%`,
+          gsap.to(parallaxElement, {
+            y: `${self.progress * 20}%`,
             ease: 'none',
             overwrite: 'auto',
             duration: 0.1
@@ -122,23 +143,36 @@ const About: React.FC = () => {
         }
       }
     });
+    
+    return () => {
+      // Clean up ScrollTrigger and remove the parallax element
+      ScrollTrigger.getAll().forEach(trigger => {
+        if (trigger.vars.trigger === sectionRef.current) {
+          trigger.kill();
+        }
+      });
+      
+      if (sectionRef.current && parallaxElement.parentNode === sectionRef.current) {
+        sectionRef.current.removeChild(parallaxElement);
+      }
+    };
   }, []);
 
-  // Text scribble reveal animation for paragraph
+  // Text reveal animation for paragraph - OPTIMIZED
   useEffect(() => {
     if (!paragraphRef.current) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
-    // Split text into characters for animation
-    const splitText = new SplitType(paragraphRef.current, { types: 'chars, words' });
-    const chars = splitText.chars;
+    // Split text into words instead of chars for better performance
+    const splitText = new SplitType(paragraphRef.current, { types: 'words' });
+    const words = splitText.words;
     
-    if (!chars) return;
+    if (!words) return;
     
     // Set initial state - faded text
-    gsap.set(chars, { 
-      color: theme === 'dark' ? 'rgba(203, 213, 225, 0.3)' : 'rgba(72, 75, 106, 0.3)',
+    gsap.set(words, { 
+      color: 'rgba(203, 213, 225, 0.3)',
       opacity: 0.3,
       scale: 0.95,
       y: 15,
@@ -146,19 +180,19 @@ const About: React.FC = () => {
       transformOrigin: '0% 50%',
     });
     
-    // Create the scribble reveal animation
+    // Create the reveal animation with words instead of characters
     ScrollTrigger.create({
       trigger: paragraphRef.current,
       start: 'top bottom-=150',
       end: 'bottom center',
       onEnter: () => {
-        gsap.to(chars, {
-          color: theme === 'dark' ? 'rgba(203, 213, 225, 1)' : 'rgba(72, 75, 106, 0.85)', 
+        gsap.to(words, {
+          color: 'rgba(203, 213, 225, 1)', 
           opacity: 1,
           scale: 1,
           y: 0,
           rotationX: 0,
-          stagger: 0.01,
+          stagger: 0.02, // Slightly increased stagger as we have fewer elements
           duration: 0.8,
           ease: 'power2.out'
         });
@@ -171,8 +205,15 @@ const About: React.FC = () => {
       if (splitText && typeof splitText.revert === 'function') {
         splitText.revert();
       }
+      
+      // Clean up ScrollTrigger instance
+      ScrollTrigger.getAll().forEach(trigger => {
+        if (trigger.vars.trigger === paragraphRef.current) {
+          trigger.kill();
+        }
+      });
     };
-  }, [theme]);
+  }, []);
 
   const skillsConfig = [
     {
@@ -202,7 +243,6 @@ const About: React.FC = () => {
       id="about"
       ref={sectionRef}
       className="section bg-dark-900 noise-bg relative"
-      data-theme={theme}
     >
       <StickyContainer>
         {/* Left side - Sticky content */}
@@ -214,7 +254,7 @@ const About: React.FC = () => {
             <Paragraph ref={paragraphRef} className="text-body">
               I'm a passionate designer and developer with expertise in creating intuitive and engaging digital experiences. When I'm not coding or debugging something at 2AM, I'm probably analyzing AI trends, experimenting with design, or plotting my next side project.
             </Paragraph>
-            <StickyCTA href="#work" data-theme={theme} className="text-accent">
+            <StickyCTA href="#work" className="text-accent">
               Check out my work
             </StickyCTA>
           </StickyTitleWrapper>
@@ -233,11 +273,11 @@ const About: React.FC = () => {
                     description={skill.description}
                     index={index}
                   />
-                  {index < skills.length - 1 && <SkillDivider data-theme={theme} />}
+                  {index < skills.length - 1 && <SkillDivider />}
                 </React.Fragment>
               ))}
             </SkillsList>
-            <SectionDivider data-theme={theme} />
+            <SectionDivider />
           </ContentSection>
           
           <ContentSection>
@@ -249,10 +289,9 @@ const About: React.FC = () => {
                     src={tech.logo} 
                     alt={tech.name}
                     title={tech.name}
-                    data-theme={theme}
                     loading="lazy"
                   />
-                  <TechName data-theme={theme}>{tech.name}</TechName>
+                  <TechName>{tech.name}</TechName>
                 </TechLogoWrapper>
               ))}
             </TechLogoContainer>
@@ -270,10 +309,6 @@ const AboutSection = styled.section`
   
   @media (min-width: 768px) {
     padding: 6rem 0;
-  }
-  
-  &[data-theme="light"] {
-    background-color: var(--light-background, #FAFAFA);
   }
 `;
 
@@ -337,14 +372,6 @@ const HeadingTitle = styled.h2`
   .dot {
     color: var(--accent-500, #f97316);
   }
-  
-  [data-theme="light"] & {
-    color: var(--light-text, #484B6A);
-    
-    .dot {
-      color: var(--light-accent, #9394A5);
-    }
-  }
 `;
 
 const Paragraph = styled.p`
@@ -358,11 +385,6 @@ const Paragraph = styled.p`
   @media (min-width: 640px) {
     font-size: 1.125rem;
   }
-  
-  [data-theme="light"] & {
-    color: var(--light-text, #484B6A);
-    opacity: 0.85;
-  }
 `;
 
 const StickyCTA = styled.a`
@@ -372,7 +394,7 @@ const StickyCTA = styled.a`
   padding: 0.75rem 1.25rem;
   border-radius: 0.375rem;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
   letter-spacing: 0.02em;
   font-size: 0.875rem;
   
@@ -385,17 +407,6 @@ const StickyCTA = styled.a`
     background-color: var(--accent-600, #ea580c);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
-  }
-  
-  &[data-theme="light"] {
-    background-color: var(--light-accent, #9394A5);
-    box-shadow: 0 2px 10px rgba(147, 148, 165, 0.2);
-    color: white;
-    
-    &:hover {
-      background-color: #7F8091;
-      box-shadow: 0 6px 16px rgba(147, 148, 165, 0.3);
-    }
   }
 `;
 
@@ -413,20 +424,12 @@ const SectionSubtitle = styled.h3`
   @media (min-width: 640px) {
     font-size: 1.5rem;
   }
-  
-  [data-theme="light"] & {
-    color: var(--light-text, #484B6A);
-  }
 `;
 
 const SectionDivider = styled.div`
   height: 1px;
   background: linear-gradient(90deg, rgba(249, 115, 22, 0.3), transparent);
   margin: 2rem 0;
-  
-  &[data-theme="light"] {
-    background: linear-gradient(90deg, rgba(147, 148, 165, 0.3), transparent);
-  }
 `;
 
 // New vertical list for skills instead of grid
@@ -455,10 +458,6 @@ const SkillDivider = styled.div`
   height: 1px;
   background-color: rgba(51, 65, 85, 0.2);
   width: 100%;
-  
-  &[data-theme="light"] {
-    background-color: rgba(210, 211, 219, 0.5);
-  }
 `;
 
 const SkillIconContainer = styled.div`
@@ -471,11 +470,6 @@ const SkillIconContainer = styled.div`
   background-color: rgba(30, 41, 59, 0.5);
   color: var(--accent-500, #f97316);
   flex-shrink: 0;
-  
-  &[data-theme="light"] {
-    background-color: rgba(228, 229, 241, 0.7);
-    color: var(--light-accent, #9394A5);
-  }
 `;
 
 const SkillContent = styled.div`
@@ -486,10 +480,6 @@ const SkillTitle = styled.h4`
   font-size: 1.125rem;
   font-weight: 500;
   margin-bottom: 0.5rem;
-  
-  [data-theme="light"] & {
-    color: var(--light-text, #484B6A);
-  }
 `;
 
 const SkillDescription = styled.p`
@@ -502,14 +492,9 @@ const SkillDescription = styled.p`
   @media (min-width: 640px) {
     font-size: 0.9375rem;
   }
-  
-  [data-theme="light"] & {
-    color: var(--light-text, #484B6A);
-    opacity: 0.85;
-  }
 `;
 
-// Technology logos styling
+// Technology logos styling - OPTIMIZED
 const TechLogoContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -528,7 +513,7 @@ const TechLogoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease;
   
   &:hover {
     transform: translateY(-8px);
@@ -549,7 +534,7 @@ const TechLogoWrapper = styled.div`
 const TechLogo = styled.img`
   width: 40px;
   height: 40px;
-  transition: all 0.3s ease;
+  transition: filter 0.3s ease, opacity 0.3s ease;
   filter: grayscale(30%);
   opacity: 0.8;
   
@@ -568,11 +553,6 @@ const TechLogo = styled.img`
     height: 35px;
     margin: 0.25rem;
   }
-  
-  &[data-theme="light"] {
-    filter: grayscale(10%);
-    opacity: 0.9;
-  }
 `;
 
 const TechName = styled.div`
@@ -586,17 +566,13 @@ const TechName = styled.div`
   font-size: 0.75rem;
   opacity: 0;
   transform: translateY(-10px);
-  transition: all 0.3s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
   visibility: hidden;
   white-space: nowrap;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
   pointer-events: none;
   font-weight: 500;
   z-index: 5;
-  
-  &[data-theme="light"] {
-    background-color: var(--light-accent, #9394A5);
-  }
 `;
 
 export default About;

@@ -2,15 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { Menu, X } from 'lucide-react';
 import styled from 'styled-components';
-import ThemeSwitch from './ThemeSwitch';
-import { useTheme } from '../context/ThemeContext';
 import { Link, useLocation } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
-  const { theme } = useTheme();
   const location = useLocation();
   const isHomePage = location.pathname === '/';
 
@@ -108,7 +105,6 @@ const Navbar: React.FC = () => {
   return (
     <Header 
       className={isScrolled ? 'scrolled' : ''}
-      data-theme={theme}
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
         <Logo 
@@ -178,9 +174,6 @@ const Navbar: React.FC = () => {
               Contact
             </NavItem>
           </NavLinks>
-          <ThemeSwitchWrapper className="nav-item">
-            <ThemeSwitch />
-          </ThemeSwitchWrapper>
         </DesktopNav>
 
         {/* Mobile Menu Button */}
@@ -196,7 +189,6 @@ const Navbar: React.FC = () => {
       {/* Mobile Menu */}
       <MobileMenu 
         className={mobileMenuOpen ? 'open' : ''}
-        data-theme={theme}
       >
         <div className="container mx-auto px-4 flex flex-col space-y-4">
           <MobileNavItem
@@ -256,10 +248,6 @@ const Navbar: React.FC = () => {
           >
             Contact
           </MobileNavItem>
-          
-          <div className="py-2">
-            <ThemeSwitch />
-          </div>
         </div>
       </MobileMenu>
     </Header>
@@ -283,12 +271,6 @@ const Header = styled.header`
   
   &.scrolled {
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  }
-  
-  &[data-theme="light"] {
-    background-color: rgba(244, 248, 211, 0.85);
-    box-shadow: 0 4px 20px rgba(142, 125, 190, 0.15);
-    border: 1px solid rgba(166, 214, 214, 0.4);
   }
   
   @media (min-width: 640px) {
@@ -323,10 +305,6 @@ const Logo = styled(Link)`
   
   .dot {
     color: var(--accent-500, #f97316);
-  }
-  
-  [data-theme="light"] & .dot {
-    color: var(--light-accent, #9394A5);
   }
 `;
 
@@ -380,25 +358,9 @@ const NavItem = styled.a`
     width: 100%;
   }
   
-  [data-theme="light"] & {
-    color: #2d3748;
-    
-    &:after {
-      background-color: var(--light-accent, #9394A5);
-    }
-    
-    &:hover, &.active {
-      color: var(--light-accent, #9394A5);
-    }
-  }
-  
   @media (min-width: 768px) and (max-width: 1024px) {
     font-size: 0.8rem;
   }
-`;
-
-const ThemeSwitchWrapper = styled.div`
-  margin-left: 1rem;
 `;
 
 const MobileMenuButton = styled.button`
@@ -408,10 +370,6 @@ const MobileMenuButton = styled.button`
   
   @media (min-width: 768px) {
     display: none;
-  }
-  
-  [data-theme="light"] & {
-    color: #2d3748;
   }
 `;
 
@@ -436,10 +394,6 @@ const MobileMenu = styled.div`
     padding: 1.5rem 0;
   }
   
-  &[data-theme="light"] {
-    background-color: rgba(244, 248, 211, 0.95);
-  }
-  
   @media (min-width: 768px) {
     display: none;
   }
@@ -458,14 +412,6 @@ const MobileNavItem = styled.a`
   
   &:hover, &.active {
     color: var(--accent-500, #f97316);
-  }
-  
-  [data-theme="light"] & {
-    color: #2d3748;
-    
-    &:hover, &.active {
-      color: var(--light-accent, #9394A5);
-    }
   }
 `;
 

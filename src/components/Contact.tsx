@@ -3,7 +3,6 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Mail, Github as GitHub, Linkedin, Twitter, Download } from 'lucide-react';
 import styled from 'styled-components';
-import { useTheme } from '../context/ThemeContext';
 import { siteConfig } from '../config/siteConfig';
 
 const Contact: React.FC = () => {
@@ -12,7 +11,7 @@ const Contact: React.FC = () => {
   const textRef = useRef<HTMLParagraphElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const socialRef = useRef<HTMLDivElement>(null);
-  const { theme } = useTheme();
+  const parallaxRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!sectionRef.current || !headingRef.current || !textRef.current || !formRef.current || !socialRef.current) return;
@@ -91,17 +90,49 @@ const Contact: React.FC = () => {
       }
     );
 
-    // Create parallax effect for the section
-    gsap.to(sectionRef.current, {
-      backgroundPosition: '50% 100%',
-      ease: 'none',
-      scrollTrigger: {
+    // Create parallax effect for the section using transform instead of backgroundPosition
+    // Create a parallax element for better performance
+    if (!parallaxRef.current && sectionRef.current) {
+      const parallaxElement = document.createElement('div');
+      parallaxElement.style.position = 'absolute';
+      parallaxElement.style.top = '0';
+      parallaxElement.style.left = '0';
+      parallaxElement.style.width = '100%';
+      parallaxElement.style.height = '130%'; // Extra height for parallax
+      parallaxElement.style.backgroundImage = 'linear-gradient(135deg, rgba(15, 23, 42, 0), rgba(15, 23, 42, 0.1))';
+      parallaxElement.style.zIndex = '-1';
+      sectionRef.current.appendChild(parallaxElement);
+      parallaxRef.current = parallaxElement;
+    }
+    
+    if (parallaxRef.current) {
+      ScrollTrigger.create({
         trigger: sectionRef.current,
         start: 'top bottom',
         end: 'bottom top',
         scrub: true,
-      },
-    });
+        onUpdate: (self) => {
+          // Using transform for better performance
+          gsap.set(parallaxRef.current, {
+            y: `${self.progress * -30}%`, // Move up as we scroll down
+            ease: 'none'
+          });
+        }
+      });
+    }
+    
+    return () => {
+      // Clean up ScrollTrigger instances to prevent memory leaks
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      
+      // Remove parallax element if it exists
+      if (parallaxRef.current && sectionRef.current) {
+        if (parallaxRef.current.parentNode === sectionRef.current) {
+          sectionRef.current.removeChild(parallaxRef.current);
+        }
+        parallaxRef.current = null;
+      }
+    };
   }, []);
 
   return (
@@ -109,7 +140,6 @@ const Contact: React.FC = () => {
       id="contact"
       ref={sectionRef}
       className="section noise-bg relative"
-      data-theme={theme}
     >
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
@@ -129,7 +159,6 @@ const Contact: React.FC = () => {
                   id="name"
                   name="name"
                   required
-                  data-theme={theme}
                   className="text-body"
                 />
               </FormGroup>
@@ -140,7 +169,6 @@ const Contact: React.FC = () => {
                   id="email"
                   name="email"
                   required
-                  data-theme={theme}
                   className="text-body"
                 />
               </FormGroup>
@@ -151,14 +179,12 @@ const Contact: React.FC = () => {
                   name="message"
                   rows={5}
                   required
-                  data-theme={theme}
                   className="text-body"
                 ></TextArea>
               </FormGroup>
               <ButtonGroup>
                 <SubmitButton
                   type="submit"
-                  data-theme={theme}
                   className="text-accent"
                 >
                   Send Message
@@ -168,7 +194,6 @@ const Contact: React.FC = () => {
                   href={siteConfig.resumeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  data-theme={theme}
                   className="text-accent"
                 >
                   <Download size={18} className="mr-2" />
@@ -186,7 +211,6 @@ const Contact: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="social-icon"
-                    data-theme={theme}
                   >
                     <GitHub size={20} />
                   </SocialIconLink>
@@ -195,7 +219,6 @@ const Contact: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="social-icon"
-                    data-theme={theme}
                   >
                     <Linkedin size={20} />
                   </SocialIconLink>
@@ -204,7 +227,6 @@ const Contact: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="social-icon"
-                    data-theme={theme}
                   >
                     <Twitter size={20} />
                   </SocialIconLink>
@@ -215,7 +237,6 @@ const Contact: React.FC = () => {
                 <InfoHeading className="text-heading">Email</InfoHeading>
                 <EmailLink
                   href={`mailto:${siteConfig.email}`}
-                  data-theme={theme}
                   className="text-body"
                 >
                   <Mail size={18} className="mr-2" />
@@ -242,10 +263,6 @@ const ContactSection = styled.section`
   @media (min-width: 768px) {
     padding: 6rem 0;
   }
-  
-  &[data-theme="light"] {
-    background-color: var(--light-pale-lime, #F4F8D3);
-  }
 `;
 
 const ContactHeading = styled.h2`
@@ -265,14 +282,6 @@ const ContactHeading = styled.h2`
   .dot {
     color: var(--accent-500, #f97316);
   }
-  
-  [data-theme="light"] & {
-    color: #2d3748;
-    
-    .dot {
-      color: var(--light-lavender, #8E7DBE);
-    }
-  }
 `;
 
 const ContactText = styled.p`
@@ -286,10 +295,6 @@ const ContactText = styled.p`
   @media (min-width: 640px) {
     font-size: 1.125rem;
     margin-bottom: 3rem;
-  }
-  
-  [data-theme="light"] & {
-    color: #4a5568;
   }
 `;
 
@@ -324,10 +329,6 @@ const Label = styled.label`
   font-weight: 500;
   color: var(--dark-300, #cbd5e1);
   margin-bottom: 0.5rem;
-  
-  [data-theme="light"] & {
-    color: #4a5568;
-  }
 `;
 
 const Input = styled.input`
@@ -335,7 +336,7 @@ const Input = styled.input`
   background-color: rgba(30, 41, 59, 0.5);
   border: 1px solid rgba(51, 65, 85, 0.5);
   border-radius: 0.375rem;
-  transition: all 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
   color: var(--dark-50, #f8fafc);
   font-size: 0.875rem;
   
@@ -348,17 +349,6 @@ const Input = styled.input`
     border-color: var(--accent-500, #f97316);
     box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
   }
-  
-  &[data-theme="light"] {
-    background-color: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(166, 214, 214, 0.5);
-    color: #2d3748;
-    
-    &:focus {
-      border-color: var(--light-lavender, #8E7DBE);
-      box-shadow: 0 0 0 2px rgba(142, 125, 190, 0.2);
-    }
-  }
 `;
 
 const TextArea = styled.textarea`
@@ -366,7 +356,7 @@ const TextArea = styled.textarea`
   background-color: rgba(30, 41, 59, 0.5);
   border: 1px solid rgba(51, 65, 85, 0.5);
   border-radius: 0.375rem;
-  transition: all 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
   color: var(--dark-50, #f8fafc);
   resize: vertical;
   font-size: 0.875rem;
@@ -379,17 +369,6 @@ const TextArea = styled.textarea`
     outline: none;
     border-color: var(--accent-500, #f97316);
     box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
-  }
-  
-  &[data-theme="light"] {
-    background-color: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(166, 214, 214, 0.5);
-    color: #2d3748;
-    
-    &:focus {
-      border-color: var(--light-lavender, #8E7DBE);
-      box-shadow: 0 0 0 2px rgba(142, 125, 190, 0.2);
-    }
   }
 `;
 
@@ -410,7 +389,7 @@ const SubmitButton = styled.button`
   color: white;
   font-weight: 500;
   border-radius: 0.375rem;
-  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   white-space: nowrap;
   letter-spacing: 0.02em;
   font-size: 0.875rem;
@@ -431,17 +410,6 @@ const SubmitButton = styled.button`
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
   }
-  
-  &[data-theme="light"] {
-    background-color: var(--light-lavender, #8E7DBE);
-    box-shadow: 0 2px 10px rgba(142, 125, 190, 0.2);
-    color: white;
-    
-    &:hover {
-      background-color: #7d6eb0;
-      box-shadow: 0 6px 16px rgba(142, 125, 190, 0.3);
-    }
-  }
 `;
 
 const ResumeButton = styled(SubmitButton)`
@@ -459,17 +427,6 @@ const ResumeButton = styled(SubmitButton)`
   &:hover {
     background-color: rgba(249, 115, 22, 0.1);
     color: var(--accent-500, #f97316);
-  }
-  
-  &[data-theme="light"] {
-    background-color: transparent;
-    color: var(--light-lavender, #8E7DBE);
-    border: 1px solid var(--light-lavender, #8E7DBE);
-    
-    &:hover {
-      background-color: rgba(142, 125, 190, 0.1);
-      color: var(--light-lavender, #8E7DBE);
-    }
   }
 `;
 
@@ -489,10 +446,6 @@ const InfoHeading = styled.h3`
   
   @media (min-width: 640px) {
     font-size: 1.25rem;
-  }
-  
-  [data-theme="light"] & {
-    color: #2d3748;
   }
 `;
 
@@ -514,7 +467,7 @@ const SocialIconLink = styled.a`
   border-radius: 50%;
   background-color: rgba(30, 41, 59, 0.8);
   color: var(--dark-50, #f8fafc);
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   
   @media (min-width: 640px) {
     width: 2.75rem;
@@ -526,26 +479,13 @@ const SocialIconLink = styled.a`
     transform: translateY(-3px);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   }
-  
-  &[data-theme="light"] {
-    background-color: rgba(255, 255, 255, 0.8);
-    color: #2d3748;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(166, 214, 214, 0.3);
-    
-    &:hover {
-      background-color: var(--light-lavender, #8E7DBE);
-      color: white;
-      border-color: transparent;
-    }
-  }
 `;
 
 const EmailLink = styled.a`
   display: flex;
   align-items: center;
   color: var(--dark-300, #cbd5e1);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease;
   font-size: 0.875rem;
   
   @media (min-width: 640px) {
@@ -565,14 +505,6 @@ const EmailLink = styled.a`
       text-decoration: underline;
     }
   }
-  
-  &[data-theme="light"] {
-    color: #4a5568;
-    
-    &:hover {
-      color: var(--light-lavender, #8E7DBE);
-    }
-  }
 `;
 
 const LocationText = styled.p`
@@ -581,10 +513,6 @@ const LocationText = styled.p`
   
   @media (min-width: 640px) {
     font-size: 1rem;
-  }
-  
-  [data-theme="light"] & {
-    color: #4a5568;
   }
 `;
 

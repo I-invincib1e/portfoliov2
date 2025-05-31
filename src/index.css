@@ -12,21 +12,6 @@
   --font-heading: 'Playfair Display', serif;
   --font-body: 'Inter', sans-serif;
   --font-accent: 'Poppins', sans-serif;
-  
-  /* Light mode palette - updated with new colors */
-  --light-background: #FAFAFA;
-  --light-surface: #E4E5F1;
-  --light-muted: #D2D3DB;
-  --light-text: #484B6A;
-  --light-accent: #9394A5;
-}
-
-/* Light theme variables */
-[data-theme="light"] {
-  --bg-color: var(--light-background);
-  --text-color: var(--light-text);
-  --accent-color: var(--light-accent);
-  --secondary-color: var(--light-muted);
 }
 
 html {
@@ -52,12 +37,6 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
   padding-top: 1rem; /* Add padding for the scroll indicator */
   overflow-x: hidden;
-}
-
-[data-theme="light"] body {
-  @apply bg-dark-50 text-dark-950;
-  background-color: var(--light-background);
-  color: var(--light-text);
 }
 
 .noise-bg {
@@ -96,16 +75,6 @@ html {
   scrollbar-width: none;  /* Firefox */
 }
 
-/* Light theme adjustments */
-[data-theme="light"] .section {
-  @apply bg-dark-50;
-  background-color: var(--light-background);
-}
-
-[data-theme="light"] .noise-bg {
-  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIiB0eXBlPSJmcmFjdGFsTm9pc2UiLz48ZmVDb2xvck1hdHJpeCB0eXBlPSJzYXR1cmF0ZSIgdmFsdWVzPSIwIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDIiLz48L3N2Zz4=');
-}
-
 /* Text theme classes */
 .text-heading {
   font-family: var(--font-heading);
@@ -120,10 +89,6 @@ html {
 .text-accent {
   font-family: var(--font-accent);
   color: var(--accent-color);
-}
-
-[data-theme="light"] .text-body {
-  color: var(--light-text);
 }
 
 /* Animated underline for links */
@@ -186,25 +151,6 @@ p, li, span, div {
   backdrop-filter: blur(10px);
   border-radius: 8px;
   border: 1px solid rgba(51, 65, 85, 0.3);
-}
-
-[data-theme="light"] .glass-bg {
-  background: rgba(228, 229, 241, 0.7);
-  border: 1px solid rgba(210, 211, 219, 0.5);
-}
-
-/* Light mode specific adjustments */
-[data-theme="light"] .dot {
-  color: var(--light-accent);
-}
-
-[data-theme="light"] a:hover,
-[data-theme="light"] .active {
-  color: var(--light-accent) !important;
-}
-
-[data-theme="light"] button {
-  transition: all 0.3s ease;
 }
 
 /* Touch-friendly improvements */
