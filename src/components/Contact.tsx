@@ -12,118 +12,97 @@ const Contact: React.FC = () => {
   const textRef = useRef<HTMLParagraphElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const socialRef = useRef<HTMLDivElement>(null);
-  const parallaxBgRef = useRef<HTMLDivElement>(null);
-  const { theme, prefersReducedMotion } = useTheme();
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (!sectionRef.current || !headingRef.current || !textRef.current || !formRef.current || !socialRef.current) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
-    // Skip animations if user prefers reduced motion
-    if (!prefersReducedMotion) {
-      // Animate the heading
-      gsap.fromTo(
-        headingRef.current,
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: headingRef.current,
-            start: 'top bottom-=100',
-            toggleActions: 'play none none none',
-            once: true
-          },
-        }
-      );
-      
-      // Animate the text
-      gsap.fromTo(
-        textRef.current,
-        { y: 30, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: textRef.current,
-            start: 'top bottom-=100',
-            toggleActions: 'play none none none',
-            once: true
-          },
-          delay: 0.2,
-        }
-      );
-      
-      // Animate the form
-      gsap.fromTo(
-        formRef.current,
-        { y: 40, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: formRef.current,
-            start: 'top bottom-=50',
-            toggleActions: 'play none none none',
-            once: true
-          },
-          delay: 0.3,
-        }
-      );
-      
-      // Animate social icons
-      gsap.fromTo(
-        socialRef.current.querySelectorAll('.social-icon'),
-        { y: 20, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          stagger: 0.1,
-          duration: 0.6,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: socialRef.current,
-            start: 'top bottom-=50',
-            toggleActions: 'play none none none',
-            once: true
-          },
-          delay: 0.5,
-        }
-      );
-      
-      // Create parallax effect for the section - OPTIMIZED using transform
-      if (parallaxBgRef.current) {
-        gsap.to(parallaxBgRef.current, {
-          y: '20%', // Use transform for better performance
-          ease: 'none',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: true,
-          },
-        });
+    // Animate the heading
+    gsap.fromTo(
+      headingRef.current,
+      { y: 50, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: headingRef.current,
+          start: 'top bottom-=100',
+          toggleActions: 'play none none none',
+        },
       }
-    } else {
-      // If reduced motion is preferred, just show everything without animation
-      gsap.set([headingRef.current, textRef.current, formRef.current], { opacity: 1, y: 0 });
-      gsap.set(socialRef.current.querySelectorAll('.social-icon'), { opacity: 1, y: 0 });
-    }
+    );
 
-    // Clean up ScrollTrigger instances to prevent memory leaks
-    return () => {
-      ScrollTrigger.getAll().forEach(trigger => {
-        trigger.kill();
-      });
-    };
-  }, [prefersReducedMotion]);
+    // Animate the text
+    gsap.fromTo(
+      textRef.current,
+      { y: 30, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: textRef.current,
+          start: 'top bottom-=100',
+          toggleActions: 'play none none none',
+        },
+        delay: 0.2,
+      }
+    );
+
+    // Animate the form
+    gsap.fromTo(
+      formRef.current,
+      { y: 40, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: formRef.current,
+          start: 'top bottom-=50',
+          toggleActions: 'play none none none',
+        },
+        delay: 0.3,
+      }
+    );
+
+    // Animate social icons
+    gsap.fromTo(
+      socialRef.current.querySelectorAll('.social-icon'),
+      { y: 20, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        stagger: 0.1,
+        duration: 0.6,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: socialRef.current,
+          start: 'top bottom-=50',
+          toggleActions: 'play none none none',
+        },
+        delay: 0.5,
+      }
+    );
+
+    // Create parallax effect for the section
+    gsap.to(sectionRef.current, {
+      backgroundPosition: '50% 100%',
+      ease: 'none',
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: true,
+      },
+    });
+  }, []);
 
   return (
     <ContactSection
@@ -132,9 +111,6 @@ const Contact: React.FC = () => {
       className="section noise-bg relative"
       data-theme={theme}
     >
-      {/* Parallax background element - optimized */}
-      <ParallaxBackground ref={parallaxBgRef} data-theme={theme} />
-      
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <ContactHeading ref={headingRef} className="text-heading">
@@ -259,38 +235,9 @@ const Contact: React.FC = () => {
   );
 };
 
-// New component for parallax background
-const ParallaxBackground = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  will-change: transform; // Performance hint for browser
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 30% 70%, rgba(249, 115, 22, 0.1), transparent 70%);
-    opacity: 0.7;
-  }
-  
-  &[data-theme="light"]::before {
-    background: radial-gradient(circle at 30% 70%, rgba(147, 148, 165, 0.1), transparent 70%);
-  }
-`;
-
 const ContactSection = styled.section`
   position: relative;
   padding: 4rem 0;
-  overflow: hidden;
   
   @media (min-width: 768px) {
     padding: 6rem 0;
@@ -306,8 +253,6 @@ const ContactHeading = styled.h2`
   font-weight: 300;
   margin-bottom: 1.5rem;
   letter-spacing: -0.02em;
-  position: relative;
-  z-index: 1;
   
   @media (min-width: 640px) {
     font-size: 2.5rem;
@@ -337,8 +282,6 @@ const ContactText = styled.p`
   margin-bottom: 2rem;
   hyphens: none;
   word-break: normal;
-  position: relative;
-  z-index: 1;
   
   @media (min-width: 640px) {
     font-size: 1.125rem;
@@ -354,8 +297,6 @@ const ContactGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;
-  position: relative;
-  z-index: 1;
   
   @media (min-width: 768px) {
     grid-template-columns: 3fr 2fr;
@@ -394,7 +335,7 @@ const Input = styled.input`
   background-color: rgba(30, 41, 59, 0.5);
   border: 1px solid rgba(51, 65, 85, 0.5);
   border-radius: 0.375rem;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
   color: var(--dark-50, #f8fafc);
   font-size: 0.875rem;
   
@@ -425,7 +366,7 @@ const TextArea = styled.textarea`
   background-color: rgba(30, 41, 59, 0.5);
   border: 1px solid rgba(51, 65, 85, 0.5);
   border-radius: 0.375rem;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
   color: var(--dark-50, #f8fafc);
   resize: vertical;
   font-size: 0.875rem;
@@ -469,15 +410,12 @@ const SubmitButton = styled.button`
   color: white;
   font-weight: 500;
   border-radius: 0.375rem;
-  transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), 
-              background-color 0.3s ease, 
-              box-shadow 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
   white-space: nowrap;
   letter-spacing: 0.02em;
   font-size: 0.875rem;
   border: none;
   cursor: pointer;
-  will-change: transform; // Performance hint
   
   @media (min-width: 640px) {
     font-size: 1rem;
@@ -576,8 +514,7 @@ const SocialIconLink = styled.a`
   border-radius: 50%;
   background-color: rgba(30, 41, 59, 0.8);
   color: var(--dark-50, #f8fafc);
-  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-  will-change: transform; // Performance hint
+  transition: all 0.3s ease;
   
   @media (min-width: 640px) {
     width: 2.75rem;
@@ -608,7 +545,7 @@ const EmailLink = styled.a`
   display: flex;
   align-items: center;
   color: var(--dark-300, #cbd5e1);
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
   font-size: 0.875rem;
   
   @media (min-width: 640px) {

@@ -61,38 +61,11 @@ body {
 }
 
 .noise-bg {
-  position: relative;
-}
-
-/* Optimized background noise using lower opacity and smaller image */
-.noise-bg::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIiB0eXBlPSJmcmFjdGFsTm9pc2UiLz48ZmVDb2xvck1hdHJpeCB0eXBlPSJzYXR1cmF0ZSIgdmFsdWVzPSIwIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDMiLz48L3N2Zz4=');
-  background-repeat: repeat;
-  z-index: 0;
-  opacity: 0.8;
-  pointer-events: none;
-}
-
-/* Reduced image size and complexity for noise */
-[data-theme="light"] .noise-bg::before {
-  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIiB0eXBlPSJmcmFjdGFsTm9pc2UiLz48ZmVDb2xvck1hdHJpeCB0eXBlPSJzYXR1cmF0ZSIgdmFsdWVzPSIwIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDIiLz48L3N2Zz4=');
-  opacity: 0.6;
+  @apply bg-noise bg-repeat;
 }
 
 .section {
   @apply py-16 sm:py-20 md:py-24 lg:py-32;
-  position: relative; /* Ensure z-index works for content */
-}
-
-.section > * {
-  position: relative; /* Keep content above noise */
-  z-index: 1;
 }
 
 .container {
@@ -101,6 +74,15 @@ body {
 
 .reveal-text {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+}
+
+.parallax {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -118,6 +100,10 @@ html {
 [data-theme="light"] .section {
   @apply bg-dark-50;
   background-color: var(--light-background);
+}
+
+[data-theme="light"] .noise-bg {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIiB0eXBlPSJmcmFjdGFsTm9pc2UiLz48ZmVDb2xvck1hdHJpeCB0eXBlPSJzYXR1cmF0ZSIgdmFsdWVzPSIwIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDIiLz48L3N2Zz4=');
 }
 
 /* Text theme classes */
@@ -140,7 +126,7 @@ html {
   color: var(--light-text);
 }
 
-/* Animated underline for links - optimized with transform */
+/* Animated underline for links */
 .animated-underline {
   position: relative;
 }
@@ -148,18 +134,16 @@ html {
 .animated-underline::after {
   content: '';
   position: absolute;
-  width: 100%;
+  width: 0;
   height: 2px;
   bottom: 0;
   left: 0;
   background-color: var(--accent-500, #f97316);
-  transition: transform 0.3s ease;
-  transform-origin: left;
-  transform: scaleX(0);
+  transition: width 0.3s ease;
 }
 
 .animated-underline:hover::after {
-  transform: scaleX(1);
+  width: 100%;
 }
 
 /* Common styling */
@@ -173,6 +157,13 @@ html {
 
 .section-title .dot {
   color: var(--accent-500, #f97316);
+}
+
+.gradient-text {
+  background: linear-gradient(to right, var(--accent-500, #f97316), var(--secondary-500, #14b8a6));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 /* Typography improvements */
@@ -189,11 +180,10 @@ p, li, span, div {
   line-height: 1.6;
 }
 
-/* Utility classes - simplified for performance */
+/* Utility classes */
 .glass-bg {
   background: rgba(15, 23, 42, 0.5);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
   border-radius: 8px;
   border: 1px solid rgba(51, 65, 85, 0.3);
 }
@@ -213,9 +203,8 @@ p, li, span, div {
   color: var(--light-accent) !important;
 }
 
-/* Specific transitions for better performance */
-a, button {
-  transition: color 0.3s ease, background-color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+[data-theme="light"] button {
+  transition: all 0.3s ease;
 }
 
 /* Touch-friendly improvements */
@@ -226,44 +215,10 @@ a, button {
   }
 }
 
-/* Reduced motion settings */
-@media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-  
-  .animated-underline::after {
-    transition: none !important;
-  }
-  
-  .parallax, .noise-bg::before {
-    display: none !important;
-  }
-  
-  html {
-    scroll-behavior: auto !important;
-  }
-}
-
 /* Improve spacing on mobile */
 @media (max-width: 375px) {
   .container {
     padding-left: 12px;
     padding-right: 12px;
-  }
-}
-
-/* Optimize image loading */
-img {
-  content-visibility: auto; /* Helps with rendering performance */
-}
-
-/* Reduce animation on mobile */
-@media (max-width: 768px) {
-  .animated-element {
-    transition-duration: 0.3s !important; /* Shorter animations on mobile */
   }
 }

@@ -19,24 +19,10 @@ const Hero: React.FC = () => {
   const bgBlobTwoRef = useRef<HTMLDivElement>(null);
   const gridOverlayRef = useRef<HTMLDivElement>(null);
   const arrowRef = useRef<HTMLDivElement>(null);
-  const { theme, prefersReducedMotion } = useTheme();
+  const { theme } = useTheme();
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
-    
-    // If user prefers reduced motion, show content without animation
-    if (prefersReducedMotion) {
-      gsap.set([titleRef.current, subtitleRef.current, socialsRef.current, ctaRef.current], { 
-        opacity: 1, 
-        x: '0%'
-      });
-      gsap.set([bgBlobOneRef.current, bgBlobTwoRef.current], {
-        scale: 1,
-        opacity: theme === 'dark' ? 0.4 : 0.2
-      });
-      gsap.set(gridOverlayRef.current, { opacity: 1 });
-      return;
-    }
     
     // Create master timeline for scroll-based animations
     let master = gsap.timeline({
@@ -148,47 +134,38 @@ const Hero: React.FC = () => {
       }, 0.1
     );
     
-    // Animate the dot with a pulse effect - Only if not mobile
-    const isMobile = window.innerWidth < 768;
+    // Animate the dot with a pulse effect
     const dot = document.querySelector('.hero-dot');
+    const dotAnimation = dot ? gsap.to(dot, {
+      textShadow: theme === 'dark' 
+        ? '0 0 12px rgba(249,115,22,0.6)' 
+        : '0 0 12px rgba(147,148,165,0.6)',
+      scale: 1.05,
+      duration: 0.8,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
+      delay: 0.5
+    }) : null;
     
-    if (dot && !isMobile) {
-      const dotAnimation = gsap.to(dot, {
-        textShadow: theme === 'dark' 
-          ? '0 0 12px rgba(249,115,22,0.6)' 
-          : '0 0 12px rgba(147,148,165,0.6)',
-        scale: 1.05,
-        duration: 0.8,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        delay: 0.5
-      });
-      
-      // Clean up dot animation on unmount
-      return () => {
-        dotAnimation.kill();
-      };
-    }
-    
-    // Setup background blob animations - Optimized for mobile
+    // Setup background blob animations
     const blobOneAnimation = gsap.to(bgBlobOneRef.current, {
-      x: isMobile ? "3%" : "5%",
-      y: isMobile ? "2%" : "3%",
-      scale: isMobile ? 1.03 : 1.05,
-      rotation: isMobile ? 3 : 5,
-      duration: isMobile ? 12 : 15,
+      x: "5%",
+      y: "3%",
+      scale: 1.05,
+      rotation: 5,
+      duration: 15,
       repeat: -1,
       yoyo: true,
       ease: "sine.inOut"
     });
     
     const blobTwoAnimation = gsap.to(bgBlobTwoRef.current, {
-      x: isMobile ? "-3%" : "-5%",
-      y: isMobile ? "-2%" : "-3%",
-      scale: isMobile ? 0.97 : 0.95,
-      rotation: isMobile ? -3 : -5,
-      duration: isMobile ? 15 : 18,
+      x: "-5%",
+      y: "-3%",
+      scale: 0.95,
+      rotation: -5,
+      duration: 18,
       repeat: -1,
       yoyo: true,
       ease: "sine.inOut",
@@ -204,6 +181,7 @@ const Hero: React.FC = () => {
     // Collect all animations that need to be killed on cleanup
     const animations = [
       master,
+      dotAnimation,
       blobOneAnimation,
       blobTwoAnimation
     ];
@@ -242,7 +220,7 @@ const Hero: React.FC = () => {
       // Clear all contexts and memory
       gsap.globalTimeline.clear();
     };
-  }, [theme, prefersReducedMotion]);
+  }, [theme]);
 
   return (
     <HeroSection
@@ -500,7 +478,7 @@ const SocialIconLink = styled.a`
   justify-content: center;
   text-decoration: none;
   color: var(--dark-300, #cbd5e1);
-  transition: color 0.5s;
+  transition: 0.5s;
   
   @media (max-width: 375px) {
     width: 40px;
@@ -653,9 +631,7 @@ const HireMeButton = styled(Link)`
   border-radius: 0.5rem;
   border: none;
   cursor: pointer;
-  transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), 
-              background-color 0.3s ease, 
-              box-shadow 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
   position: relative;
   overflow: hidden;
   z-index: 1;
@@ -666,7 +642,6 @@ const HireMeButton = styled(Link)`
   display: inline-block;
   flex: 1;
   text-align: center;
-  will-change: transform; // Performance hint
   
   @media (min-width: 640px) {
     font-size: 1.24rem;
@@ -756,7 +731,6 @@ const HeroBackground = styled.div`
     filter: blur(80px);
     opacity: 0.4;
     z-index: -1;
-    will-change: transform, opacity; // Performance hint
   }
   
   .blob-1 {
@@ -765,6 +739,7 @@ const HeroBackground = styled.div`
     width: 30vw;
     height: 30vw;
     background: linear-gradient(135deg, #f97316 0%, #155e75 100%);
+    animation: float 15s ease-in-out infinite alternate;
   }
   
   .blob-2 {
@@ -773,6 +748,7 @@ const HeroBackground = styled.div`
     width: 25vw;
     height: 25vw;
     background: linear-gradient(135deg, #14b8a6 0%, #3b82f6 100%);
+    animation: float 20s ease-in-out infinite alternate-reverse;
   }
   
   .grid-overlay {
@@ -786,7 +762,6 @@ const HeroBackground = styled.div`
     background-size: 40px 40px;
     background-position: -0.5px -0.5px;
     z-index: -1;
-    pointer-events: none;
   }
   
   &[data-theme="light"] {
@@ -797,6 +772,18 @@ const HeroBackground = styled.div`
     .grid-overlay {
       background-image: linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
                         linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    }
+  }
+  
+  @keyframes float {
+    0% {
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(5%, 5%) scale(1.05);
+    }
+    100% {
+      transform: translate(-5%, -3%) scale(0.95);
     }
   }
 `;
