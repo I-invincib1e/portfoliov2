@@ -37,6 +37,7 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
   padding-top: 1rem; /* Add padding for the scroll indicator */
   overflow-x: hidden;
+  text-rendering: optimizeSpeed; /* Optimize for speed */
 }
 
 .noise-bg {
@@ -45,6 +46,7 @@ body {
 
 .section {
   @apply py-16 sm:py-20 md:py-24 lg:py-32;
+  will-change: transform, opacity;
 }
 
 .container {
@@ -167,4 +169,56 @@ p, li, span, div {
     padding-left: 12px;
     padding-right: 12px;
   }
+}
+
+/* Optimize animations with will-change */
+.animate-opacity {
+  will-change: opacity;
+}
+
+.animate-transform {
+  will-change: transform;
+}
+
+/* Optimize images for better rendering */
+img {
+  image-rendering: auto;
+}
+
+/* Optimize loading for content below the fold */
+.lazy-section {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px; /* Estimate height */
+}
+
+/* Optimized animation classes */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to { 
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease-in-out forwards;
+}
+
+.slide-up {
+  animation: slideUp 0.8s ease-out forwards;
+}
+
+/* Performance optimization for animations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 }

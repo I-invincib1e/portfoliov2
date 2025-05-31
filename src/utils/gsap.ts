@@ -15,6 +15,11 @@ export const registerGSAP = (): void => {
     duration: 0.8,
   });
 
+  // Enable GPU acceleration for animations
+  gsap.config({
+    force3D: true
+  });
+
   // Make sure ScrollTrigger is properly refreshed when the page loads
   ScrollTrigger.refresh();
 
@@ -23,6 +28,7 @@ export const registerGSAP = (): void => {
     toggleActions: 'play none none none', // play, reverse, restart, reset, pause, resume, complete, none
     start: 'top bottom',
     end: 'bottom top',
+    markers: false // Make sure markers are disabled in production
   });
 
   // Handle smooth scrolling for all anchor links
@@ -30,6 +36,9 @@ export const registerGSAP = (): void => {
 
   // Add scroll-based animations to common elements
   setupScrollAnimations();
+  
+  // Optimize ScrollTrigger for better performance
+  optimizeScrollTrigger();
 };
 
 /**
@@ -66,21 +75,71 @@ const setupSmoothScrolling = (): void => {
  * Sets up scroll-based animations for common elements
  */
 const setupScrollAnimations = (): void => {
-  // Fade in animations for sections
-  gsap.utils.toArray('.section').forEach((section: any) => {
-    ScrollTrigger.create({
-      trigger: section,
-      start: 'top bottom-=100',
-      onEnter: () => {
-        gsap.to(section, {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: 'power2.out',
-        });
-      },
-      once: true,
+  // Detect if device is mobile
+  const isMobile = window.innerWidth < 768;
+  
+  // Use simpler animations on mobile devices
+  if (isMobile) {
+    // Fade in animations for sections - simplified for mobile
+    gsap.utils.toArray('.section').forEach((section: any) => {
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top bottom-=50',
+        onEnter: () => {
+          gsap.to(section, {
+            opacity: 1,
+            duration: 0.6,
+            ease: 'power1.out',
+          });
+        },
+        once: true,
+      });
     });
+  } else {
+    // Full animations for desktop
+    gsap.utils.toArray('.section').forEach((section: any) => {
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top bottom-=100',
+        onEnter: () => {
+          gsap.to(section, {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'power2.out',
+          });
+        },
+        once: true,
+      });
+    });
+  }
+};
+
+/**
+ * Optimizes ScrollTrigger for better performance
+ */
+const optimizeScrollTrigger = () => {
+  // Batch scroll events for better performance
+  ScrollTrigger.config({ 
+    limitCallbacks: true,  // Limits callback frequency
+    ignoreMobileResize: true // Prevents resize triggering on mobile when address bar shows/hides
+  });
+  
+  // Throttle scroll updates on mobile
+  if (window.innerWidth < 768) {
+    ScrollTrigger.config({
+      syncInterval: 60 // Increase sync interval on mobile (default is 33.3ms)
+    });
+  }
+  
+  // Listen for resize events and refresh ScrollTrigger
+  let resizeTimer: number;
+  window.addEventListener('resize', () => {
+    // Debounce resize events
+    clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 250);
   });
 };
 
@@ -91,6 +150,22 @@ export const createStaggeredReveal = (
   elements: HTMLElement[] | NodeListOf<Element>,
   options = { y: 20, stagger: 0.1, duration: 0.6 }
 ): gsap.core.Timeline => {
+  // Check if on mobile and simplify animation
+  const isMobile = window.innerWidth < 768;
+  
+  if (isMobile) {
+    return gsap.fromTo(
+      elements,
+      { opacity: 0 },
+      {
+        opacity: 1,
+        stagger: options.stagger,
+        duration: options.duration * 0.8, // Slightly faster on mobile
+        ease: 'power1.out',
+      }
+    );
+  }
+  
   return gsap.fromTo(
     elements,
     { y: options.y, opacity: 0 },
@@ -111,14 +186,29 @@ export const createParallaxEffect = (
   element: HTMLElement,
   options = { yPercent: 30, scrub: 0.5 }
 ): ScrollTrigger => {
+  // Use transform instead of position for better performance
   return ScrollTrigger.create({
     trigger: element,
     start: 'top bottom',
     end: 'bottom top',
     scrub: options.scrub,
     animation: gsap.to(element, {
-      yPercent: options.yPercent,
+      y: `${options.yPercent}%`, // Use transform for GPU acceleration
       ease: 'none',
     }),
   });
+};
+
+/**
+ * Properly kill all GSAP animations and ScrollTriggers to prevent memory leaks
+ */
+export const cleanupGSAP = (): void => {
+  // Kill all ScrollTrigger instances
+  ScrollTrigger.getAll().forEach(trigger => trigger.kill(false));
+  
+  // Kill all active GSAP animations
+  gsap.globalTimeline.clear();
+  
+  // Clear any custom GSAP configs
+  gsap.config({});
 };

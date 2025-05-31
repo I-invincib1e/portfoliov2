@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { ExternalLink, Github } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
+import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 
 interface CardProps {
   projects: {
@@ -13,23 +13,55 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({ projects }) => {
-  const { theme } = useTheme();
+  // Use intersection observer for better performance than scroll-based animations
+  const [containerRef, isVisible] = useIntersectionObserver<HTMLDivElement>({
+    threshold: 0.1,
+    triggerOnce: true,
+    rootMargin: '0px 0px -100px 0px'
+  });
+  
+  // Refs for all card panels
+  const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
+  
+  useEffect(() => {
+    // Only run animation when card is visible
+    if (isVisible) {
+      // Apply animations with delay between each card
+      panelRefs.current.forEach((panel, index) => {
+        if (panel) {
+          // Use CSS transitions instead of JS for better performance
+          setTimeout(() => {
+            panel.style.opacity = '1';
+            panel.style.transform = 'translateY(0)';
+          }, index * 100);
+        }
+      });
+    }
+  }, [isVisible]);
   
   return (
-    <StyledWrapper data-theme={theme}>
+    <StyledWrapper ref={containerRef}>
       <div className="card">
         {projects.map((project, index) => (
-          <CardPanel key={index} data-theme={theme}>
+          <CardPanel 
+            key={index} 
+            ref={el => panelRefs.current[index] = el}
+            style={{
+              opacity: 0,
+              transform: 'translateY(20px)',
+              transition: 'opacity 0.5s ease, transform 0.5s ease'
+            }}
+          >
             <CardContent>
               <ProjectTitle className="text-heading">{project.title}</ProjectTitle>
               <ProjectDetails>
                 <ProjectDescription className="text-body">{project.description}</ProjectDescription>
                 <ButtonGroup>
-                  <ProjectLink href={project.link} target="_blank" rel="noopener noreferrer" className="text-accent" data-theme={theme}>
+                  <ProjectLink href={project.link} target="_blank" rel="noopener noreferrer" className="text-accent">
                     View Project <ExternalLink size={14} />
                   </ProjectLink>
                   {project.github && (
-                    <ProjectGithubLink href={project.github} target="_blank" rel="noopener noreferrer" className="text-accent" data-theme={theme}>
+                    <ProjectGithubLink href={project.github} target="_blank" rel="noopener noreferrer" className="text-accent">
                       <Github size={14} style={{ marginRight: '6px' }} /> GitHub
                     </ProjectGithubLink>
                   )}
@@ -53,6 +85,7 @@ const StyledWrapper = styled.div`
     display: flex;
     gap: 4px;
     padding: .4em;
+    will-change: transform;
     
     @media (min-width: 640px) {
       height: 240px;
@@ -71,7 +104,10 @@ const CardPanel = styled.div`
   overflow: hidden;
   cursor: pointer;
   border-radius: 0;
-  transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: flex 0.5s cubic-bezier(0.165, 0.84, 0.44, 1), 
+              border-color 0.5s cubic-bezier(0.165, 0.84, 0.44, 1),
+              transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1),
+              box-shadow 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
   background: rgba(15, 23, 42, 0.6);
   border-top: 1px solid rgba(51, 65, 85, 0.5);
   border-bottom: 1px solid rgba(51, 65, 85, 0.5);
@@ -81,6 +117,7 @@ const CardPanel = styled.div`
   position: relative;
   backdrop-filter: blur(4px);
   margin: 0 4px;
+  will-change: flex, transform;
   
   &:hover {
     flex: 4;
@@ -88,18 +125,6 @@ const CardPanel = styled.div`
     border-bottom-color: rgba(249, 115, 22, 0.4);
     box-shadow: 0 10px 30px -15px rgba(2, 6, 23, 0.7);
     transform: translateY(-5px);
-  }
-  
-  &[data-theme="light"] {
-    background: rgba(247, 207, 216, 0.2);
-    border-top: 1px solid rgba(142, 125, 190, 0.3);
-    border-bottom: 1px solid rgba(142, 125, 190, 0.3);
-    
-    &:hover {
-      border-top-color: rgba(142, 125, 190, 0.5);
-      border-bottom-color: rgba(142, 125, 190, 0.5);
-      box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.1);
-    }
   }
 `;
 
@@ -147,14 +172,6 @@ const ProjectTitle = styled.h3`
     color: var(--accent-500, #f97316);
     font-weight: 500;
   }
-  
-  ${CardPanel}[data-theme="light"] & {
-    color: #2d3748;
-  }
-  
-  ${CardPanel}[data-theme="light"]:hover & {
-    color: var(--light-lavender, #8E7DBE);
-  }
 `;
 
 const ProjectDetails = styled.div`
@@ -183,10 +200,6 @@ const ProjectDescription = styled.div`
     font-size: 0.875rem;
     margin-bottom: 1.5rem;
   }
-  
-  ${CardPanel}[data-theme="light"] & {
-    color: #4a5568;
-  }
 `;
 
 const ButtonGroup = styled.div`
@@ -210,8 +223,9 @@ const ProjectLink = styled.a`
   padding: 0.4rem 1rem;
   border: 1px solid var(--accent-500, #f97316);
   border-radius: 4px;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   white-space: nowrap;
+  will-change: transform;
   
   @media (min-width: 640px) {
     font-size: 0.875rem;
@@ -226,20 +240,11 @@ const ProjectLink = styled.a`
   
   svg {
     transition: transform 0.3s ease;
+    will-change: transform;
   }
   
   &:hover svg {
     transform: translateX(3px);
-  }
-  
-  &[data-theme="light"] {
-    color: var(--light-lavender, #8E7DBE);
-    border-color: var(--light-lavender, #8E7DBE);
-    
-    &:hover {
-      background: rgba(142, 125, 190, 0.1);
-      box-shadow: 0 4px 12px rgba(142, 125, 190, 0.2);
-    }
   }
 `;
 
@@ -256,17 +261,6 @@ const ProjectGithubLink = styled(ProjectLink)`
   
   &:hover svg {
     transform: translateY(-1px);
-  }
-  
-  &[data-theme="light"] {
-    background: rgba(255, 255, 255, 0.8);
-    color: #2d3748;
-    border: 1px solid rgba(142, 125, 190, 0.3);
-    
-    &:hover {
-      background: rgba(255, 255, 255, 0.9);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
   }
 `;
 
