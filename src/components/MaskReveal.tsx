@@ -34,10 +34,33 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
   const particleCanvasRef = useRef<HTMLCanvasElement>(null);
   const finalParticlesRef = useRef<HTMLCanvasElement>(null);
   const [isRevealed, setIsRevealed] = useState(false);
-  const { theme } = useTheme();
+  const { theme, prefersReducedMotion } = useTheme();
 
   useEffect(() => {
     if (!letterIRef.current || !overlayRef.current || !revealContainerRef.current || !nameTextRef.current || !particleCanvasRef.current || !contentContainerRef.current || !finalParticlesRef.current || !bracketLeftRef.current || !bracketRightRef.current) return;
+
+    // If user prefers reduced motion, skip the reveal animation
+    if (prefersReducedMotion) {
+      // Make content visible immediately
+      gsap.set(contentContainerRef.current, {
+        opacity: 1,
+        visibility: 'visible'
+      });
+      
+      // Hide the reveal container
+      gsap.set(revealContainerRef.current, {
+        autoAlpha: 0,
+        pointerEvents: 'none'
+      });
+      
+      // Allow scrolling
+      document.body.style.overflow = 'auto';
+      document.body.style.overflowY = 'visible';
+      document.body.style.height = 'auto';
+      
+      setIsRevealed(true);
+      return;
+    }
 
     // Set content initially hidden
     gsap.set(contentContainerRef.current, {
@@ -101,7 +124,7 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
     
     revealContainerRef.current.appendChild(circleElement);
     
-    // Setup particle canvas
+    // Setup particle canvas - OPTIMIZED FOR MOBILE
     const canvas = particleCanvasRef.current;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -111,36 +134,45 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
     // Setup final particles canvas that stays visible during transition
     const finalCanvas = finalParticlesRef.current;
     finalCanvas.width = window.innerWidth;
-    finalCanvas.height = window.innerHeight;
+    canvas.height = window.innerHeight;
     const finalCtx = finalCanvas.getContext('2d');
     if (!finalCtx) return;
     
-    // Particle system - OPTIMIZED FOR SPEED
+    // Particle system - OPTIMIZED FOR MOBILE
     const particles: Particle[] = [];
     const finalParticles: Particle[] = [];
     const baseColor = theme === 'dark' ? '#f97316' : '#9394A5';
     const secondaryColor = theme === 'dark' ? '#ea580c' : '#7F8091';
     const accentColor = theme === 'dark' ? '#c2410c' : '#6B6C7D';
     
+    // Determine if we're on a mobile device for particle count scaling
+    const isMobile = window.innerWidth < 768;
+    
     function createParticle(x: number, y: number, size: number) {
+      // Reduce particle size on mobile
+      const adjustedSize = isMobile ? size * 0.7 : size;
+      
       const colorChoices = [baseColor, secondaryColor, accentColor];
       const particle: Particle = {
         x,
         y,
-        size: size * (Math.random() * 0.6 + 0.4),
-        // Faster particles for more dynamic effect
-        speedX: (Math.random() - 0.5) * 10,
-        speedY: (Math.random() - 0.5) * 10,
+        size: adjustedSize * (Math.random() * 0.6 + 0.4),
+        // Lower speed on mobile
+        speedX: (Math.random() - 0.5) * (isMobile ? 6 : 10),
+        speedY: (Math.random() - 0.5) * (isMobile ? 6 : 10),
         color: colorChoices[Math.floor(Math.random() * colorChoices.length)],
         alpha: Math.random() * 0.7 + 0.3,
         life: 0,
-        // Shorter lifetime for quicker effect
-        maxLife: 40 + Math.random() * 30
+        // Shorter lifetime on mobile
+        maxLife: isMobile ? (30 + Math.random() * 20) : (40 + Math.random() * 30)
       };
       particles.push(particle);
     }
 
     function createFinalParticle() {
+      // Significantly reduce number of particles on mobile
+      if (isMobile && finalParticles.length > 40) return;
+      
       const colorChoices = [baseColor, secondaryColor, accentColor];
       const screenWidth = window.innerWidth;
       const screenHeight = window.innerHeight;
@@ -149,19 +181,23 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
       const particle: Particle = {
         x: Math.random() * screenWidth,
         y: Math.random() * screenHeight,
-        size: Math.random() * 2 + 1,
-        speedX: (Math.random() - 0.5) * 1.5,
-        speedY: (Math.random() - 0.5) * 1.5,
+        // Smaller particles on mobile
+        size: Math.random() * (isMobile ? 1.5 : 2) + (isMobile ? 0.5 : 1),
+        // Slower movement on mobile
+        speedX: (Math.random() - 0.5) * (isMobile ? 0.8 : 1.5),
+        speedY: (Math.random() - 0.5) * (isMobile ? 0.8 : 1.5),
         color: colorChoices[Math.floor(Math.random() * colorChoices.length)],
         alpha: Math.random() * 0.2 + 0.1,
         life: 0,
-        maxLife: 150 + Math.random() * 200 // Shorter lifetime
+        // Shorter lifetime on mobile
+        maxLife: isMobile ? (100 + Math.random() * 150) : (150 + Math.random() * 200)
       };
       finalParticles.push(particle);
     }
     
     function updateParticles() {
-      particles.forEach((p, index) => {
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
         p.x += p.speedX;
         p.y += p.speedY;
         // Faster deceleration
@@ -174,13 +210,14 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
         
         // Remove dead particles
         if (p.life >= p.maxLife || p.alpha <= 0) {
-          particles.splice(index, 1);
+          particles.splice(i, 1);
         }
-      });
+      }
     }
 
     function updateFinalParticles() {
-      finalParticles.forEach((p, index) => {
+      for (let i = finalParticles.length - 1; i >= 0; i--) {
+        const p = finalParticles[i];
         p.x += p.speedX * 0.3;
         p.y += p.speedY * 0.3;
         
@@ -198,12 +235,12 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
         
         // Recreate particles that have lived too long
         if (p.life >= p.maxLife) {
-          finalParticles.splice(index, 1);
-          if (finalParticles.length < 100) {
+          finalParticles.splice(i, 1);
+          if (finalParticles.length < (isMobile ? 40 : 100)) {
             createFinalParticle();
           }
         }
-      });
+      }
     }
     
     function drawParticles() {
@@ -236,6 +273,9 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
     function startParticleSystem() {
       isEmittingParticles = true;
       
+      // Emit particles less frequently on mobile
+      const emitInterval = isMobile ? 60 : 40;
+      
       // Emit particles more frequently
       particleEmitter = window.setInterval(() => {
         if (!isEmittingParticles) return;
@@ -245,8 +285,10 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
         const centerY = rect.top + rect.height / 2;
         const radius = rect.width / 2;
         
-        // More particles for a more intense burst
-        const particleCount = Math.min(25, Math.floor(radius / 6)); 
+        // Fewer particles on mobile
+        const particleCount = isMobile 
+          ? Math.min(12, Math.floor(radius / 8))
+          : Math.min(25, Math.floor(radius / 6)); 
         
         for (let i = 0; i < particleCount; i++) {
           // Place particles around the circle perimeter
@@ -256,9 +298,9 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
           const x = centerX + Math.cos(angle) * distance;
           const y = centerY + Math.sin(angle) * distance;
           
-          createParticle(x, y, 2 + Math.random() * 3);
+          createParticle(x, y, isMobile ? 1.5 + Math.random() * 2 : 2 + Math.random() * 3);
         }
-      }, 40); // More frequent emission for denser effect
+      }, emitInterval);
       
       // Animate particles
       function animateParticles() {
@@ -291,8 +333,9 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
     }
 
     function startFinalParticles() {
-      // Create initial set of background particles
-      for (let i = 0; i < 80; i++) {
+      // Create initial set of background particles - fewer on mobile
+      const initialParticles = isMobile ? 40 : 80;
+      for (let i = 0; i < initialParticles; i++) {
         createFinalParticle();
       }
       
@@ -316,7 +359,7 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
       });
     }
     
-    // Animation sequence - OPTIMIZED FOR SPEED
+    // Animation sequence - OPTIMIZED FOR MOBILE
     // Start with pulsing "i" character
     tl.to(letterIRef.current, {
       textShadow: theme === 'dark' 
@@ -345,7 +388,7 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
     .to(circleElement, {
       width: '250vh',
       height: '250vh',
-      duration: 0.8, // Much faster expansion
+      duration: isMobile ? 0.6 : 0.8, // Even faster on mobile
       ease: 'power2.inOut'
     })
     
@@ -410,7 +453,7 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
                   if (finalCtx) {
                     finalCtx.clearRect(0, 0, finalCanvas.width, finalCanvas.height);
                   }
-                }, 3000); // Shorter cleanup time
+                }, isMobile ? 2000 : 3000); // Shorter cleanup time on mobile
               }
               setIsRevealed(true);
             }
@@ -425,12 +468,15 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
     // Use physics-based scrolling for natural feeling
     let scrollVelocity = 0;
     let scrollAmount = 0;
-    const totalScrollNeeded = 200; // REDUCED: Less scroll needed to complete animation
-    const scrollDamping = 0.90; // Faster damping
-    const scrollSensitivity = 2.0; // More responsive scrolling
+    // REDUCED for mobile: Less scroll needed to complete animation
+    const totalScrollNeeded = isMobile ? 150 : 200;
+    const scrollDamping = isMobile ? 0.85 : 0.90; // Even faster damping on mobile
+    const scrollSensitivity = isMobile ? 2.5 : 2.0; // More responsive scrolling on mobile
     
-    // Animation frame for smooth scrolling
+    // Animation frame for smooth scrolling - cache value to limit expensive calculations
     let scrollAnimationFrame: number;
+    let lastProgress = 0;
+    const progressThreshold = 0.01; // Only update if progress changes by this amount
     
     const updateScrollAnimation = () => {
       // Apply damping for smooth deceleration
@@ -442,15 +488,20 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
       
       // Map scroll amount to timeline progress
       const progress = scrollAmount / totalScrollNeeded;
-      tl.progress(progress);
       
-      // Smooth scroll indicator fade
-      if (scrollIndicatorRef.current) {
-        const targetOpacity = progress > 0.1 ? Math.max(0, 1 - progress * 2) : 1; // Faster fade
-        gsap.to(scrollIndicatorRef.current, {
-          opacity: targetOpacity,
-          duration: 0.2 // Faster transition
-        });
+      // Only update timeline if progress changed significantly
+      if (Math.abs(progress - lastProgress) > progressThreshold) {
+        tl.progress(progress);
+        lastProgress = progress;
+        
+        // Smooth scroll indicator fade
+        if (scrollIndicatorRef.current) {
+          const targetOpacity = progress > 0.1 ? Math.max(0, 1 - progress * 2) : 1; // Faster fade
+          gsap.to(scrollIndicatorRef.current, {
+            opacity: targetOpacity,
+            duration: 0.2 // Faster transition
+          });
+        }
       }
       
       // If reached the end, complete the animation
@@ -465,7 +516,19 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
     // Start the scroll animation loop
     scrollAnimationFrame = requestAnimationFrame(updateScrollAnimation);
     
-    const handleRevealScroll = (e: WheelEvent) => {
+    // Throttle function to limit event frequency
+    const throttle = (callback: Function, delay: number) => {
+      let lastCall = 0;
+      return function(...args: any[]) {
+        const now = Date.now();
+        if (now - lastCall >= delay) {
+          lastCall = now;
+          callback(...args);
+        }
+      };
+    };
+    
+    const handleRevealScroll = throttle((e: WheelEvent) => {
       e.preventDefault();
       e.stopPropagation();
       
@@ -475,12 +538,12 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
         scrollVelocity += e.deltaY * 0.035 * scrollSensitivity;
         
         // Higher max velocity for faster completion
-        const maxVelocity = 20;
+        const maxVelocity = isMobile ? 25 : 20;
         scrollVelocity = Math.max(-maxVelocity, Math.min(scrollVelocity, maxVelocity));
       }
-    };
+    }, isMobile ? 16 : 0); // Throttle on mobile, no throttle on desktop
     
-    // Touch event handling for mobile with momentum
+    // Touch event handling for mobile with momentum - OPTIMIZED
     let touchStartY = 0;
     let touchVelocity = 0;
     let lastTouchY = 0;
@@ -497,7 +560,7 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
       }
     };
     
-    const handleTouchMove = (e: TouchEvent) => {
+    const handleTouchMove = throttle((e: TouchEvent) => {
       if (!isRevealed) {
         e.preventDefault();
         e.stopPropagation();
@@ -508,7 +571,7 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
         if (deltaTime > 0) {
           // Calculate velocity based on distance and time - MORE RESPONSIVE
           const deltaY = lastTouchY - touchY;
-          touchVelocity = deltaY / deltaTime * 20; // Higher scale for better feel
+          touchVelocity = deltaY / deltaTime * 25; // Higher scale for better feel on mobile
         }
         
         // Add to scroll velocity
@@ -518,7 +581,7 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
         lastTouchY = touchY;
         lastTouchTime = currentTime;
       }
-    };
+    }, 16); // 60fps throttle for touch events
     
     const handleTouchEnd = (e: TouchEvent) => {
       if (!isRevealed) {
@@ -532,11 +595,11 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
     const completelyReveal = () => {
       // Animate to completion FASTER
       gsap.to({}, {
-        duration: 0.5, // Faster completion
+        duration: isMobile ? 0.4 : 0.5, // Even faster on mobile
         onUpdate: function() {
           const targetProgress = this.progress();
           const currentProgress = tl.progress();
-          const newProgress = currentProgress + (targetProgress - currentProgress) * 0.25; // Much faster progress
+          const newProgress = currentProgress + (targetProgress - currentProgress) * (isMobile ? 0.35 : 0.25); // Much faster progress on mobile
           tl.progress(newProgress);
         },
         onComplete: () => {
@@ -579,26 +642,31 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
     
     window.addEventListener('keydown', handleKeydown);
     
-    // Handle window resize
+    // Handle window resize - cached for performance
+    let resizeTimeout: NodeJS.Timeout;
     const handleResize = () => {
-      // Recalculate the circle position if needed
-      if (!isRevealed && letterIRef.current) {
-        const newRect = letterIRef.current.getBoundingClientRect();
-        circleElement.style.top = `${newRect.top + newRect.height/2}px`;
-        circleElement.style.left = `${newRect.left + newRect.width/2}px`;
-      }
-      
-      // Resize canvas
-      if (particleCanvasRef.current) {
-        particleCanvasRef.current.width = window.innerWidth;
-        particleCanvasRef.current.height = window.innerHeight;
-      }
-      
-      // Resize final particles canvas
-      if (finalParticlesRef.current) {
-        finalParticlesRef.current.width = window.innerWidth;
-        finalParticlesRef.current.height = window.innerHeight;
-      }
+      // Debounce resize to prevent excessive calculations
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        // Recalculate the circle position if needed
+        if (!isRevealed && letterIRef.current) {
+          const newRect = letterIRef.current.getBoundingClientRect();
+          circleElement.style.top = `${newRect.top + newRect.height/2}px`;
+          circleElement.style.left = `${newRect.left + newRect.width/2}px`;
+        }
+        
+        // Resize canvas
+        if (particleCanvasRef.current) {
+          particleCanvasRef.current.width = window.innerWidth;
+          particleCanvasRef.current.height = window.innerHeight;
+        }
+        
+        // Resize final particles canvas
+        if (finalParticlesRef.current) {
+          finalParticlesRef.current.width = window.innerWidth;
+          finalParticlesRef.current.height = window.innerHeight;
+        }
+      }, 200); // 200ms debounce
     };
     
     window.addEventListener('resize', handleResize);
@@ -608,6 +676,8 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
       tl.kill();
       cancelAnimationFrame(scrollAnimationFrame);
       cancelAnimationFrame(finalParticleAnimation);
+      clearInterval(particleEmitter);
+      clearTimeout(resizeTimeout);
       
       if (revealEl) {
         revealEl.removeEventListener('wheel', handleRevealScroll);
@@ -632,7 +702,7 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
         circleElement.parentNode.removeChild(circleElement);
       }
     };
-  }, [theme, isRevealed]);
+  }, [theme, isRevealed, prefersReducedMotion]);
 
   return (
     <>

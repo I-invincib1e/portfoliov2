@@ -44,6 +44,14 @@ const SkillItem: React.FC<SkillItemProps> = ({ icon, title, description, index }
       y: 30 
     });
     
+    return () => {
+      // Clean up ScrollTrigger instances to avoid memory leaks
+      const triggers = ScrollTrigger.getAll().filter(
+        trigger => trigger.vars.trigger === itemRef.current
+      );
+      triggers.forEach(trigger => trigger.kill());
+    };
+    
   }, []);
 
   return (
@@ -65,7 +73,8 @@ const About: React.FC = () => {
   const stickyTitleRef = useRef<HTMLDivElement>(null);
   const techGridRef = useRef<HTMLDivElement>(null);
   const paragraphRef = useRef<HTMLParagraphElement>(null);
-  const { theme } = useTheme();
+  const { theme, prefersReducedMotion } = useTheme();
+  const parallaxRef = useRef<HTMLDivElement>(null);
 
   // Animate tech logos on scroll
   useEffect(() => {
@@ -82,39 +91,47 @@ const About: React.FC = () => {
     });
 
     // Create a one-way animation that doesn't reverse when scrolling backward
-    ScrollTrigger.create({
+    const trigger = ScrollTrigger.create({
       trigger: techGridRef.current,
       start: 'top bottom-=50',
       onEnter: () => {
         gsap.to(techLogos, {
           scale: 1,
           opacity: 1,
-          stagger: 0.05,
-          duration: 0.6,
+          stagger: prefersReducedMotion ? 0.02 : 0.05, // Faster animation if reduced motion preferred
+          duration: prefersReducedMotion ? 0.4 : 0.6, // Shorter duration if reduced motion preferred
           ease: 'power2.out'
         });
       },
       once: true // This ensures the animation only runs once
     });
-  }, []);
+    
+    return () => {
+      // Clean up ScrollTrigger
+      trigger.kill();
+    };
+  }, [prefersReducedMotion]);
 
-  // Create parallax effect for the section
+  // Create parallax effect for the section - OPTIMIZED
   useEffect(() => {
-    if (!sectionRef.current) return;
+    if (!sectionRef.current || !parallaxRef.current || prefersReducedMotion) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
-    // One-way background parallax
-    ScrollTrigger.create({
+    // Create a wrapper for parallax content
+    const parallaxWrapper = parallaxRef.current;
+    
+    // One-way parallax using transforms instead of background-position
+    const trigger = ScrollTrigger.create({
       trigger: sectionRef.current,
       start: 'top bottom',
       end: 'bottom top',
       scrub: 0.5, // Smoother scrub
       onUpdate: (self) => {
-        // Only apply parallax when scrolling down
+        // Only apply parallax when scrolling down and prefer transform over background-position
         if (self.direction === 1) {
-          gsap.to(sectionRef.current, {
-            backgroundPosition: `50% ${self.progress * 20}%`,
+          gsap.to(parallaxWrapper, {
+            y: `${self.progress * 20}%`, // Move down as we scroll - uses transform instead of background-position
             ease: 'none',
             overwrite: 'auto',
             duration: 0.1
@@ -122,44 +139,46 @@ const About: React.FC = () => {
         }
       }
     });
-  }, []);
+    
+    return () => {
+      // Clean up ScrollTrigger
+      trigger.kill();
+    };
+  }, [prefersReducedMotion]);
 
-  // Text scribble reveal animation for paragraph
+  // Text reveal animation for paragraph - OPTIMIZED FOR MOBILE
   useEffect(() => {
-    if (!paragraphRef.current) return;
+    if (!paragraphRef.current || prefersReducedMotion) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
-    // Split text into characters for animation
-    const splitText = new SplitType(paragraphRef.current, { types: 'chars, words' });
-    const chars = splitText.chars;
+    // Split text into words (not characters) for better performance
+    const splitText = new SplitType(paragraphRef.current, { types: 'words' });
+    const words = splitText.words;
     
-    if (!chars) return;
+    if (!words) return;
     
     // Set initial state - faded text
-    gsap.set(chars, { 
+    gsap.set(words, { 
       color: theme === 'dark' ? 'rgba(203, 213, 225, 0.3)' : 'rgba(72, 75, 106, 0.3)',
       opacity: 0.3,
-      scale: 0.95,
       y: 15,
       rotationX: -10,
       transformOrigin: '0% 50%',
     });
     
-    // Create the scribble reveal animation
-    ScrollTrigger.create({
+    // Create the reveal animation
+    const trigger = ScrollTrigger.create({
       trigger: paragraphRef.current,
       start: 'top bottom-=150',
-      end: 'bottom center',
       onEnter: () => {
-        gsap.to(chars, {
+        gsap.to(words, {
           color: theme === 'dark' ? 'rgba(203, 213, 225, 1)' : 'rgba(72, 75, 106, 0.85)', 
           opacity: 1,
-          scale: 1,
           y: 0,
           rotationX: 0,
-          stagger: 0.01,
-          duration: 0.8,
+          stagger: 0.02, // Faster stagger for words vs chars
+          duration: 0.6, // Shorter duration
           ease: 'power2.out'
         });
       },
@@ -171,8 +190,9 @@ const About: React.FC = () => {
       if (splitText && typeof splitText.revert === 'function') {
         splitText.revert();
       }
+      trigger.kill();
     };
-  }, [theme]);
+  }, [theme, prefersReducedMotion]);
 
   const skillsConfig = [
     {
@@ -204,6 +224,9 @@ const About: React.FC = () => {
       className="section bg-dark-900 noise-bg relative"
       data-theme={theme}
     >
+      {/* Parallax background wrapper - New element for transform-based parallax */}
+      <ParallaxBackground ref={parallaxRef} data-theme={theme} />
+      
       <StickyContainer>
         {/* Left side - Sticky content */}
         <StickyTitleColumn ref={stickyTitleRef}>
@@ -251,6 +274,8 @@ const About: React.FC = () => {
                     title={tech.name}
                     data-theme={theme}
                     loading="lazy"
+                    width="60"
+                    height="60"
                   />
                   <TechName data-theme={theme}>{tech.name}</TechName>
                 </TechLogoWrapper>
@@ -267,6 +292,7 @@ const AboutSection = styled.section`
   position: relative;
   min-height: 100vh;
   padding: 4rem 0;
+  overflow: hidden;
   
   @media (min-width: 768px) {
     padding: 6rem 0;
@@ -277,12 +303,42 @@ const AboutSection = styled.section`
   }
 `;
 
+// New element for transform-based parallax
+const ParallaxBackground = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  will-change: transform; // Hint for browser optimization
+  z-index: 0;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 70% 20%, rgba(249, 115, 22, 0.1), transparent 70%);
+    opacity: 0.7;
+  }
+  
+  &[data-theme="light"]::before {
+    background: radial-gradient(circle at 70% 20%, rgba(147, 148, 165, 0.1), transparent 70%);
+  }
+`;
+
 const StickyContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
+  position: relative;
+  z-index: 2;
   
   @media (min-width: 640px) {
     padding: 0 1.5rem;
@@ -372,7 +428,7 @@ const StickyCTA = styled.a`
   padding: 0.75rem 1.25rem;
   border-radius: 0.375rem;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
   letter-spacing: 0.02em;
   font-size: 0.875rem;
   
@@ -440,7 +496,7 @@ const SkillsList = styled.div`
 
 const StyledSkillItem = styled.div`
   padding: 1.5rem 0;
-  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: opacity 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
   display: flex;
   align-items: flex-start;
   gap: 1.5rem;
@@ -509,7 +565,7 @@ const SkillDescription = styled.p`
   }
 `;
 
-// Technology logos styling
+// Technology logos styling - optimized for performance
 const TechLogoContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -528,7 +584,8 @@ const TechLogoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease;
+  will-change: transform; // Hint browser for optimization
   
   &:hover {
     transform: translateY(-8px);
@@ -549,9 +606,10 @@ const TechLogoWrapper = styled.div`
 const TechLogo = styled.img`
   width: 40px;
   height: 40px;
-  transition: all 0.3s ease;
+  transition: filter 0.3s ease, opacity 0.3s ease;
   filter: grayscale(30%);
   opacity: 0.8;
+  will-change: filter, opacity; // Performance hint
   
   @media (min-width: 640px) {
     width: 50px;
@@ -586,7 +644,7 @@ const TechName = styled.div`
   font-size: 0.75rem;
   opacity: 0;
   transform: translateY(-10px);
-  transition: all 0.3s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
   visibility: hidden;
   white-space: nowrap;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
