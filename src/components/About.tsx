@@ -365,6 +365,13 @@ const StickyTitleWrapper = styled.div`
     position: sticky;
     top: 120px;
     padding-bottom: 2rem;
+    height: fit-content;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    &::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Edge */
+    }
   }
 `;
 
