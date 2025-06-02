@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Brain, Layout, Zap, PackagePlus } from 'lucide-react';
 import styled from 'styled-components';
 import { skills, technologies } from '../config/siteConfig';
+import { useTheme } from '../context/ThemeContext';
 
 interface SkillItemProps {
   icon: React.ReactNode;
@@ -14,6 +15,7 @@ interface SkillItemProps {
 
 const SkillItem: React.FC<SkillItemProps> = ({ icon, title, description, index }) => {
   const itemRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     if (!itemRef.current) return;
@@ -21,16 +23,18 @@ const SkillItem: React.FC<SkillItemProps> = ({ icon, title, description, index }
     gsap.registerPlugin(ScrollTrigger);
 
     // Create a one-way animation that doesn't reverse when scrolling backward
-    ScrollTrigger.create({
+    const trigger = ScrollTrigger.create({
       trigger: itemRef.current,
       start: 'top bottom-=100',
       onEnter: () => {
         gsap.to(itemRef.current, { 
           opacity: 1, 
-          y: 0, 
-          duration: 0.8, 
-          ease: 'power2.out' 
+          x: 0, 
+          duration: 0.7, 
+          ease: 'power3.out',
+          clearProps: "transform" // Better performance after animation
         });
+        setIsVisible(true);
       },
       once: true // This ensures the animation only runs once
     });
@@ -38,13 +42,21 @@ const SkillItem: React.FC<SkillItemProps> = ({ icon, title, description, index }
     // Set initial state
     gsap.set(itemRef.current, { 
       opacity: 0, 
-      y: 30 
+      x: -30
     });
     
+    return () => {
+      trigger.kill();
+    };
   }, []);
 
   return (
-    <StyledSkillItem ref={itemRef} className={`skill-item-${index}`}>
+    <StyledSkillItem 
+      ref={itemRef} 
+      className={`skill-item-${index}`} 
+      $isVisible={isVisible}
+      data-index={index}
+    >
       <SkillIconContainer>
         {icon}
       </SkillIconContainer>
@@ -57,13 +69,33 @@ const SkillItem: React.FC<SkillItemProps> = ({ icon, title, description, index }
 };
 
 const About: React.FC = () => {
+  const { theme } = useTheme();
   const sectionRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const stickyTitleRef = useRef<HTMLDivElement>(null);
   const techGridRef = useRef<HTMLDivElement>(null);
   const paragraphRef = useRef<HTMLParagraphElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const [scrollPosition, setScrollPosition] = useState(0);
 
-  // Animate tech logos on scroll
+  // Track scroll position for parallax effects
+  useEffect(() => {
+    const handleScroll = () => {
+      if (sectionRef.current) {
+        const rect = sectionRef.current.getBoundingClientRect();
+        // Normalize scroll position between 0 and 1
+        if (rect.top <= 0 && rect.bottom >= 0) {
+          const progress = Math.abs(rect.top) / (rect.height - window.innerHeight);
+          setScrollPosition(Math.min(1, Math.max(0, progress)));
+        }
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Animate tech logos on scroll with improved performance
   useEffect(() => {
     if (!techGridRef.current) return;
 
@@ -74,102 +106,121 @@ const About: React.FC = () => {
     // Set initial state for all tech logos
     gsap.set(techLogos, { 
       scale: 0.8, 
-      opacity: 0 
+      opacity: 0,
+      y: 20
     });
 
     // Create a one-way animation that doesn't reverse when scrolling backward
-    ScrollTrigger.create({
+    const trigger = ScrollTrigger.create({
       trigger: techGridRef.current,
       start: 'top bottom-=50',
       onEnter: () => {
         gsap.to(techLogos, {
           scale: 1,
           opacity: 1,
-          stagger: 0.05,
-          duration: 0.6,
-          ease: 'power2.out'
+          y: 0,
+          stagger: 0.03,
+          duration: 0.7,
+          ease: "back.out(1.2)",
+          overwrite: true,
+          clearProps: "transform" // Better for performance after animation
         });
       },
       once: true // This ensures the animation only runs once
     });
     
     return () => {
-      // Clean up ScrollTrigger instance
-      ScrollTrigger.getAll().forEach(trigger => {
-        if (trigger.vars.trigger === techGridRef.current) {
-          trigger.kill();
-        }
-      });
+      trigger.kill();
     };
   }, []);
 
-  // Create parallax effect for the section - OPTIMIZED
+  // Enhanced parallax effect for the section
   useEffect(() => {
-    if (!sectionRef.current) return;
+    if (!sectionRef.current || !headingRef.current || !paragraphRef.current) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
-    // Use transform for better performance instead of backgroundPosition
-    const parallaxElement = document.createElement('div');
-    parallaxElement.style.position = 'absolute';
-    parallaxElement.style.top = '0';
-    parallaxElement.style.left = '0';
-    parallaxElement.style.width = '100%';
-    parallaxElement.style.height = '100%';
-    parallaxElement.style.backgroundImage = 'var(--bg-gradient, linear-gradient(135deg, rgba(15, 23, 42, 0), rgba(15, 23, 42, 0.1)))';
-    parallaxElement.style.backgroundSize = 'cover';
-    parallaxElement.style.zIndex = '-1';
+    // Heading animation on scroll
+    gsap.fromTo(
+      headingRef.current,
+      { y: 0 },
+      {
+        y: () => window.innerWidth > 768 ? scrollPosition * -50 : 0,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 0.2,
+        }
+      }
+    );
+
+    // Smoother paragraph fade-in
+    gsap.fromTo(
+      paragraphRef.current,
+      { opacity: 0, y: 30 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: paragraphRef.current,
+          start: "top bottom-=120",
+          toggleActions: "play none none none",
+          once: true
+        }
+      }
+    );
+
+    // Create a cleaner parallax background effect
+    const sectionBg = document.createElement('div');
+    sectionBg.className = 'about-parallax-bg';
+    sectionBg.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 120%;
+      background: ${theme === 'dark' 
+        ? 'linear-gradient(135deg, rgba(15, 23, 42, 0), rgba(15, 23, 42, 0.15))'
+        : 'linear-gradient(135deg, rgba(244, 248, 211, 0), rgba(244, 248, 211, 0.2))'
+      };
+      z-index: -1;
+      will-change: transform;
+    `;
     
-    if (sectionRef.current) {
-      sectionRef.current.appendChild(parallaxElement);
+    if (sectionRef.current && !sectionRef.current.querySelector('.about-parallax-bg')) {
+      sectionRef.current.appendChild(sectionBg);
     }
 
-    // One-way parallax using transform for better performance
-    ScrollTrigger.create({
+    // Parallax the background
+    const parallaxTrigger = ScrollTrigger.create({
       trigger: sectionRef.current,
-      start: 'top bottom',
-      end: 'bottom top',
-      scrub: 0.5, // Smoother scrub
+      start: "top bottom",
+      end: "bottom top",
+      scrub: 0.3,
       onUpdate: (self) => {
-        // Only apply parallax when scrolling down
-        if (self.direction === 1) {
-          gsap.to(parallaxElement, {
-            y: `${self.progress * 20}%`,
-            ease: 'none',
-            overwrite: 'auto',
-            duration: 0.1
+        if (sectionBg) {
+          gsap.to(sectionBg, {
+            y: `${self.progress * -20}%`,
+            duration: 0.1,
+            ease: "none",
+            overwrite: "auto"
           });
         }
       }
     });
     
     return () => {
-      // Clean up ScrollTrigger and remove the parallax element
-      ScrollTrigger.getAll().forEach(trigger => {
-        if (trigger.vars.trigger === sectionRef.current) {
-          trigger.kill();
-        }
-      });
+      parallaxTrigger.kill();
       
-      if (sectionRef.current && parallaxElement.parentNode === sectionRef.current) {
-        sectionRef.current.removeChild(parallaxElement);
+      if (sectionRef.current && sectionBg.parentNode === sectionRef.current) {
+        sectionRef.current.removeChild(sectionBg);
       }
     };
-  }, []);
-
-  // No text animation for paragraph - display normally
-  useEffect(() => {
-    if (!paragraphRef.current) return;
-    
-    // Ensure paragraph is fully visible with no animation
-    gsap.set(paragraphRef.current, { 
-      opacity: 1,
-      color: 'rgba(203, 213, 225, 1)',
-      scale: 1,
-      y: 0,
-      rotationX: 0
-    });
-  }, []);
+  }, [scrollPosition, theme]);
 
   const skillsConfig = [
     {
@@ -199,12 +250,13 @@ const About: React.FC = () => {
       id="about"
       ref={sectionRef}
       className="section bg-dark-900 noise-bg relative"
+      data-theme={theme}
     >
       <StickyContainer>
         {/* Left side - Sticky content */}
         <StickyTitleColumn ref={stickyTitleRef}>
           <StickyTitleWrapper>
-            <HeadingTitle className="text-heading">
+            <HeadingTitle ref={headingRef} className="text-heading">
               About Me<span className="dot">.</span>
             </HeadingTitle>
             <Paragraph ref={paragraphRef} className="text-body">
@@ -233,7 +285,7 @@ const About: React.FC = () => {
                 </React.Fragment>
               ))}
             </SkillsList>
-            <SectionDivider />
+            <SectionDivider className="section-divider" data-theme={theme} />
           </ContentSection>
           
           <ContentSection>
@@ -247,7 +299,7 @@ const About: React.FC = () => {
                     title={tech.name}
                     loading="lazy"
                   />
-                  <TechName>{tech.name}</TechName>
+                  <TechName data-theme={theme}>{tech.name}</TechName>
                 </TechLogoWrapper>
               ))}
             </TechLogoContainer>
@@ -262,6 +314,11 @@ const AboutSection = styled.section`
   position: relative;
   min-height: 100vh;
   padding: 4rem 0;
+  transition: background-color 0.3s ease;
+  
+  &[data-theme="light"] {
+    background-color: #f4f8d3;
+  }
   
   @media (min-width: 768px) {
     padding: 6rem 0;
@@ -316,6 +373,7 @@ const HeadingTitle = styled.h2`
   font-weight: 300;
   margin-bottom: 1.5rem;
   letter-spacing: -0.02em;
+  will-change: transform;
   
   @media (min-width: 640px) {
     font-size: 2.5rem;
@@ -328,6 +386,10 @@ const HeadingTitle = styled.h2`
   .dot {
     color: var(--accent-500, #f97316);
   }
+  
+  [data-theme="light"] & .dot {
+    color: var(--light-lavender, #8E7DBE);
+  }
 `;
 
 const Paragraph = styled.p`
@@ -337,9 +399,14 @@ const Paragraph = styled.p`
   margin-bottom: 1.5rem;
   hyphens: none;
   word-break: normal;
+  will-change: opacity, transform;
   
   @media (min-width: 640px) {
     font-size: 1.125rem;
+  }
+  
+  [data-theme="light"] & {
+    color: #4a5568;
   }
 `;
 
@@ -353,6 +420,7 @@ const StickyCTA = styled.a`
   transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
   letter-spacing: 0.02em;
   font-size: 0.875rem;
+  text-decoration: none;
   
   @media (min-width: 640px) {
     padding: 0.75rem 1.5rem;
@@ -364,10 +432,20 @@ const StickyCTA = styled.a`
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
   }
+  
+  [data-theme="light"] & {
+    background-color: var(--light-lavender, #8E7DBE);
+    
+    &:hover {
+      background-color: #7d6eb0;
+      box-shadow: 0 4px 12px rgba(142, 125, 190, 0.25);
+    }
+  }
 `;
 
 const ContentSection = styled.div`
   margin-bottom: 4rem;
+  position: relative;
 `;
 
 const SectionSubtitle = styled.h3`
@@ -380,12 +458,21 @@ const SectionSubtitle = styled.h3`
   @media (min-width: 640px) {
     font-size: 1.5rem;
   }
+  
+  [data-theme="light"] & {
+    color: #2d3748;
+  }
 `;
 
 const SectionDivider = styled.div`
   height: 1px;
   background: linear-gradient(90deg, rgba(249, 115, 22, 0.3), transparent);
   margin: 2rem 0;
+  transition: background 0.3s ease;
+  
+  &[data-theme="light"] {
+    background: linear-gradient(90deg, rgba(142, 125, 190, 0.3), transparent);
+  }
 `;
 
 // New vertical list for skills instead of grid
@@ -395,14 +482,20 @@ const SkillsList = styled.div`
   gap: 0;
   max-width: 100%;
   margin: 0 auto;
+  overflow: hidden;
 `;
 
-const StyledSkillItem = styled.div`
+interface StyledSkillItemProps {
+  $isVisible: boolean;
+}
+
+const StyledSkillItem = styled.div<StyledSkillItemProps>`
   padding: 1.5rem 0;
-  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
   display: flex;
   align-items: flex-start;
   gap: 1.5rem;
+  will-change: transform, opacity;
   
   @media (max-width: 640px) {
     flex-direction: column;
@@ -414,6 +507,10 @@ const SkillDivider = styled.div`
   height: 1px;
   background-color: rgba(51, 65, 85, 0.2);
   width: 100%;
+  
+  [data-theme="light"] & {
+    background-color: rgba(142, 125, 190, 0.15);
+  }
 `;
 
 const SkillIconContainer = styled.div`
@@ -426,16 +523,49 @@ const SkillIconContainer = styled.div`
   background-color: rgba(30, 41, 59, 0.5);
   color: var(--accent-500, #f97316);
   flex-shrink: 0;
+  transition: all 0.3s ease;
+  
+  [data-theme="light"] & {
+    background-color: rgba(142, 125, 190, 0.1);
+    color: var(--light-lavender, #8E7DBE);
+  }
+  
+  ${StyledSkillItem}:hover & {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(249, 115, 22, 0.2);
+    
+    [data-theme="light"] & {
+      box-shadow: 0 0 15px rgba(142, 125, 190, 0.2);
+    }
+  }
 `;
 
 const SkillContent = styled.div`
   flex: 1;
+  transition: transform 0.3s ease;
+  
+  ${StyledSkillItem}:hover & {
+    transform: translateX(5px);
+  }
 `;
 
 const SkillTitle = styled.h4`
   font-size: 1.125rem;
   font-weight: 500;
   margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+  
+  ${StyledSkillItem}:hover & {
+    color: var(--accent-500, #f97316);
+    
+    [data-theme="light"] & {
+      color: var(--light-lavender, #8E7DBE);
+    }
+  }
+  
+  [data-theme="light"] & {
+    color: #2d3748;
+  }
 `;
 
 const SkillDescription = styled.p`
@@ -447,6 +577,10 @@ const SkillDescription = styled.p`
   
   @media (min-width: 640px) {
     font-size: 0.9375rem;
+  }
+  
+  [data-theme="light"] & {
+    color: #4a5568;
   }
 `;
 
@@ -469,10 +603,11 @@ const TechLogoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: transform 0.3s ease;
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  will-change: transform;
   
   &:hover {
-    transform: translateY(-8px);
+    transform: translateY(-12px) scale(1.05);
     
     img {
       filter: grayscale(0%);
@@ -509,6 +644,10 @@ const TechLogo = styled.img`
     height: 35px;
     margin: 0.25rem;
   }
+  
+  [data-theme="light"] & {
+    filter: grayscale(0%);
+  }
 `;
 
 const TechName = styled.div`
@@ -529,6 +668,10 @@ const TechName = styled.div`
   pointer-events: none;
   font-weight: 500;
   z-index: 5;
+  
+  &[data-theme="light"] {
+    background-color: var(--light-lavender, #8E7DBE);
+  }
 `;
 
 export default About;
