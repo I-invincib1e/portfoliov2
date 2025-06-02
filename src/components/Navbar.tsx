@@ -433,7 +433,7 @@ const MobileMenuButton = styled.button`
   background: transparent;
   border: none;
   cursor: pointer;
-  color: var(--dark-50, #f8fafc);
+  color: #f8fafc; // Direct color
   
   @media (min-width: 768px) {
     display: none;
