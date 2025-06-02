@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import SplitType from 'split-type';
 import { Brain, Layout, Zap, PackagePlus } from 'lucide-react';
 import styled from 'styled-components';
 import { skills, technologies } from '../config/siteConfig';
@@ -158,61 +157,18 @@ const About: React.FC = () => {
     };
   }, []);
 
-  // Text reveal animation for paragraph - OPTIMIZED
+  // No text animation for paragraph - display normally
   useEffect(() => {
     if (!paragraphRef.current) return;
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Split text into words instead of chars for better performance
-    const splitText = new SplitType(paragraphRef.current, { types: 'words' });
-    const words = splitText.words;
     
-    if (!words) return;
-    
-    // Set initial state - faded text
-    gsap.set(words, { 
-      color: 'rgba(203, 213, 225, 0.3)',
-      opacity: 0.3,
-      scale: 0.95,
-      y: 15,
-      rotationX: -10,
-      transformOrigin: '0% 50%',
+    // Ensure paragraph is fully visible with no animation
+    gsap.set(paragraphRef.current, { 
+      opacity: 1,
+      color: 'rgba(203, 213, 225, 1)',
+      scale: 1,
+      y: 0,
+      rotationX: 0
     });
-    
-    // Create the reveal animation with words instead of characters
-    ScrollTrigger.create({
-      trigger: paragraphRef.current,
-      start: 'top bottom-=150',
-      end: 'bottom center',
-      onEnter: () => {
-        gsap.to(words, {
-          color: 'rgba(203, 213, 225, 1)', 
-          opacity: 1,
-          scale: 1,
-          y: 0,
-          rotationX: 0,
-          stagger: 0.02, // Slightly increased stagger as we have fewer elements
-          duration: 0.8,
-          ease: 'power2.out'
-        });
-      },
-      once: true // Run only once to avoid "ghost animations"
-    });
-    
-    // Clean up SplitType when component unmounts
-    return () => {
-      if (splitText && typeof splitText.revert === 'function') {
-        splitText.revert();
-      }
-      
-      // Clean up ScrollTrigger instance
-      ScrollTrigger.getAll().forEach(trigger => {
-        if (trigger.vars.trigger === paragraphRef.current) {
-          trigger.kill();
-        }
-      });
-    };
   }, []);
 
   const skillsConfig = [
