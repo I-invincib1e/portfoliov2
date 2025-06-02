@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { useTheme } from '../context/ThemeContext';
-import { gsap } from 'gsap';
 import Footer from '../components/Footer';
 import { Award, Calendar, ExternalLink, Badge, ArrowUpRight } from 'lucide-react';
 import { certificates } from '../config/siteConfig';
@@ -12,86 +11,10 @@ const CertificationsPage: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const pageRef = useRef<HTMLDivElement>(null);
 
-  // Page entrance animation from left
   useEffect(() => {
-    if (!pageRef.current) return;
-
-    // Set initial position (off-screen to the left)
-    gsap.set(pageRef.current, { 
-      x: '-100%',
-      opacity: 0
-    });
-
-    // Slide in from the left
-    gsap.to(pageRef.current, {
-      x: '0%',
-      opacity: 1,
-      duration: 0.8,
-      ease: 'power2.out',
-      clearProps: 'transform' // Clean up transform after animation completes
-    });
-
     // Scroll to top when page loads
     window.scrollTo(0, 0);
-
-    // Cleanup function to handle page exit
-    return () => {
-      // Kill any ongoing tweens for this element
-      gsap.killTweensOf(pageRef.current);
-    };
   }, []);
-
-  useEffect(() => {
-    // Add page reveal animation
-    gsap.fromTo(
-      '.certs-page',
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }
-    );
-
-    // Animate certificate spotlight
-    gsap.fromTo(
-      '.cert-spotlight',
-      { opacity: 0, scale: 0.95 },
-      { 
-        opacity: 1, 
-        scale: 1,
-        duration: 0.8, 
-        ease: 'power2.out',
-        delay: 0.3
-      }
-    );
-
-    // Animate certificate items
-    gsap.fromTo(
-      '.cert-item',
-      { opacity: 0, x: -30 },
-      { 
-        opacity: 1, 
-        x: 0,
-        stagger: 0.1,
-        duration: 0.6, 
-        ease: 'power2.out',
-        delay: 0.5
-      }
-    );
-  }, []);
-
-  // Animation when changing certificates
-  useEffect(() => {
-    if (containerRef.current) {
-      gsap.fromTo(
-        '.cert-spotlight-content',
-        { opacity: 0, y: 20 },
-        { 
-          opacity: 1, 
-          y: 0,
-          duration: 0.5, 
-          ease: 'power2.out'
-        }
-      );
-    }
-  }, [activeCert]);
 
   return (
     <CertsPageWrapper ref={pageRef} className="certs-page" data-theme={theme}>
@@ -149,7 +72,7 @@ const CertificationsPage: React.FC = () => {
               <CertSpotlightMain>
                 <CertImageWrapper data-theme={theme}>
                   <CertImage 
-                    src={`/certificates/${certificates[activeCert].title}.jpg`} 
+                    src={certificates[activeCert].image}
                     alt={certificates[activeCert].title} 
                     loading="lazy" 
                   />
@@ -197,7 +120,6 @@ const CertsPageWrapper = styled.main`
   min-height: 100vh;
   padding-top: 80px;
   position: relative;
-  overflow-x: hidden; /* Prevents horizontal scrollbar during animation */
   
   @media (max-width: 640px) {
     padding-top: 60px;
@@ -371,7 +293,7 @@ const CertItemIcon = styled.div<CertItemProps>`
   flex-shrink: 0;
   
   &[data-theme="light"] {
-    background-color: ${props => props.active ? 'var(--light-accent, #9394A5)' : 'rgba(147, 148, 165, 0.3)'};
+    background-color: ${props => props.active ? 'var(--light-lavender, #8E7DBE)' : 'rgba(147, 148, 165, 0.3)'};
   }
 `;
 
@@ -390,7 +312,7 @@ const CertItemTitle = styled.h4<CertItemProps>`
   transition: all 0.3s ease;
   
   [data-theme="light"] & {
-    color: ${props => props.active ? 'var(--light-accent, #9394A5)' : 'var(--light-text, #484B6A)'};
+    color: ${props => props.active ? 'var(--light-lavender, #8E7DBE)' : 'var(--light-text, #484B6A)'};
   }
 `;
 
@@ -416,7 +338,7 @@ const CertItemActiveIndicator = styled.div`
   border-radius: 0 4px 4px 0;
   
   &[data-theme="light"] {
-    background-color: var(--light-accent, #9394A5);
+    background-color: var(--light-lavender, #8E7DBE);
   }
 `;
 
@@ -457,7 +379,7 @@ const CertSpotlightOrg = styled.div`
   color: var(--accent-500, #f97316);
   
   &[data-theme="light"] {
-    color: var(--light-accent, #9394A5);
+    color: var(--light-lavender, #8E7DBE);
   }
   
   @media (max-width: 640px) {
@@ -594,7 +516,7 @@ const CertVerifyButton = styled.a`
   }
   
   &[data-theme="light"] {
-    background-color: var(--light-accent, #9394A5);
+    background-color: var(--light-lavender, #8E7DBE);
     box-shadow: 0 4px 10px rgba(147, 148, 165, 0.25);
     
     &:hover {

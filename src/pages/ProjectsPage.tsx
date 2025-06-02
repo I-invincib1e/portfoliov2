@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useTheme } from '../context/ThemeContext';
-import { gsap } from 'gsap';
 import Footer from '../components/Footer';
 import { ExternalLink, Github, Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -36,27 +35,6 @@ const ProjectsPage: React.FC = () => {
   }, [filter, searchQuery]);
 
   useEffect(() => {
-    // Add page reveal animation
-    gsap.fromTo(
-      '.projects-page',
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }
-    );
-
-    // Animate project cards
-    gsap.fromTo(
-      '.project-card',
-      { opacity: 0, y: 50 },
-      { 
-        opacity: 1, 
-        y: 0, 
-        duration: 0.6, 
-        stagger: 0.1,
-        ease: 'power2.out',
-        delay: 0.3
-      }
-    );
-
     // Scroll to top when page loads
     window.scrollTo(0, 0);
   }, []);
