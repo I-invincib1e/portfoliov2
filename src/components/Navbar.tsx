@@ -334,7 +334,7 @@ const Header = styled.header`
 const Logo = styled(Link)`
   font-size: 1.2rem;
   font-weight: 500;
-  color: var(--dark-50, #f8fafc);
+  color: #f8fafc; // Direct color
   text-decoration: none;
   letter-spacing: -0.02em;
   position: relative;
@@ -350,11 +350,11 @@ const Logo = styled(Link)`
   }
   
   .dot {
-    color: var(--accent-500, #f97316);
+    color: #f97316; // Direct color
   }
   
   [data-theme="light"] & .dot {
-    color: var(--light-lavender, #8E7DBE);
+    color: #8E7DBE; // Direct color
   }
   
   &[data-theme="light"] {
@@ -386,7 +386,7 @@ const NavItem = styled.a`
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--dark-50, #f8fafc);
+  color: #f8fafc; // Direct color instead of var(--dark-50, #f8fafc)
   text-decoration: none;
   transition: color 0.3s ease;
   padding: 0.5rem 0;
@@ -400,12 +400,12 @@ const NavItem = styled.a`
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color: var(--accent-500, #f97316);
+    background-color: #f97316; // Direct color instead of var(--accent-500, #f97316)
     transition: width 0.3s ease;
   }
   
   &:hover, &.active {
-    color: var(--accent-500, #f97316);
+    color: #f97316; // Direct color
   }
   
   &:hover:after, &.active:after {
@@ -416,11 +416,11 @@ const NavItem = styled.a`
     color: #2d3748;
     
     &:after {
-      background-color: var(--light-lavender, #8E7DBE);
+      background-color: #8E7DBE; // Direct color instead of var(--light-lavender, #8E7DBE)
     }
     
     &:hover, &.active {
-      color: var(--light-lavender, #8E7DBE);
+      color: #8E7DBE; // Direct color
     }
   }
   
@@ -478,7 +478,7 @@ const MobileNavItem = styled.a`
   font-size: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--dark-50, #f8fafc);
+  color: #f8fafc; // Direct color
   text-decoration: none;
   transition: color 0.3s ease;
   padding: 0.75rem 0;
@@ -486,14 +486,14 @@ const MobileNavItem = styled.a`
   text-align: center;
   
   &:hover, &.active {
-    color: var(--accent-500, #f97316);
+    color: #f97316; // Direct color
   }
   
   &[data-theme="light"] {
     color: #2d3748;
     
     &:hover, &.active {
-      color: var(--light-lavender, #8E7DBE);
+      color: #8E7DBE; // Direct color
     }
   }
 `;
