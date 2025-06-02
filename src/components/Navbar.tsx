@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { Menu, X } from 'lucide-react';
 import styled from 'styled-components';
-import ThemeSwitch from './ThemeSwitch';
-import { useTheme } from '../context/ThemeContext';
 import { Link, useLocation } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -197,9 +196,6 @@ const Navbar: React.FC = () => {
               Contact
             </NavItem>
           </NavLinks>
-          <ThemeSwitchWrapper className="nav-item">
-            <ThemeSwitch />
-          </ThemeSwitchWrapper>
         </DesktopNav>
 
         {/* Mobile Menu Button */}
@@ -292,10 +288,6 @@ const Navbar: React.FC = () => {
           >
             Contact
           </MobileNavItem>
-          
-          <div className="py-2">
-            <ThemeSwitch />
-          </div>
         </div>
       </MobileMenu>
     </Header>
@@ -435,10 +427,6 @@ const NavItem = styled.a`
   @media (min-width: 768px) and (max-width: 1024px) {
     font-size: 0.8rem;
   }
-`;
-
-const ThemeSwitchWrapper = styled.div`
-  margin-left: 1rem;
 `;
 
 const MobileMenuButton = styled.button`
