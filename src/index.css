@@ -21,6 +21,7 @@
   --dark-950: #020617;
   --accent-500: #f97316;
   --accent-600: #ea580c;
+  --light-lavender: #8E7DBE;
 }
 
 html {
@@ -47,6 +48,11 @@ body {
   padding-top: 1rem; /* Add padding for the scroll indicator */
   overflow-x: hidden;
   text-rendering: optimizeSpeed; /* Optimize for speed */
+}
+
+[data-theme="light"] {
+  --text-color: #2d3748;
+  --bg-color: #f4f8d3;
 }
 
 .noise-bg {
@@ -97,9 +103,17 @@ html {
   color: var(--dark-300, #cbd5e1);
 }
 
+[data-theme="light"] .text-body {
+  color: #4a5568;
+}
+
 .text-accent {
   font-family: var(--font-accent);
   color: var(--accent-color);
+}
+
+[data-theme="light"] .text-accent {
+  color: var(--light-lavender);
 }
 
 /* Animated underline for links */
@@ -118,6 +132,10 @@ html {
   transition: width 0.3s ease;
 }
 
+[data-theme="light"] .animated-underline::after {
+  background-color: var(--light-lavender, #8E7DBE);
+}
+
 .animated-underline:hover::after {
   width: 100%;
 }
@@ -133,6 +151,10 @@ html {
 
 .section-title .dot {
   color: var(--accent-500, #f97316);
+}
+
+[data-theme="light"] .section-title .dot {
+  color: var(--light-lavender, #8E7DBE);
 }
 
 .gradient-text {
@@ -162,6 +184,11 @@ p, li, span, div {
   backdrop-filter: blur(10px);
   border-radius: 8px;
   border: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+[data-theme="light"] .glass-bg {
+  background: rgba(244, 248, 211, 0.5);
+  border: 1px solid rgba(142, 125, 190, 0.3);
 }
 
 /* Touch-friendly improvements */

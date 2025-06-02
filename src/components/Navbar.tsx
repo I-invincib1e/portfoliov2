@@ -117,6 +117,7 @@ const Navbar: React.FC = () => {
           as={Link}
           to="/" 
           className="nav-item text-heading"
+          data-theme={theme}
         >
           Rushi<span className="dot">.</span>
         </Logo>
@@ -129,6 +130,7 @@ const Navbar: React.FC = () => {
               to="/"
               className={`nav-item text-accent ${activeSection === 'home' ? 'active' : ''}`}
               onClick={() => handleNavigation('home')}
+              data-theme={theme}
             >
               Home
             </NavItem>
@@ -139,6 +141,7 @@ const Navbar: React.FC = () => {
                   as="a"
                   href="#about"
                   className={`nav-item text-accent ${activeSection === 'about' ? 'active' : ''}`}
+                  data-theme={theme}
                 >
                   About
                 </NavItem>
@@ -146,6 +149,7 @@ const Navbar: React.FC = () => {
                   as="a"
                   href="#work"
                   className={`nav-item text-accent ${activeSection === 'work' ? 'active' : ''}`}
+                  data-theme={theme}
                 >
                   Work
                 </NavItem>
@@ -157,6 +161,7 @@ const Navbar: React.FC = () => {
                   to="/#about"
                   className={`nav-item text-accent ${activeSection === 'about' ? 'active' : ''}`}
                   onClick={() => handleNavigation('about')}
+                  data-theme={theme}
                 >
                   About
                 </NavItem>
@@ -165,6 +170,7 @@ const Navbar: React.FC = () => {
                   to="/#work"
                   className={`nav-item text-accent ${activeSection === 'work' ? 'active' : ''}`}
                   onClick={() => handleNavigation('work')}
+                  data-theme={theme}
                 >
                   Work
                 </NavItem>
@@ -176,6 +182,7 @@ const Navbar: React.FC = () => {
               to="/projects"
               className={`nav-item text-accent ${activeSection === 'projects' ? 'active' : ''}`}
               onClick={() => handleNavigation('projects')}
+              data-theme={theme}
             >
               Projects
             </NavItem>
@@ -185,6 +192,7 @@ const Navbar: React.FC = () => {
               to="/contact"
               className={`nav-item text-accent ${activeSection === 'contact' ? 'active' : ''}`}
               onClick={() => handleNavigation('contact')}
+              data-theme={theme}
             >
               Contact
             </NavItem>
@@ -199,6 +207,7 @@ const Navbar: React.FC = () => {
           className="md:hidden text-dark-50 focus:outline-none nav-item"
           onClick={toggleMobileMenu}
           aria-label="Toggle mobile menu"
+          data-theme={theme}
         >
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </MobileMenuButton>
@@ -215,6 +224,7 @@ const Navbar: React.FC = () => {
             to="/"
             className={`${activeSection === 'home' ? 'active' : ''}`}
             onClick={() => handleNavigation('home')}
+            data-theme={theme}
           >
             Home
           </MobileNavItem>
@@ -226,6 +236,7 @@ const Navbar: React.FC = () => {
                 href="#about"
                 className={`${activeSection === 'about' ? 'active' : ''}`}
                 onClick={() => setMobileMenuOpen(false)}
+                data-theme={theme}
               >
                 About
               </MobileNavItem>
@@ -234,6 +245,7 @@ const Navbar: React.FC = () => {
                 href="#work"
                 className={`${activeSection === 'work' ? 'active' : ''}`}
                 onClick={() => setMobileMenuOpen(false)}
+                data-theme={theme}
               >
                 Work
               </MobileNavItem>
@@ -245,6 +257,7 @@ const Navbar: React.FC = () => {
                 to="/#about"
                 className={`${activeSection === 'about' ? 'active' : ''}`}
                 onClick={() => handleNavigation('about')}
+                data-theme={theme}
               >
                 About
               </MobileNavItem>
@@ -253,6 +266,7 @@ const Navbar: React.FC = () => {
                 to="/#work"
                 className={`${activeSection === 'work' ? 'active' : ''}`}
                 onClick={() => handleNavigation('work')}
+                data-theme={theme}
               >
                 Work
               </MobileNavItem>
@@ -264,6 +278,7 @@ const Navbar: React.FC = () => {
             to="/projects"
             className={`${activeSection === 'projects' ? 'active' : ''}`}
             onClick={() => handleNavigation('projects')}
+            data-theme={theme}
           >
             Projects
           </MobileNavItem>
@@ -273,6 +288,7 @@ const Navbar: React.FC = () => {
             to="/contact"
             className={`${activeSection === 'contact' ? 'active' : ''}`}
             onClick={() => handleNavigation('contact')}
+            data-theme={theme}
           >
             Contact
           </MobileNavItem>
@@ -326,7 +342,7 @@ const Header = styled.header`
 const Logo = styled(Link)`
   font-size: 1.2rem;
   font-weight: 500;
-  color: var(--text-color, #f8fafc);
+  color: var(--dark-50, #f8fafc);
   text-decoration: none;
   letter-spacing: -0.02em;
   position: relative;
@@ -347,6 +363,10 @@ const Logo = styled(Link)`
   
   [data-theme="light"] & .dot {
     color: var(--light-lavender, #8E7DBE);
+  }
+  
+  &[data-theme="light"] {
+    color: #2d3748;
   }
 `;
 
@@ -374,7 +394,7 @@ const NavItem = styled.a`
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--text-color, #f8fafc);
+  color: var(--dark-50, #f8fafc);
   text-decoration: none;
   transition: color 0.3s ease;
   padding: 0.5rem 0;
@@ -400,7 +420,7 @@ const NavItem = styled.a`
     width: 100%;
   }
   
-  [data-theme="light"] & {
+  &[data-theme="light"] {
     color: #2d3748;
     
     &:after {
@@ -425,12 +445,13 @@ const MobileMenuButton = styled.button`
   background: transparent;
   border: none;
   cursor: pointer;
+  color: var(--dark-50, #f8fafc);
   
   @media (min-width: 768px) {
     display: none;
   }
   
-  [data-theme="light"] & {
+  &[data-theme="light"] {
     color: #2d3748;
   }
 `;
@@ -469,7 +490,7 @@ const MobileNavItem = styled.a`
   font-size: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--text-color, #f8fafc);
+  color: var(--dark-50, #f8fafc);
   text-decoration: none;
   transition: color 0.3s ease;
   padding: 0.75rem 0;
@@ -480,7 +501,7 @@ const MobileNavItem = styled.a`
     color: var(--accent-500, #f97316);
   }
   
-  [data-theme="light"] & {
+  &[data-theme="light"] {
     color: #2d3748;
     
     &:hover, &.active {
