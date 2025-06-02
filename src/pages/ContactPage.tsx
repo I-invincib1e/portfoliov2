@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useTheme } from '../context/ThemeContext';
 import Footer from '../components/Footer';
-import { Mail, github, Linkedin, Twitter, Download, MapPin, Phone, Send, Sparkles, ArrowRight, ExternalLink } from 'lucide-react';
+import { Mail, Github as github, Linkedin, Twitter, Download, MapPin, Phone, Send, Sparkles, ArrowRight, ExternalLink } from 'lucide-react';
 import { siteConfig } from '../config/siteConfig';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -381,10 +381,10 @@ const ContactPage: React.FC = () => {
                 data-theme={theme}
               >
                 <SocialIcon data-theme={theme}>
-                  <github size={22} />
+                  <GitHub size={22} />
                 </SocialIcon>
                 <SocialInfo>
-                  <SocialName data-theme={theme}>github</SocialName>
+                  <SocialName data-theme={theme}>GitHub</SocialName>
                   <SocialHandle data-theme={theme}>@Neorex80</SocialHandle>
                 </SocialInfo>
                 <ExternalLink size={18} />
