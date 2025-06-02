@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Instagram, Linkedin, Github, Send, ChevronDown } from 'lucide-react';
@@ -20,207 +20,184 @@ const Hero: React.FC = () => {
   const gridOverlayRef = useRef<HTMLDivElement>(null);
   const arrowRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
+  
+  // Store animations for cleanup
+  const animationsRef = useRef<gsap.core.Tween[]>([]);
 
-  useEffect(() => {
+  const createAnimations = useCallback(() => {
     gsap.registerPlugin(ScrollTrigger);
     
-    // Create master timeline for scroll-based animations
-    let master = gsap.timeline({
+    // Set initial states first
+    const initialElements = [
+      { elements: [titleRef.current, subtitleRef.current], props: { x: "-100%", opacity: 0 }},
+      { elements: [socialsRef.current, ctaRef.current], props: { x: "100%", opacity: 0 }},
+      { elements: [bgBlobOneRef.current, bgBlobTwoRef.current], props: { scale: 0.8, opacity: 0 }},
+      { elements: [gridOverlayRef.current], props: { opacity: 0 }},
+    ];
+    
+    initialElements.forEach(({ elements, props }) => {
+      elements.forEach(el => el && gsap.set(el, props));
+    });
+    
+    // Create master timeline with improved performance settings
+    const master = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
-        start: "top top", // start when top of section hits top of viewport
-        end: "bottom top", // end when bottom of section hits top of viewport
-        pin: true, // pins the section during the animation
-        anticipatePin: 1, // prevents flash on pin
-        pinReparent: true, // moves pinned element to documentElement while pinned
-        pinSpacing: true, // creates space after element equal to its height
-        refreshPriority: 1, // high priority for refresh
+        start: "top top",
+        end: "bottom top",
+        pin: true,
+        anticipatePin: 1,
+        pinReparent: true,
+        pinSpacing: true,
+        refreshPriority: 1,
+        fastScrollEnd: true, // Better performance on fast scrolling
+        preventOverlaps: true, // Prevent animation conflicts
       }
     });
     
-    // Animate main title from left
-    master.fromTo(titleRef.current, 
-      { 
-        x: "-100%", 
-        opacity: 0 
-      }, 
-      { 
-        x: "0%", 
-        opacity: 1, 
-        duration: 0.4, 
-        ease: "power2.out" 
-      }, 0
-    );
+    // Orchestrated entrance animations with better easing
+    const entranceTimeline = gsap.timeline();
     
-    // Animate subtitle after title
-    master.fromTo(subtitleRef.current, 
-      { 
-        x: "-50%", 
-        opacity: 0 
-      }, 
-      { 
-        x: "0%", 
-        opacity: 1, 
-        duration: 0.4, 
-        ease: "power2.out" 
-      }, 0.2
-    );
-    
-    // Animate social icons from right
-    master.fromTo(socialsRef.current, 
-      { 
-        x: "100%", 
-        opacity: 0 
-      }, 
-      { 
-        x: "0%", 
-        opacity: 1, 
-        duration: 0.4, 
-        ease: "power2.out" 
-      }, 0.3
-    );
-    
-    // Animate CTA buttons from right
-    master.fromTo(ctaRef.current, 
-      { 
-        x: "100%", 
-        opacity: 0 
-      }, 
-      { 
-        x: "0%", 
-        opacity: 1, 
-        duration: 0.4, 
-        ease: "power2.out" 
-      }, 0.4
-    );
-    
-    // Animate background elements in parallel
-    master.fromTo([bgBlobOneRef.current, bgBlobTwoRef.current], 
-      { 
-        scale: 0.8, 
-        opacity: 0 
-      }, 
-      { 
-        scale: 1, 
-        opacity: theme === 'dark' ? 0.4 : 0.2, 
-        duration: 0.6, 
-        stagger: 0.2,
-        ease: "power1.out" 
-      }, 0.1
-    );
-    
-    // Animate grid overlay
-    master.fromTo(gridOverlayRef.current, 
-      { 
-        opacity: 0 
-      }, 
-      { 
-        opacity: 1, 
-        duration: 0.6 
-      }, 0.2
-    );
-
-    // Animate the arrow with a fade out as scroll progresses
-    master.fromTo(arrowRef.current,
-      {
+    entranceTimeline
+      .to(titleRef.current, {
+        x: "0%",
         opacity: 1,
-        y: 0
-      },
-      {
+        duration: 0.6,
+        ease: "back.out(1.2)",
+      })
+      .to(subtitleRef.current, {
+        x: "0%",
+        opacity: 1,
+        duration: 0.5,
+        ease: "power2.out",
+      }, "-=0.3")
+      .to(socialsRef.current, {
+        x: "0%",
+        opacity: 1,
+        duration: 0.5,
+        ease: "power2.out",
+      }, "-=0.2")
+      .to(ctaRef.current, {
+        x: "0%",
+        opacity: 1,
+        duration: 0.5,
+        ease: "power2.out",
+      }, "-=0.1");
+    
+    // Background elements with stagger
+    const bgTimeline = gsap.timeline();
+    bgTimeline.to([bgBlobOneRef.current, bgBlobTwoRef.current], {
+      scale: 1,
+      opacity: theme === 'dark' ? 0.4 : 0.2,
+      duration: 0.8,
+      stagger: 0.2,
+      ease: "power2.out",
+    });
+    
+    // Grid and arrow animations
+    const overlayTimeline = gsap.timeline();
+    overlayTimeline
+      .to(gridOverlayRef.current, {
+        opacity: 1,
+        duration: 0.6,
+        ease: "power1.out",
+      })
+      .to(arrowRef.current, {
         opacity: 0,
         y: 20,
-        duration: 0.3,
-        ease: "power1.in"
-      }, 0.1
-    );
+        duration: 0.4,
+        ease: "power2.in",
+      }, 0.3);
     
-    // Animate the dot with a pulse effect
+    // Add all timelines to master
+    master
+      .add(entranceTimeline, 0)
+      .add(bgTimeline, 0.1)
+      .add(overlayTimeline, 0.2);
+    
+    // Improved dot animation with better performance
     const dot = document.querySelector('.hero-dot');
     const dotAnimation = dot ? gsap.to(dot, {
       textShadow: theme === 'dark' 
-        ? '0 0 12px rgba(249,115,22,0.6)' 
-        : '0 0 12px rgba(147,148,165,0.6)',
-      scale: 1.05,
-      duration: 0.8,
+        ? '0 0 15px rgba(249,115,22,0.8)' 
+        : '0 0 15px rgba(147,148,165,0.8)',
+      scale: 1.08,
+      duration: 1.2,
       repeat: -1,
       yoyo: true,
       ease: "sine.inOut",
-      delay: 0.5
+      delay: 1,
     }) : null;
     
-    // Setup background blob animations
-    const blobOneAnimation = gsap.to(bgBlobOneRef.current, {
-      x: "5%",
-      y: "3%",
-      scale: 1.05,
-      rotation: 5,
-      duration: 15,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut"
-    });
-    
-    const blobTwoAnimation = gsap.to(bgBlobTwoRef.current, {
-      x: "-5%",
-      y: "-3%",
-      scale: 0.95,
-      rotation: -5,
-      duration: 18,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-      delay: 0.5
-    });
-    
-    // Set initial states before animation starts
-    gsap.set([titleRef.current, subtitleRef.current], { x: "-100%", opacity: 0 });
-    gsap.set([socialsRef.current, ctaRef.current], { x: "100%", opacity: 0 });
-    gsap.set([bgBlobOneRef.current, bgBlobTwoRef.current], { scale: 0.8, opacity: 0 });
-    gsap.set(gridOverlayRef.current, { opacity: 0 });
-    
-    // Collect all animations that need to be killed on cleanup
-    const animations = [
-      master,
-      dotAnimation,
-      blobOneAnimation,
-      blobTwoAnimation
+    // Optimized background blob animations
+    const blobAnimations = [
+      gsap.to(bgBlobOneRef.current, {
+        motionPath: {
+          path: "M0,0 Q20,10 40,0 T80,0",
+          autoRotate: false,
+        },
+        scale: 1.08,
+        duration: 20,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      }),
+      gsap.to(bgBlobTwoRef.current, {
+        motionPath: {
+          path: "M0,0 Q-15,-8 -30,0 T-60,0",
+          autoRotate: false,
+        },
+        scale: 0.92,
+        duration: 25,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        delay: 0.5,
+      })
     ];
     
-    const allScrollTriggers = ScrollTrigger.getAll();
+    // Store all animations for cleanup
+    animationsRef.current = [
+      master,
+      dotAnimation,
+      ...blobAnimations,
+    ].filter(Boolean) as gsap.core.Tween[];
     
-    // Clean up function to run when component unmounts or animation completes
-    return () => {
-      // Kill all animations
-      animations.forEach(anim => anim && anim.kill());
-      
-      // Kill all ScrollTriggers
-      allScrollTriggers.forEach(trigger => trigger.kill());
-      
-      // Kill any remaining GSAP tweens associated with the refs
-      [
-        titleRef.current, 
-        subtitleRef.current, 
-        socialsRef.current, 
-        ctaRef.current,
-        bgBlobOneRef.current, 
-        bgBlobTwoRef.current, 
-        gridOverlayRef.current,
-        arrowRef.current
-      ].forEach(element => {
-        if (element) {
-          gsap.killTweensOf(element);
-        }
-      });
-      
-      // Kill any dot animation
-      if (dot) {
-        gsap.killTweensOf(dot);
-      }
-      
-      // Clear all contexts and memory
-      gsap.globalTimeline.clear();
-    };
+    return animationsRef.current;
   }, [theme]);
+
+  const cleanup = useCallback(() => {
+    // Kill all stored animations
+    animationsRef.current.forEach(anim => anim?.kill());
+    animationsRef.current = [];
+    
+    // Kill all ScrollTriggers
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    
+    // Kill tweens for all refs
+    const allRefs = [
+      titleRef, subtitleRef, socialsRef, ctaRef,
+      bgBlobOneRef, bgBlobTwoRef, gridOverlayRef, arrowRef
+    ];
+    
+    allRefs.forEach(ref => {
+      if (ref.current) {
+        gsap.killTweensOf(ref.current);
+      }
+    });
+    
+    // Kill dot animation
+    const dot = document.querySelector('.hero-dot');
+    if (dot) gsap.killTweensOf(dot);
+    
+    // Refresh ScrollTrigger for next section
+    ScrollTrigger.refresh();
+  }, []);
+
+  useEffect(() => {
+    createAnimations();
+    return cleanup;
+  }, [createAnimations, cleanup]);
 
   return (
     <HeroSection
@@ -230,11 +207,10 @@ const Hero: React.FC = () => {
     >
       <HeroContent ref={heroContentRef}>
         <HeroContentGrid>
-          {/* Left Column - Name and Description */}
           <HeroTextColumn ref={textColumnRef}>
             <HeroTitle ref={titleRef} className="text-heading">
               Hello.<br />I'm <NameWrapper>
-                Rush<SpecialLetter>i</SpecialLetter>kesh
+                Rush<SpecialLetter className="hero-dot">i</SpecialLetter>kesh
               </NameWrapper>
             </HeroTitle>
             <HeroSubtitle ref={subtitleRef} className="text-body">
@@ -242,54 +218,33 @@ const Hero: React.FC = () => {
             </HeroSubtitle>
           </HeroTextColumn>
 
-          {/* Right Column - Social and CTA */}
           <HeroActionsColumn>
-            {/* Social Icons */}
             <SocialIconsContainer ref={socialsRef}>
               <SocialIconsList>
-                <SocialIconItem>
-                  <SocialIconLink href={siteConfig.social.instagram} target="_blank" rel="noopener noreferrer" className="social-icon instagram">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <Instagram size={24} />
-                  </SocialIconLink>
-                </SocialIconItem>
-                
-                <SocialIconItem>
-                  <SocialIconLink href={siteConfig.social.linkedin} target="_blank" rel="noopener noreferrer" className="social-icon linkedin">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <Linkedin size={24} />
-                  </SocialIconLink>
-                </SocialIconItem>
-                
-                <SocialIconItem>
-                  <SocialIconLink href={siteConfig.social.telegram} target="_blank" rel="noopener noreferrer" className="social-icon telegram">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <Send size={24} />
-                  </SocialIconLink>
-                </SocialIconItem>
-                
-                <SocialIconItem>
-                  <SocialIconLink href={siteConfig.social.github} target="_blank" rel="noopener noreferrer" className="social-icon github">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <Github size={24} />
-                  </SocialIconLink>
-                </SocialIconItem>
+                {[
+                  { href: siteConfig.social.instagram, icon: Instagram, class: 'instagram' },
+                  { href: siteConfig.social.linkedin, icon: Linkedin, class: 'linkedin' },
+                  { href: siteConfig.social.telegram, icon: Send, class: 'telegram' },
+                  { href: siteConfig.social.github, icon: Github, class: 'github' }
+                ].map(({ href, icon: Icon, class: className }, index) => (
+                  <SocialIconItem key={index}>
+                    <SocialIconLink 
+                      href={href} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className={`social-icon ${className}`}
+                    >
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                      <Icon size={24} />
+                    </SocialIconLink>
+                  </SocialIconItem>
+                ))}
               </SocialIconsList>
             </SocialIconsContainer>
             
-            {/* Hire Me Button */}
             <HireMeContainer ref={ctaRef}>
               <HireMeButton as={Link} to="/contact" data-theme={theme} className="text-accent">
                 Hire Me
@@ -324,6 +279,7 @@ const Hero: React.FC = () => {
   );
 };
 
+// Styled components remain the same but with some optimizations
 const HeroSection = styled.section`
   position: relative;
   min-height: 100vh;
@@ -333,6 +289,7 @@ const HeroSection = styled.section`
   justify-content: center;
   padding-top: 80px;
   overflow: hidden;
+  will-change: transform; /* Optimize for animations */
 `;
 
 const HeroContent = styled.div`
@@ -383,6 +340,7 @@ const HeroTitle = styled.h1`
   line-height: 1.1;
   margin-bottom: 1.5rem;
   letter-spacing: -0.02em;
+  will-change: transform, opacity;
   
   @media (min-width: 375px) {
     font-size: 3rem;
@@ -415,6 +373,7 @@ const SpecialLetter = styled.span`
   font-weight: 500;
   display: inline-block;
   position: relative;
+  will-change: transform, text-shadow;
   
   [data-theme="light"] & {
     color: var(--light-accent, #9394A5);
@@ -428,6 +387,7 @@ const HeroSubtitle = styled.p`
   white-space: normal;
   word-wrap: break-word;
   hyphens: none;
+  will-change: transform, opacity;
   
   @media (min-width: 640px) {
     font-size: 1.125rem;
@@ -445,6 +405,7 @@ const HeroSubtitle = styled.p`
 
 const SocialIconsContainer = styled.div`
   margin-top: 1rem;
+  will-change: transform, opacity;
 `;
 
 const SocialIconsList = styled.ul`
@@ -478,7 +439,7 @@ const SocialIconLink = styled.a`
   justify-content: center;
   text-decoration: none;
   color: var(--dark-300, #cbd5e1);
-  transition: 0.5s;
+  transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   
   @media (max-width: 375px) {
     width: 40px;
@@ -492,7 +453,7 @@ const SocialIconLink = styled.a`
   
   span {
     position: absolute;
-    transition: transform 0.5s;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   span:nth-child(1),
@@ -511,7 +472,7 @@ const SocialIconLink = styled.a`
   &:hover span:nth-child(1) {
     transform: scaleX(0);
     transform-origin: left;
-    transition: transform 0.5s;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   span:nth-child(3) {
@@ -523,7 +484,7 @@ const SocialIconLink = styled.a`
   &:hover span:nth-child(3) {
     transform: scaleX(0);
     transform-origin: right;
-    transition: transform 0.5s;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   span:nth-child(2),
@@ -543,7 +504,7 @@ const SocialIconLink = styled.a`
   &:hover span:nth-child(2) {
     transform: scale(1);
     transform-origin: top;
-    transition: transform 0.5s;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   span:nth-child(4) {
@@ -556,11 +517,12 @@ const SocialIconLink = styled.a`
   &:hover span:nth-child(4) {
     transform: scale(1);
     transform-origin: bottom;
-    transition: transform 0.5s;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   &:hover {
     color: white;
+    transform: translateY(-2px);
   }
   
   &.instagram:hover {
@@ -610,6 +572,7 @@ const HireMeContainer = styled.div`
   gap: 1rem;
   width: 100%;
   max-width: 317px;
+  will-change: transform, opacity;
   
   @media (max-width: 767px) {
     max-width: 265px;
@@ -642,6 +605,7 @@ const HireMeButton = styled(Link)`
   display: inline-block;
   flex: 1;
   text-align: center;
+  will-change: transform, box-shadow;
   
   @media (min-width: 640px) {
     font-size: 1.24rem;
@@ -731,6 +695,7 @@ const HeroBackground = styled.div`
     filter: blur(80px);
     opacity: 0.4;
     z-index: -1;
+    will-change: transform;
   }
   
   .blob-1 {
@@ -739,7 +704,6 @@ const HeroBackground = styled.div`
     width: 30vw;
     height: 30vw;
     background: linear-gradient(135deg, #f97316 0%, #155e75 100%);
-    animation: float 15s ease-in-out infinite alternate;
   }
   
   .blob-2 {
@@ -748,7 +712,6 @@ const HeroBackground = styled.div`
     width: 25vw;
     height: 25vw;
     background: linear-gradient(135deg, #14b8a6 0%, #3b82f6 100%);
-    animation: float 20s ease-in-out infinite alternate-reverse;
   }
   
   .grid-overlay {
@@ -774,18 +737,6 @@ const HeroBackground = styled.div`
                         linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
     }
   }
-  
-  @keyframes float {
-    0% {
-      transform: translate(0, 0) scale(1);
-    }
-    50% {
-      transform: translate(5%, 5%) scale(1.05);
-    }
-    100% {
-      transform: translate(-5%, -3%) scale(0.95);
-    }
-  }
 `;
 
 const ScrollIndicatorWrapper = styled.div`
@@ -798,6 +749,9 @@ const ScrollIndicatorWrapper = styled.div`
 
 const ScrollArrow = styled.div`
   color: ${props => props['data-theme'] === 'dark' ? 'rgba(248, 250, 252, 0.7)' : 'rgba(72, 75, 106, 0.7)'};
+  will-change: transform, opacity;
+  cursor: pointer;
+  transition: color 0.3s ease;
   
   &:hover {
     color: ${props => props['data-theme'] === 'dark' ? 'rgba(248, 250, 252, 1)' : 'rgba(72, 75, 106, 1)'};

@@ -40,6 +40,8 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
   
   // Memoize expensive calculations
   const cachedRect = useRef<DOMRect | null>(null);
+  // Store a reference to the circle element
+  const circleElementRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!letterIRef.current || !overlayRef.current || !revealContainerRef.current || !nameTextRef.current || !particleCanvasRef.current || !contentContainerRef.current || !finalParticlesRef.current || !bracketLeftRef.current || !bracketRightRef.current) return;
@@ -105,6 +107,9 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
     circleElement.style.transform = 'translate(-50%, -50%)';
     
     revealContainerRef.current.appendChild(circleElement);
+    
+    // Store a reference to the circle element for cleanup
+    circleElementRef.current = circleElement;
     
     // Setup particle canvas
     const canvas = particleCanvasRef.current;
@@ -438,8 +443,10 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
             onComplete: () => {
               if (revealContainerRef.current) {
                 revealContainerRef.current.style.pointerEvents = 'none';
-                if (circleElement.parentNode) {
-                  circleElement.parentNode.removeChild(circleElement);
+                
+                // Safely remove the circle element if it's still in the DOM
+                if (circleElementRef.current && revealContainerRef.current.contains(circleElementRef.current)) {
+                  revealContainerRef.current.removeChild(circleElementRef.current);
                 }
                 
                 // Stop final particles animation after a shorter time
@@ -638,10 +645,10 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
       requestAnimationFrameIds.current = [];
       
       // Recalculate the circle position if needed
-      if (!isRevealed && letterIRef.current) {
+      if (!isRevealed && letterIRef.current && circleElementRef.current) {
         const newRect = letterIRef.current.getBoundingClientRect();
-        circleElement.style.top = `${newRect.top + newRect.height/2}px`;
-        circleElement.style.left = `${newRect.left + newRect.width/2}px`;
+        circleElementRef.current.style.top = `${newRect.top + newRect.height/2}px`;
+        circleElementRef.current.style.left = `${newRect.left + newRect.width/2}px`;
       }
       
       // Check if mobile state changed
@@ -703,9 +710,9 @@ const MaskReveal: React.FC<MaskRevealProps> = ({ children }) => {
       // Stop particle system
       stopParticleSystem();
       
-      // Remove expanding element if it exists
-      if (circleElement.parentNode) {
-        circleElement.parentNode.removeChild(circleElement);
+      // Safely remove the circle element if it exists and is still a child of revealContainerRef
+      if (circleElementRef.current && revealContainerRef.current && revealContainerRef.current.contains(circleElementRef.current)) {
+        revealContainerRef.current.removeChild(circleElementRef.current);
       }
     };
   }, [isRevealed]);
