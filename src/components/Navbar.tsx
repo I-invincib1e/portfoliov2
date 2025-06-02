@@ -9,24 +9,48 @@ const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [animationComplete, setAnimationComplete] = useState(false);
   const { theme } = useTheme();
   const location = useLocation();
   const isHomePage = location.pathname === '/';
 
   useEffect(() => {
-    // Animate navbar items on initial load
-    gsap.fromTo(
-      '.nav-item',
-      { y: -20, opacity: 0 },
-      { 
-        y: 0, 
-        opacity: 1, 
-        stagger: 0.1, 
-        duration: 0.8, 
-        ease: 'power2.out',
-        delay: 0.5
+    // Ensure items are visible first, then animate
+    const navItems = document.querySelectorAll('.nav-item');
+    
+    // Set initial visibility to ensure items are never completely hidden
+    navItems.forEach(item => {
+      (item as HTMLElement).style.opacity = '1';
+    });
+
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      try {
+        // Reset for animation
+        gsap.set('.nav-item', { y: -20, opacity: 0 });
+        
+        // Animate navbar items on initial load
+        gsap.to('.nav-item', {
+          y: 0, 
+          opacity: 1, 
+          stagger: 0.1, 
+          duration: 0.8, 
+          ease: 'power2.out',
+          delay: 0.2,
+          onComplete: () => {
+            setAnimationComplete(true);
+          }
+        });
+      } catch (error) {
+        console.warn('GSAP animation failed, ensuring visibility:', error);
+        // Fallback: ensure all items are visible
+        navItems.forEach(item => {
+          (item as HTMLElement).style.opacity = '1';
+          (item as HTMLElement).style.transform = 'translateY(0)';
+        });
+        setAnimationComplete(true);
       }
-    );
+    }, 100);
 
     // Handle navbar background change on scroll
     const handleScroll = () => {
@@ -59,6 +83,7 @@ const Navbar: React.FC = () => {
     window.addEventListener('scroll', handleSectionObserver);
     
     return () => {
+      clearTimeout(timer);
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('scroll', handleSectionObserver);
     };
@@ -68,8 +93,6 @@ const Navbar: React.FC = () => {
   useEffect(() => {
     if (location.pathname === '/contact') {
       setActiveSection('contact');
-    } else if (location.pathname === '/projects') {
-      setActiveSection('projects');
     } else if (location.pathname === '/') {
       // When back on homepage, try to detect the current section
       const sections = document.querySelectorAll('section[id]');
@@ -100,7 +123,7 @@ const Navbar: React.FC = () => {
   const handleNavigation = (sectionId: string) => {
     setMobileMenuOpen(false);
     
-    if (location.pathname !== '/' && sectionId !== 'contact' && sectionId !== 'projects') {
+    if (location.pathname !== '/' && sectionId !== 'contact') {
       // Will navigate to homepage first, then scroll
       setActiveSection(sectionId);
     }
@@ -108,7 +131,7 @@ const Navbar: React.FC = () => {
 
   return (
     <Header 
-      className={isScrolled ? 'scrolled' : ''}
+      className={`${isScrolled ? 'scrolled' : ''} ${animationComplete ? 'animation-complete' : ''}`}
       data-theme={theme}
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
@@ -175,16 +198,6 @@ const Navbar: React.FC = () => {
                 </NavItem>
               </>
             )}
-            
-            <NavItem
-              as={Link}
-              to="/projects"
-              className={`nav-item text-accent ${activeSection === 'projects' ? 'active' : ''}`}
-              onClick={() => handleNavigation('projects')}
-              data-theme={theme}
-            >
-              Projects
-            </NavItem>
             
             <NavItem
               as={Link}
@@ -271,16 +284,6 @@ const Navbar: React.FC = () => {
           
           <MobileNavItem
             as={Link}
-            to="/projects"
-            className={`${activeSection === 'projects' ? 'active' : ''}`}
-            onClick={() => handleNavigation('projects')}
-            data-theme={theme}
-          >
-            Projects
-          </MobileNavItem>
-          
-          <MobileNavItem
-            as={Link}
             to="/contact"
             className={`${activeSection === 'contact' ? 'active' : ''}`}
             onClick={() => handleNavigation('contact')}
@@ -309,6 +312,12 @@ const Header = styled.header`
   border-radius: 1rem;
   border: 1px solid rgba(51, 65, 85, 0.2);
   
+  /* Ensure nav items are always visible as fallback */
+  .nav-item {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+  
   &.scrolled {
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   }
@@ -334,12 +343,13 @@ const Header = styled.header`
 const Logo = styled(Link)`
   font-size: 1.2rem;
   font-weight: 500;
-  color: #f8fafc; // Direct color
+  color: #f8fafc !important;
   text-decoration: none;
   letter-spacing: -0.02em;
   position: relative;
   transition: transform 0.3s ease;
   display: inline-block;
+  opacity: 1 !important;
   
   @media (min-width: 640px) {
     font-size: 1.5rem;
@@ -350,15 +360,15 @@ const Logo = styled(Link)`
   }
   
   .dot {
-    color: #f97316; // Direct color
+    color: #f97316 !important;
   }
   
   [data-theme="light"] & .dot {
-    color: #8E7DBE; // Direct color
+    color: #8E7DBE !important;
   }
   
   &[data-theme="light"] {
-    color: #2d3748;
+    color: #2d3748 !important;
   }
 `;
 
@@ -386,12 +396,14 @@ const NavItem = styled.a`
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #f8fafc; // Direct color instead of var(--dark-50, #f8fafc)
+  color: #f8fafc !important;
   text-decoration: none;
   transition: color 0.3s ease;
   padding: 0.5rem 0;
   white-space: nowrap;
   font-weight: 500;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
   
   &:after {
     content: '';
@@ -400,12 +412,12 @@ const NavItem = styled.a`
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color: #f97316; // Direct color instead of var(--accent-500, #f97316)
+    background-color: #f97316;
     transition: width 0.3s ease;
   }
   
   &:hover, &.active {
-    color: #f97316; // Direct color
+    color: #f97316 !important;
   }
   
   &:hover:after, &.active:after {
@@ -413,14 +425,14 @@ const NavItem = styled.a`
   }
   
   &[data-theme="light"] {
-    color: #2d3748;
+    color: #2d3748 !important;
     
     &:after {
-      background-color: #8E7DBE; // Direct color instead of var(--light-lavender, #8E7DBE)
+      background-color: #8E7DBE;
     }
     
     &:hover, &.active {
-      color: #8E7DBE; // Direct color
+      color: #8E7DBE !important;
     }
   }
   
@@ -433,17 +445,18 @@ const MobileMenuButton = styled.button`
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #f8fafc; // Direct color
+  color: #f8fafc !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
   
   @media (min-width: 768px) {
     display: none;
   }
   
   &[data-theme="light"] {
-    color: #2d3748;
+    color: #2d3748 !important;
   }
 `;
-
 
 const MobileMenu = styled.div`
   display: none;
@@ -479,22 +492,23 @@ const MobileNavItem = styled.a`
   font-size: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #f8fafc; // Direct color
+  color: #f8fafc !important;
   text-decoration: none;
   transition: color 0.3s ease;
   padding: 0.75rem 0;
   display: block;
   text-align: center;
+  opacity: 1 !important;
   
   &:hover, &.active {
-    color: #f97316; // Direct color
+    color: #f97316 !important;
   }
   
   &[data-theme="light"] {
-    color: #2d3748;
+    color: #2d3748 !important;
     
     &:hover, &.active {
-      color: #8E7DBE; // Direct color
+      color: #8E7DBE !important;
     }
   }
 `;
