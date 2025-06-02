@@ -174,6 +174,10 @@ const Work: React.FC = () => {
 
   // Get featured projects for the main bento display
   const featuredProjects = allProjects.filter(project => project.featured);
+  
+  // Split featured projects into two rows: 3 in first row, 2 in second row
+  const firstRowProjects = featuredProjects.slice(0, 3);
+  const secondRowProjects = featuredProjects.slice(3, 5);
 
   return (
     <WorkSection
@@ -188,29 +192,56 @@ const Work: React.FC = () => {
           Recent Work / Projects<span className="dot">.</span>
         </WorkHeading>
 
-        {/* Bento Box Projects */}
-        <BentoContainer ref={bentoBoxRef}>
-          {featuredProjects.map((project, index) => (
-            <BentoPanel key={index} className="bento-item" data-theme={theme}>
-              <BentoContent>
-                <ProjectTitle className="text-heading">{project.title}</ProjectTitle>
-                <ProjectDetails>
-                  <ProjectDescription className="text-body">{project.description}</ProjectDescription>
-                  <ButtonGroup>
-                    <ProjectLink href={project.link} target="_blank" rel="noopener noreferrer" className="text-accent" data-theme={theme}>
-                      View Project <ExternalLink size={14} />
-                    </ProjectLink>
-                    {project.github && (
-                      <ProjectGithubLink href={project.github} target="_blank" rel="noopener noreferrer" className="text-accent" data-theme={theme}>
-                        <Github size={14} style={{ marginRight: '6px' }} /> GitHub
-                      </ProjectGithubLink>
-                    )}
-                  </ButtonGroup>
-                </ProjectDetails>
-              </BentoContent>
-            </BentoPanel>
-          ))}
-        </BentoContainer>
+        {/* Projects Layout - Two Rows */}
+        <ProjectsLayout ref={bentoBoxRef}>
+          {/* First Row - 3 Projects */}
+          <BentoRow>
+            {firstRowProjects.map((project, index) => (
+              <BentoPanel key={index} className="bento-item" data-theme={theme}>
+                <BentoContent>
+                  <ProjectTitle className="text-heading">{project.title}</ProjectTitle>
+                  <ProjectDetails>
+                    <ProjectDescription className="text-body">{project.description}</ProjectDescription>
+                    <ButtonGroup>
+                      <ProjectLink href={project.link} target="_blank" rel="noopener noreferrer" className="text-accent" data-theme={theme}>
+                        View Project <ExternalLink size={14} />
+                      </ProjectLink>
+                      {project.github && (
+                        <ProjectGithubLink href={project.github} target="_blank" rel="noopener noreferrer" className="text-accent" data-theme={theme}>
+                          <Github size={14} style={{ marginRight: '6px' }} /> GitHub
+                        </ProjectGithubLink>
+                      )}
+                    </ButtonGroup>
+                  </ProjectDetails>
+                </BentoContent>
+              </BentoPanel>
+            ))}
+          </BentoRow>
+          
+          {/* Second Row - 2 Projects (Centered) */}
+          <BentoRowCentered>
+            {secondRowProjects.map((project, index) => (
+              <BentoPanel key={index + 3} className="bento-item" data-theme={theme}>
+                <BentoContent>
+                  <ProjectTitle className="text-heading">{project.title}</ProjectTitle>
+                  <ProjectDetails>
+                    <ProjectDescription className="text-body">{project.description}</ProjectDescription>
+                    <ButtonGroup>
+                      <ProjectLink href={project.link} target="_blank" rel="noopener noreferrer" className="text-accent" data-theme={theme}>
+                        View Project <ExternalLink size={14} />
+                      </ProjectLink>
+                      {project.github && (
+                        <ProjectGithubLink href={project.github} target="_blank" rel="noopener noreferrer" className="text-accent" data-theme={theme}>
+                          <Github size={14} style={{ marginRight: '6px' }} /> GitHub
+                        </ProjectGithubLink>
+                      )}
+                    </ButtonGroup>
+                  </ProjectDetails>
+                </BentoContent>
+              </BentoPanel>
+            ))}
+          </BentoRowCentered>
+        </ProjectsLayout>
 
         {/* Experience Section */}
         <ExperienceContainer ref={experienceRef}>
@@ -333,17 +364,43 @@ const WorkHeading = styled.h2`
   }
 `;
 
-// New styled components for the bento box layout using card-like styling
-const BentoContainer = styled.div`
+// New styled components for the bento box layout
+const ProjectsLayout = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 1rem;
+  max-width: 1000px;
+  margin: 0 auto;
+`;
+
+const BentoRow = styled.div`
+  display: flex;
   gap: 8px;
-  max-width: 850px;
-  margin: 8px auto 0;
-  padding: 0.4em;
+  width: 100%;
   
-  @media (min-width: 768px) {
-    flex-direction: row;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
+const BentoRowCentered = styled.div`
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  justify-content: center;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+  
+  & > div {
+    width: calc(66.66% - 4px);
+  }
+  
+  @media (max-width: 768px) {
+    & > div {
+      width: 100%;
+    }
   }
 `;
 
