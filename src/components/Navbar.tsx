@@ -288,7 +288,7 @@ const Header = styled.header`
 const Logo = styled(Link)`
   font-size: 1.2rem;
   font-weight: 500;
-  color: var(--text-color, #f8fafc);
+  color: #f8fafc;
   text-decoration: none;
   letter-spacing: -0.02em;
   position: relative;
@@ -304,7 +304,7 @@ const Logo = styled(Link)`
   }
   
   .dot {
-    color: var(--accent-500, #f97316);
+    color: #f97316;
   }
 `;
 
@@ -332,7 +332,7 @@ const NavItem = styled.a`
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #f8fafc; /* Fixed color value instead of CSS variable */
+  color: #f8fafc; /* Explicit color */
   text-decoration: none;
   transition: color 0.3s ease;
   padding: 0.5rem 0;
@@ -346,12 +346,12 @@ const NavItem = styled.a`
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color: var(--accent-500, #f97316);
+    background-color: #f97316;
     transition: width 0.3s ease;
   }
   
   &:hover, &.active {
-    color: var(--accent-500, #f97316);
+    color: #f97316;
   }
   
   &:hover:after, &.active:after {
@@ -367,6 +367,7 @@ const MobileMenuButton = styled.button`
   background: transparent;
   border: none;
   cursor: pointer;
+  color: #f8fafc;
   
   @media (min-width: 768px) {
     display: none;
@@ -403,7 +404,7 @@ const MobileNavItem = styled.a`
   font-size: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #f8fafc; /* Fixed color value instead of CSS variable */
+  color: #f8fafc; /* Explicit color */
   text-decoration: none;
   transition: color 0.3s ease;
   padding: 0.75rem 0;
@@ -411,7 +412,7 @@ const MobileNavItem = styled.a`
   text-align: center;
   
   &:hover, &.active {
-    color: var(--accent-500, #f97316);
+    color: #f97316;
   }
 `;
 
