@@ -5,7 +5,6 @@ import ScrollIndicator from './components/ScrollIndicator';
 import MaskReveal from './components/MaskReveal';
 import { registerGSAP, cleanupGSAP } from './utils/gsap';
 import { ThemeProvider } from './context/ThemeContext';
-import ThemeSwitch from './components/ThemeSwitch';
 
 // Lazy load pages for better performance
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -38,9 +37,6 @@ function App() {
           <div className="min-h-screen bg-dark-950 text-dark-50 noise-bg transition-colors duration-300">
             <ScrollIndicator />
             <Navbar />
-            <div className="fixed top-20 right-6 z-50">
-              <ThemeSwitch />
-            </div>
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={<HomePage />} />
