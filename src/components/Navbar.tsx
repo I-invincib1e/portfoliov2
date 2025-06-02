@@ -332,7 +332,7 @@ const NavItem = styled.a`
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--text-color, #f8fafc);
+  color: #f8fafc; /* Fixed color value instead of CSS variable */
   text-decoration: none;
   transition: color 0.3s ease;
   padding: 0.5rem 0;
@@ -403,7 +403,7 @@ const MobileNavItem = styled.a`
   font-size: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--text-color, #f8fafc);
+  color: #f8fafc; /* Fixed color value instead of CSS variable */
   text-decoration: none;
   transition: color 0.3s ease;
   padding: 0.75rem 0;

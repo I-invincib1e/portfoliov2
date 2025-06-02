@@ -12,6 +12,15 @@
   --font-heading: 'Playfair Display', serif;
   --font-body: 'Inter', sans-serif;
   --font-accent: 'Poppins', sans-serif;
+  
+  /* Fixed color values to ensure visibility */
+  --dark-50: #f8fafc;
+  --dark-200: #e2e8f0;
+  --dark-300: #cbd5e1;
+  --dark-400: #94a3b8;
+  --dark-950: #020617;
+  --accent-500: #f97316;
+  --accent-600: #ea580c;
 }
 
 html {
