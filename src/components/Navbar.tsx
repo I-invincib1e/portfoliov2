@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { Menu, X } from 'lucide-react';
 import styled from 'styled-components';
+import ThemeSwitch from './ThemeSwitch';
+import { useTheme } from '../context/ThemeContext';
 import { Link, useLocation } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const { theme } = useTheme();
   const location = useLocation();
   const isHomePage = location.pathname === '/';
 
@@ -66,6 +69,8 @@ const Navbar: React.FC = () => {
   useEffect(() => {
     if (location.pathname === '/contact') {
       setActiveSection('contact');
+    } else if (location.pathname === '/projects') {
+      setActiveSection('projects');
     } else if (location.pathname === '/') {
       // When back on homepage, try to detect the current section
       const sections = document.querySelectorAll('section[id]');
@@ -96,7 +101,7 @@ const Navbar: React.FC = () => {
   const handleNavigation = (sectionId: string) => {
     setMobileMenuOpen(false);
     
-    if (location.pathname !== '/' && sectionId !== 'contact') {
+    if (location.pathname !== '/' && sectionId !== 'contact' && sectionId !== 'projects') {
       // Will navigate to homepage first, then scroll
       setActiveSection(sectionId);
     }
@@ -105,6 +110,7 @@ const Navbar: React.FC = () => {
   return (
     <Header 
       className={isScrolled ? 'scrolled' : ''}
+      data-theme={theme}
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
         <Logo 
@@ -167,6 +173,15 @@ const Navbar: React.FC = () => {
             
             <NavItem
               as={Link}
+              to="/projects"
+              className={`nav-item text-accent ${activeSection === 'projects' ? 'active' : ''}`}
+              onClick={() => handleNavigation('projects')}
+            >
+              Projects
+            </NavItem>
+            
+            <NavItem
+              as={Link}
               to="/contact"
               className={`nav-item text-accent ${activeSection === 'contact' ? 'active' : ''}`}
               onClick={() => handleNavigation('contact')}
@@ -174,6 +189,9 @@ const Navbar: React.FC = () => {
               Contact
             </NavItem>
           </NavLinks>
+          <ThemeSwitchWrapper className="nav-item">
+            <ThemeSwitch />
+          </ThemeSwitchWrapper>
         </DesktopNav>
 
         {/* Mobile Menu Button */}
@@ -189,6 +207,7 @@ const Navbar: React.FC = () => {
       {/* Mobile Menu */}
       <MobileMenu 
         className={mobileMenuOpen ? 'open' : ''}
+        data-theme={theme}
       >
         <div className="container mx-auto px-4 flex flex-col space-y-4">
           <MobileNavItem
@@ -242,12 +261,25 @@ const Navbar: React.FC = () => {
           
           <MobileNavItem
             as={Link}
+            to="/projects"
+            className={`${activeSection === 'projects' ? 'active' : ''}`}
+            onClick={() => handleNavigation('projects')}
+          >
+            Projects
+          </MobileNavItem>
+          
+          <MobileNavItem
+            as={Link}
             to="/contact"
             className={`${activeSection === 'contact' ? 'active' : ''}`}
             onClick={() => handleNavigation('contact')}
           >
             Contact
           </MobileNavItem>
+          
+          <div className="py-2">
+            <ThemeSwitch />
+          </div>
         </div>
       </MobileMenu>
     </Header>
@@ -273,6 +305,12 @@ const Header = styled.header`
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   }
   
+  &[data-theme="light"] {
+    background-color: rgba(244, 248, 211, 0.85);
+    box-shadow: 0 4px 20px rgba(142, 125, 190, 0.15);
+    border: 1px solid rgba(166, 214, 214, 0.4);
+  }
+  
   @media (min-width: 640px) {
     padding: 1rem 1.5rem;
     width: calc(100% - 2rem);
@@ -288,7 +326,7 @@ const Header = styled.header`
 const Logo = styled(Link)`
   font-size: 1.2rem;
   font-weight: 500;
-  color: #f8fafc;
+  color: var(--text-color, #f8fafc);
   text-decoration: none;
   letter-spacing: -0.02em;
   position: relative;
@@ -304,7 +342,11 @@ const Logo = styled(Link)`
   }
   
   .dot {
-    color: #f97316;
+    color: var(--accent-500, #f97316);
+  }
+  
+  [data-theme="light"] & .dot {
+    color: var(--light-lavender, #8E7DBE);
   }
 `;
 
@@ -332,7 +374,7 @@ const NavItem = styled.a`
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #f8fafc; /* Explicit color */
+  color: var(--text-color, #f8fafc);
   text-decoration: none;
   transition: color 0.3s ease;
   padding: 0.5rem 0;
@@ -346,16 +388,28 @@ const NavItem = styled.a`
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color: #f97316;
+    background-color: var(--accent-500, #f97316);
     transition: width 0.3s ease;
   }
   
   &:hover, &.active {
-    color: #f97316;
+    color: var(--accent-500, #f97316);
   }
   
   &:hover:after, &.active:after {
     width: 100%;
+  }
+  
+  [data-theme="light"] & {
+    color: #2d3748;
+    
+    &:after {
+      background-color: var(--light-lavender, #8E7DBE);
+    }
+    
+    &:hover, &.active {
+      color: var(--light-lavender, #8E7DBE);
+    }
   }
   
   @media (min-width: 768px) and (max-width: 1024px) {
@@ -363,14 +417,21 @@ const NavItem = styled.a`
   }
 `;
 
+const ThemeSwitchWrapper = styled.div`
+  margin-left: 1rem;
+`;
+
 const MobileMenuButton = styled.button`
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #f8fafc;
   
   @media (min-width: 768px) {
     display: none;
+  }
+  
+  [data-theme="light"] & {
+    color: #2d3748;
   }
 `;
 
@@ -395,6 +456,10 @@ const MobileMenu = styled.div`
     padding: 1.5rem 0;
   }
   
+  &[data-theme="light"] {
+    background-color: rgba(244, 248, 211, 0.95);
+  }
+  
   @media (min-width: 768px) {
     display: none;
   }
@@ -404,7 +469,7 @@ const MobileNavItem = styled.a`
   font-size: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #f8fafc; /* Explicit color */
+  color: var(--text-color, #f8fafc);
   text-decoration: none;
   transition: color 0.3s ease;
   padding: 0.75rem 0;
@@ -412,7 +477,15 @@ const MobileNavItem = styled.a`
   text-align: center;
   
   &:hover, &.active {
-    color: #f97316;
+    color: var(--accent-500, #f97316);
+  }
+  
+  [data-theme="light"] & {
+    color: #2d3748;
+    
+    &:hover, &.active {
+      color: var(--light-lavender, #8E7DBE);
+    }
   }
 `;
 
