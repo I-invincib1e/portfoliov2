@@ -51,49 +51,7 @@ export const siteConfig = {
   }
 };
 
-// Projects featured in the work section
-export const projects = [
-  {
-    title: "AI Prompt Generator",
-    description: "Build a prompt generator tool that suggests better prompts for different LLMs (Gemini, GPT, Claude, etc.).",
-    link: "#",
-    github: "https://github.com/username/ai-prompt-generator"
-  },
-  {
-    title: "Mini LLM Chatbot",
-    description: "A chatbot with presets using Groq or TypeGPT API to interact with different models.",
-    link: "#",
-    github: "https://github.com/username/mini-llm-chatbot"
-  },
-  {
-    title: "Modern Portfolio Website",
-    description: "The current responsive portfolio website built with React, TypeScript, and GSAP animations.",
-    link: "#",
-    github: "https://github.com/username/portfolio-website"
-  }
-];
-
-// Detailed projects for the bento box in work section
-export const detailedProjects = [
-  {
-    title: "Data Dashboard with Charts",
-    description: "Interactive dashboard pulling public data (COVID-19 or Stock Data) with visualizations using chart.js and Tailwind CSS.",
-    image: "https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    tags: ["React", "Chart.js", "Tailwind CSS", "Public APIs"],
-    link: "#",
-    github: "https://github.com/username/data-dashboard"
-  },
-  {
-    title: "EDA on Real-World Dataset",
-    description: "Exploratory Data Analysis on a Kaggle dataset showcasing insights through a Jupyter Notebook with markdown explanations.",
-    image: "https://images.pexels.com/photos/590016/pexels-photo-590016.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    tags: ["Python", "Pandas", "Data Analysis", "Jupyter"],
-    link: "#",
-    github: "https://github.com/username/kaggle-eda-project"
-  }
-];
-
-// All projects for the projects page
+// All projects in unified format
 export const allProjects = [
   {
     title: "AI Prompt Generator",

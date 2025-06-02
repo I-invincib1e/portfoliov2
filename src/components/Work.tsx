@@ -3,10 +3,9 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ExternalLink, Github, Briefcase } from 'lucide-react';
 import styled from 'styled-components';
-import Card from './Card';
 import Pattern from './Pattern';
 import { useTheme } from '../context/ThemeContext';
-import { projects, detailedProjects } from '../config/siteConfig';
+import { allProjects } from '../config/siteConfig';
 
 interface ProjectProps {
   title: string;
@@ -173,6 +172,9 @@ const Work: React.FC = () => {
     );
   }, []);
 
+  // Get featured projects for the main bento display
+  const featuredProjects = allProjects.filter(project => project.featured);
+
   return (
     <WorkSection
       id="work"
@@ -185,14 +187,10 @@ const Work: React.FC = () => {
         <WorkHeading ref={headingRef} className="text-heading">
           Recent Work / Projects<span className="dot">.</span>
         </WorkHeading>
-        
-        <StyledCardContainer>
-          <Card projects={projects} />
-        </StyledCardContainer>
 
         {/* Bento Box Projects */}
         <BentoContainer ref={bentoBoxRef}>
-          {detailedProjects.map((project, index) => (
+          {featuredProjects.map((project, index) => (
             <BentoPanel key={index} className="bento-item" data-theme={theme}>
               <BentoContent>
                 <ProjectTitle className="text-heading">{project.title}</ProjectTitle>
@@ -202,9 +200,11 @@ const Work: React.FC = () => {
                     <ProjectLink href={project.link} target="_blank" rel="noopener noreferrer" className="text-accent" data-theme={theme}>
                       View Project <ExternalLink size={14} />
                     </ProjectLink>
-                    <ProjectGithubLink href={project.github} target="_blank" rel="noopener noreferrer" className="text-accent" data-theme={theme}>
-                      <Github size={14} style={{ marginRight: '6px' }} /> GitHub
-                    </ProjectGithubLink>
+                    {project.github && (
+                      <ProjectGithubLink href={project.github} target="_blank" rel="noopener noreferrer" className="text-accent" data-theme={theme}>
+                        <Github size={14} style={{ marginRight: '6px' }} /> GitHub
+                      </ProjectGithubLink>
+                    )}
                   </ButtonGroup>
                 </ProjectDetails>
               </BentoContent>
@@ -330,19 +330,6 @@ const WorkHeading = styled.h2`
     &::after {
       background: linear-gradient(to right, var(--light-lavender, #8E7DBE), transparent);
     }
-  }
-`;
-
-const StyledCardContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 2rem;
-  position: relative;
-  z-index: 1;
-  padding: 0 0.5rem;
-  
-  @media (min-width: 640px) {
-    padding: 0;
   }
 `;
 
