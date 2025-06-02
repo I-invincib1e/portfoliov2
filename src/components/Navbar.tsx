@@ -4,7 +4,6 @@ import { Menu, X } from 'lucide-react';
 import styled from 'styled-components';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
-import ThemeSwitch from './ThemeSwitch';
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -210,9 +209,6 @@ const Navbar: React.FC = () => {
               Contact
             </NavItem>
           </NavLinks>
-          
-          {/* Theme Switch */}
-          <ThemeSwitch />
         </DesktopNav>
 
         {/* Mobile Menu Button */}
@@ -295,11 +291,6 @@ const Navbar: React.FC = () => {
           >
             Contact
           </MobileNavItem>
-          
-          {/* Mobile Theme Switch */}
-          <div className="flex justify-center pt-2">
-            <ThemeSwitch />
-          </div>
         </div>
       </MobileMenu>
     </Header>
