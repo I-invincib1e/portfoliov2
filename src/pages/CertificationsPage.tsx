@@ -3,29 +3,28 @@ import styled from 'styled-components';
 import { useTheme } from '../context/ThemeContext';
 import { gsap } from 'gsap';
 import Footer from '../components/Footer';
-import { Award, Calendar, ExternalLink, Badge, ArrowUpRight } from 'lucide-react';
+import { Award, Calendar, Badge, ArrowUpRight } from 'lucide-react';
 import { certificates } from '../config/siteConfig';
 
 const CertificationsPage: React.FC = () => {
   const { theme } = useTheme();
   const [activeCert, setActiveCert] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-<<<<<<< HEAD
-=======
   const pageRef = useRef<HTMLDivElement>(null);
 
   // Page entrance animation from left
   useEffect(() => {
-    if (!pageRef.current) return;
+    const pageEl = pageRef.current;
+    if (!pageEl) return;
 
     // Set initial position (off-screen to the left)
-    gsap.set(pageRef.current, { 
+    gsap.set(pageEl, { 
       x: '-100%',
       opacity: 0
     });
 
     // Slide in from the left
-    gsap.to(pageRef.current, {
+    gsap.to(pageEl, {
       x: '0%',
       opacity: 1,
       duration: 0.8,
@@ -39,10 +38,9 @@ const CertificationsPage: React.FC = () => {
     // Cleanup function to handle page exit
     return () => {
       // Kill any ongoing tweens for this element
-      gsap.killTweensOf(pageRef.current);
+      gsap.killTweensOf(pageEl);
     };
   }, []);
->>>>>>> my-changes
 
   useEffect(() => {
     // Add page reveal animation
@@ -78,12 +76,6 @@ const CertificationsPage: React.FC = () => {
         delay: 0.5
       }
     );
-<<<<<<< HEAD
-
-    // Scroll to top when page loads
-    window.scrollTo(0, 0);
-=======
->>>>>>> my-changes
   }, []);
 
   // Animation when changing certificates
@@ -103,11 +95,7 @@ const CertificationsPage: React.FC = () => {
   }, [activeCert]);
 
   return (
-<<<<<<< HEAD
-    <CertsPageWrapper className="certs-page" data-theme={theme}>
-=======
     <CertsPageWrapper ref={pageRef} className="certs-page" data-theme={theme}>
->>>>>>> my-changes
       <CertsHero data-theme={theme}>
         <CertsHeroContent>
           <CertsHeroTitle className="text-heading">
@@ -209,11 +197,8 @@ const CertificationsPage: React.FC = () => {
 const CertsPageWrapper = styled.main`
   min-height: 100vh;
   padding-top: 80px;
-<<<<<<< HEAD
-=======
   position: relative;
   overflow-x: hidden; /* Prevents horizontal scrollbar during animation */
->>>>>>> my-changes
   
   @media (max-width: 640px) {
     padding-top: 60px;
@@ -231,11 +216,7 @@ const CertsHero = styled.div`
   background-color: rgba(15, 23, 42, 0.3);
   
   &[data-theme="light"] {
-<<<<<<< HEAD
-    background-color: rgba(247, 207, 216, 0.1);
-=======
     background-color: rgba(228, 229, 241, 0.3);
->>>>>>> my-changes
   }
   
   &::before {
@@ -249,11 +230,7 @@ const CertsHero = styled.div`
   }
   
   &[data-theme="light"]::before {
-<<<<<<< HEAD
-    background: linear-gradient(90deg, transparent, rgba(142, 125, 190, 0.3), transparent);
-=======
     background: linear-gradient(90deg, transparent, rgba(147, 148, 165, 0.3), transparent);
->>>>>>> my-changes
   }
   
   @media (max-width: 640px) {
@@ -281,11 +258,7 @@ const CertsHeroTitle = styled.h1`
   }
   
   [data-theme="light"] & .dot {
-<<<<<<< HEAD
-    color: var(--light-lavender, #8E7DBE);
-=======
     color: var(--light-accent, #9394A5);
->>>>>>> my-changes
   }
 `;
 
@@ -298,13 +271,10 @@ const CertsHeroSubtitle = styled.p`
   @media (max-width: 640px) {
     font-size: 1.125rem;
   }
-<<<<<<< HEAD
-=======
   
   [data-theme="light"] & {
     color: var(--light-text, #484B6A);
   }
->>>>>>> my-changes
 `;
 
 const CertsContainer = styled.div`
@@ -339,11 +309,7 @@ const CertsList = styled.div`
   
   &[data-theme="light"] {
     background-color: rgba(255, 255, 255, 0.7);
-<<<<<<< HEAD
-    box-shadow: 0 4px 20px rgba(142, 125, 190, 0.1);
-=======
     box-shadow: 0 4px 20px rgba(147, 148, 165, 0.1);
->>>>>>> my-changes
   }
   
   @media (max-width: 768px) {
@@ -357,14 +323,11 @@ const CertsListTitle = styled.h3`
   margin-bottom: 1.5rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid rgba(51, 65, 85, 0.3);
-<<<<<<< HEAD
-=======
   
   [data-theme="light"] & {
     color: var(--light-text, #484B6A);
     border-bottom: 1px solid rgba(210, 211, 219, 0.5);
   }
->>>>>>> my-changes
 `;
 
 interface CertItemProps {
@@ -388,17 +351,10 @@ const CertItem = styled.div<CertItemProps>`
   }
   
   &[data-theme="light"] {
-<<<<<<< HEAD
-    background-color: ${props => props.active ? 'rgba(142, 125, 190, 0.15)' : 'transparent'};
-    
-    &:hover {
-      background-color: ${props => props.active ? 'rgba(142, 125, 190, 0.2)' : 'rgba(142, 125, 190, 0.1)'};
-=======
     background-color: ${props => props.active ? 'rgba(147, 148, 165, 0.15)' : 'transparent'};
     
     &:hover {
       background-color: ${props => props.active ? 'rgba(147, 148, 165, 0.2)' : 'rgba(147, 148, 165, 0.1)'};
->>>>>>> my-changes
     }
   }
 `;
@@ -416,11 +372,7 @@ const CertItemIcon = styled.div<CertItemProps>`
   flex-shrink: 0;
   
   &[data-theme="light"] {
-<<<<<<< HEAD
-    background-color: ${props => props.active ? 'var(--light-lavender, #8E7DBE)' : 'rgba(142, 125, 190, 0.3)'};
-=======
     background-color: ${props => props.active ? 'var(--light-accent, #9394A5)' : 'rgba(147, 148, 165, 0.3)'};
->>>>>>> my-changes
   }
 `;
 
@@ -439,11 +391,7 @@ const CertItemTitle = styled.h4<CertItemProps>`
   transition: all 0.3s ease;
   
   [data-theme="light"] & {
-<<<<<<< HEAD
-    color: ${props => props.active ? 'var(--light-lavender, #8E7DBE)' : '#4a5568'};
-=======
     color: ${props => props.active ? 'var(--light-accent, #9394A5)' : 'var(--light-text, #484B6A)'};
->>>>>>> my-changes
   }
 `;
 
@@ -453,13 +401,10 @@ const CertItemOrg = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-<<<<<<< HEAD
-=======
   
   [data-theme="light"] & {
     color: var(--light-text, #484B6A);
   }
->>>>>>> my-changes
 `;
 
 const CertItemActiveIndicator = styled.div`
@@ -472,11 +417,7 @@ const CertItemActiveIndicator = styled.div`
   border-radius: 0 4px 4px 0;
   
   &[data-theme="light"] {
-<<<<<<< HEAD
-    background-color: var(--light-lavender, #8E7DBE);
-=======
     background-color: var(--light-accent, #9394A5);
->>>>>>> my-changes
   }
 `;
 
@@ -487,11 +428,7 @@ const CertSpotlight = styled.div`
   
   &[data-theme="light"] {
     background-color: rgba(255, 255, 255, 0.7);
-<<<<<<< HEAD
-    box-shadow: 0 4px 20px rgba(142, 125, 190, 0.1);
-=======
     box-shadow: 0 4px 20px rgba(147, 148, 165, 0.1);
->>>>>>> my-changes
   }
 `;
 
@@ -509,13 +446,10 @@ const CertSpotlightTitle = styled.h2`
   @media (max-width: 640px) {
     font-size: 1.75rem;
   }
-<<<<<<< HEAD
-=======
   
   [data-theme="light"] & {
     color: var(--light-text, #484B6A);
   }
->>>>>>> my-changes
 `;
 
 const CertSpotlightOrg = styled.div`
@@ -524,11 +458,7 @@ const CertSpotlightOrg = styled.div`
   color: var(--accent-500, #f97316);
   
   &[data-theme="light"] {
-<<<<<<< HEAD
-    color: var(--light-lavender, #8E7DBE);
-=======
     color: var(--light-accent, #9394A5);
->>>>>>> my-changes
   }
   
   @media (max-width: 640px) {
@@ -554,11 +484,7 @@ const CertImageWrapper = styled.div`
   aspect-ratio: 4/3;
   
   &[data-theme="light"] {
-<<<<<<< HEAD
-    box-shadow: 0 10px 30px rgba(142, 125, 190, 0.2);
-=======
     box-shadow: 0 10px 30px rgba(147, 148, 165, 0.2);
->>>>>>> my-changes
   }
   
   @media (max-width: 768px) {
@@ -592,11 +518,7 @@ const CertImageOverlay = styled.div`
   }
   
   &[data-theme="light"] {
-<<<<<<< HEAD
-    background: linear-gradient(to right bottom, rgba(142, 125, 190, 0.4), rgba(142, 125, 190, 0.7));
-=======
     background: linear-gradient(to right bottom, rgba(147, 148, 165, 0.4), rgba(147, 148, 165, 0.7));
->>>>>>> my-changes
   }
 `;
 
@@ -614,11 +536,7 @@ const CertDate = styled.div`
   font-size: 0.938rem;
   
   &[data-theme="light"] {
-<<<<<<< HEAD
-    color: #4a5568;
-=======
     color: var(--light-text, #484B6A);
->>>>>>> my-changes
   }
 `;
 
@@ -632,11 +550,7 @@ const CertID = styled.div`
   }
   
   &[data-theme="light"] {
-<<<<<<< HEAD
-    color: #4a5568;
-=======
     color: var(--light-text, #484B6A);
->>>>>>> my-changes
   }
 `;
 
@@ -644,13 +558,10 @@ const CertDescription = styled.p`
   font-size: 1rem;
   line-height: 1.6;
   margin-bottom: 2rem;
-<<<<<<< HEAD
-=======
   
   [data-theme="light"] & {
     color: var(--light-text, #484B6A);
   }
->>>>>>> my-changes
 `;
 
 const CertVerifyButton = styled.a`
@@ -684,21 +595,12 @@ const CertVerifyButton = styled.a`
   }
   
   &[data-theme="light"] {
-<<<<<<< HEAD
-    background-color: var(--light-lavender, #8E7DBE);
-    box-shadow: 0 4px 10px rgba(142, 125, 190, 0.25);
-    
-    &:hover {
-      background-color: #7d6eb0;
-      box-shadow: 0 8px 15px rgba(142, 125, 190, 0.3);
-=======
     background-color: var(--light-accent, #9394A5);
     box-shadow: 0 4px 10px rgba(147, 148, 165, 0.25);
     
     &:hover {
       background-color: #7F8091;
       box-shadow: 0 8px 15px rgba(147, 148, 165, 0.3);
->>>>>>> my-changes
     }
   }
   
@@ -707,8 +609,4 @@ const CertVerifyButton = styled.a`
   }
 `;
 
-<<<<<<< HEAD
 export default CertificationsPage;
-=======
-export default CertificationsPage;
->>>>>>> my-changes

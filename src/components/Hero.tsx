@@ -1,79 +1,20 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-<<<<<<< HEAD
-import SplitType from 'split-type';
-import { Instagram, Linkedin, Github, Send } from 'lucide-react';
-=======
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Instagram, Linkedin, Github, Send, ChevronDown } from 'lucide-react';
->>>>>>> my-changes
 import styled from 'styled-components';
 import { useTheme } from '../context/ThemeContext';
 import { Link } from 'react-router-dom';
 import { siteConfig } from '../config/siteConfig';
 
 const Hero: React.FC = () => {
-<<<<<<< HEAD
-  const containerRef = useRef<HTMLDivElement>(null);
-=======
   const sectionRef = useRef<HTMLElement>(null);
   const heroContentRef = useRef<HTMLDivElement>(null);
   const textColumnRef = useRef<HTMLDivElement>(null);
->>>>>>> my-changes
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const socialsRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
-<<<<<<< HEAD
-  const { theme } = useTheme();
-
-  useEffect(() => {
-    if (!containerRef.current || !titleRef.current || !subtitleRef.current) return;
-
-    // Create text splitting for hero title
-    const titleSplit = new SplitType(titleRef.current, { types: 'chars' });
-    const subtitleSplit = new SplitType(subtitleRef.current, { types: 'words' });
-
-    // Main timeline for hero animations
-    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-
-    // Hero animation sequence
-    tl.fromTo(
-      containerRef.current,
-      { opacity: 0 },
-      { opacity: 1, duration: 0.6 }
-    )
-      .fromTo(
-        titleSplit.chars,
-        { opacity: 0, y: 50 },
-        { opacity: 1, y: 0, stagger: 0.03, duration: 0.6 },
-        '-=0.2'
-      )
-      .fromTo(
-        subtitleSplit.words,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, stagger: 0.02, duration: 0.4 },
-        '-=0.2'
-      )
-      .fromTo(
-        socialsRef.current?.querySelectorAll('.social-icon'),
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, stagger: 0.05, duration: 0.6 },
-        '-=0.2'
-      )
-      .fromTo(
-        ctaRef.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.6 },
-        '-=0.4'
-      );
-
-    // Clean up GSAP animations when component unmounts
-    return () => {
-      tl.kill();
-    };
-  }, []);
-=======
   const bgBlobOneRef = useRef<HTMLDivElement>(null);
   const bgBlobTwoRef = useRef<HTMLDivElement>(null);
   const gridOverlayRef = useRef<HTMLDivElement>(null);
@@ -81,116 +22,104 @@ const Hero: React.FC = () => {
   const { theme } = useTheme();
 
   useEffect(() => {
+    // Capture ref values at effect start to avoid stale references in cleanup
+    const titleEl = titleRef.current;
+    const subtitleEl = subtitleRef.current;
+    const socialsEl = socialsRef.current;
+    const ctaEl = ctaRef.current;
+    const bgBlobOneEl = bgBlobOneRef.current;
+    const bgBlobTwoEl = bgBlobTwoRef.current;
+    const gridOverlayEl = gridOverlayRef.current;
+    const arrowEl = arrowRef.current;
+    
     gsap.registerPlugin(ScrollTrigger);
     
-    // Create master timeline for scroll-based animations
-    let master = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top top", // start when top of section hits top of viewport
-        end: "bottom top", // end when bottom of section hits top of viewport
-        pin: true, // pins the section during the animation
-        anticipatePin: 1, // prevents flash on pin
-        pinReparent: true, // moves pinned element to documentElement while pinned
-        pinSpacing: true, // creates space after element equal to its height
-        refreshPriority: 1, // high priority for refresh
-      }
+    // Create simple timeline without scroll-pinning for smoother performance
+    const master = gsap.timeline({ 
+      defaults: { 
+        ease: "power2.out" 
+      },
+      delay: 0.2 // Small delay after page load
+    });
+    
+    // Set initial states
+    gsap.set([titleEl, subtitleEl], { 
+      x: "-100%", 
+      opacity: 0 
+    });
+    
+    gsap.set([socialsEl, ctaEl], { 
+      x: "100%", 
+      opacity: 0 
     });
     
     // Animate main title from left
-    master.fromTo(titleRef.current, 
-      { 
-        x: "-100%", 
-        opacity: 0 
-      }, 
+    master.to(titleEl, 
       { 
         x: "0%", 
         opacity: 1, 
-        duration: 0.4, 
-        ease: "power2.out" 
+        duration: 0.6
       }, 0
     );
     
     // Animate subtitle after title
-    master.fromTo(subtitleRef.current, 
-      { 
-        x: "-50%", 
-        opacity: 0 
-      }, 
+    master.to(subtitleEl, 
       { 
         x: "0%", 
         opacity: 1, 
-        duration: 0.4, 
-        ease: "power2.out" 
-      }, 0.2
+        duration: 0.6
+      }, 0.15
     );
     
     // Animate social icons from right
-    master.fromTo(socialsRef.current, 
-      { 
-        x: "100%", 
-        opacity: 0 
-      }, 
+    master.to(socialsEl, 
       { 
         x: "0%", 
         opacity: 1, 
-        duration: 0.4, 
-        ease: "power2.out" 
-      }, 0.3
+        duration: 0.6
+      }, 0.25
     );
     
     // Animate CTA buttons from right
-    master.fromTo(ctaRef.current, 
-      { 
-        x: "100%", 
-        opacity: 0 
-      }, 
+    master.to(ctaEl, 
       { 
         x: "0%", 
         opacity: 1, 
-        duration: 0.4, 
-        ease: "power2.out" 
-      }, 0.4
+        duration: 0.6
+      }, 0.35
     );
     
     // Animate background elements in parallel
-    master.fromTo([bgBlobOneRef.current, bgBlobTwoRef.current], 
-      { 
-        scale: 0.8, 
-        opacity: 0 
-      }, 
+    master.to([bgBlobOneEl, bgBlobTwoEl], 
       { 
         scale: 1, 
         opacity: theme === 'dark' ? 0.4 : 0.2, 
-        duration: 0.6, 
-        stagger: 0.2,
+        duration: 0.8, 
+        stagger: 0.1,
         ease: "power1.out" 
-      }, 0.1
+      }, 0
     );
     
     // Animate grid overlay
-    master.fromTo(gridOverlayRef.current, 
-      { 
-        opacity: 0 
-      }, 
+    master.to(gridOverlayEl, 
       { 
         opacity: 1, 
-        duration: 0.6 
-      }, 0.2
+        duration: 0.8 
+      }, 0
     );
 
-    // Animate the arrow with a fade out as scroll progresses
-    master.fromTo(arrowRef.current,
-      {
-        opacity: 1,
-        y: 0
-      },
+    // Fade in the arrow after other elements
+    master.fromTo(arrowEl,
       {
         opacity: 0,
-        y: 20,
-        duration: 0.3,
-        ease: "power1.in"
-      }, 0.1
+        y: -10
+      },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: "power2.out"
+      }, 0.5
     );
     
     // Animate the dot with a pulse effect
@@ -208,7 +137,7 @@ const Hero: React.FC = () => {
     }) : null;
     
     // Setup background blob animations
-    const blobOneAnimation = gsap.to(bgBlobOneRef.current, {
+    const blobOneAnimation = gsap.to(bgBlobOneEl, {
       x: "5%",
       y: "3%",
       scale: 1.05,
@@ -219,7 +148,7 @@ const Hero: React.FC = () => {
       ease: "sine.inOut"
     });
     
-    const blobTwoAnimation = gsap.to(bgBlobTwoRef.current, {
+    const blobTwoAnimation = gsap.to(bgBlobTwoEl, {
       x: "-5%",
       y: "-3%",
       scale: 0.95,
@@ -232,10 +161,9 @@ const Hero: React.FC = () => {
     });
     
     // Set initial states before animation starts
-    gsap.set([titleRef.current, subtitleRef.current], { x: "-100%", opacity: 0 });
-    gsap.set([socialsRef.current, ctaRef.current], { x: "100%", opacity: 0 });
-    gsap.set([bgBlobOneRef.current, bgBlobTwoRef.current], { scale: 0.8, opacity: 0 });
-    gsap.set(gridOverlayRef.current, { opacity: 0 });
+    gsap.set([bgBlobOneEl, bgBlobTwoEl], { scale: 0.8, opacity: 0 });
+    gsap.set(gridOverlayEl, { opacity: 0 });
+    gsap.set(arrowEl, { opacity: 0, y: -10 });
     
     // Collect all animations that need to be killed on cleanup
     const animations = [
@@ -245,26 +173,21 @@ const Hero: React.FC = () => {
       blobTwoAnimation
     ];
     
-    const allScrollTriggers = ScrollTrigger.getAll();
-    
-    // Clean up function to run when component unmounts or animation completes
+    // Clean up function to run when component unmounts
     return () => {
       // Kill all animations
       animations.forEach(anim => anim && anim.kill());
       
-      // Kill all ScrollTriggers
-      allScrollTriggers.forEach(trigger => trigger.kill());
-      
-      // Kill any remaining GSAP tweens associated with the refs
+      // Kill any remaining GSAP tweens associated with the captured elements
       [
-        titleRef.current, 
-        subtitleRef.current, 
-        socialsRef.current, 
-        ctaRef.current,
-        bgBlobOneRef.current, 
-        bgBlobTwoRef.current, 
-        gridOverlayRef.current,
-        arrowRef.current
+        titleEl, 
+        subtitleEl, 
+        socialsEl, 
+        ctaEl,
+        bgBlobOneEl, 
+        bgBlobTwoEl, 
+        gridOverlayEl,
+        arrowEl
       ].forEach(element => {
         if (element) {
           gsap.killTweensOf(element);
@@ -275,27 +198,12 @@ const Hero: React.FC = () => {
       if (dot) {
         gsap.killTweensOf(dot);
       }
-      
-      // Clear all contexts and memory
-      gsap.globalTimeline.clear();
     };
   }, [theme]);
->>>>>>> my-changes
 
   return (
     <HeroSection
       id="home"
-<<<<<<< HEAD
-      ref={containerRef}
-      data-theme={theme}
-    >
-      <HeroContent>
-        <HeroContentGrid>
-          {/* Left Column - Name and Description */}
-          <HeroTextColumn>
-            <HeroTitle ref={titleRef} className="text-heading">
-              Hello.<br />I'm {siteConfig.name.split(' ')[0]}<span className="dot">.</span>
-=======
       ref={sectionRef}
       data-theme={theme}
     >
@@ -307,7 +215,6 @@ const Hero: React.FC = () => {
               Hello.<br />I'm <NameWrapper>
                 Rush<SpecialLetter>i</SpecialLetter>kesh
               </NameWrapper>
->>>>>>> my-changes
             </HeroTitle>
             <HeroSubtitle ref={subtitleRef} className="text-body">
               Aspiring Frontend Developer | React, TypeScript, Tailwind CSS | AI & LLM Enthusiast | Building Engaging AI-Driven Experiences | Data Science & Python Explorer
@@ -382,12 +289,6 @@ const Hero: React.FC = () => {
       </HeroContent>
       
       <HeroBackground data-theme={theme}>
-<<<<<<< HEAD
-        <div className="blob blob-1"></div>
-        <div className="blob blob-2"></div>
-        <div className="grid-overlay"></div>
-      </HeroBackground>
-=======
         <div className="blob blob-1" ref={bgBlobOneRef}></div>
         <div className="blob blob-2" ref={bgBlobTwoRef}></div>
         <div className="grid-overlay" ref={gridOverlayRef}></div>
@@ -398,7 +299,6 @@ const Hero: React.FC = () => {
           <ChevronDown size={28} />
         </ScrollArrow>
       </ScrollIndicatorWrapper>
->>>>>>> my-changes
     </HeroSection>
   );
 };
@@ -482,15 +382,6 @@ const HeroTitle = styled.h1`
     white-space: nowrap;
     word-break: keep-all;
   }
-<<<<<<< HEAD
-  
-  .dot {
-    color: var(--accent-500, #f97316);
-  }
-  
-  [data-theme="light"] & .dot {
-    color: var(--light-lavender, #8E7DBE);
-=======
 `;
 
 const NameWrapper = styled.span`
@@ -506,7 +397,6 @@ const SpecialLetter = styled.span`
   
   [data-theme="light"] & {
     color: var(--light-accent, #9394A5);
->>>>>>> my-changes
   }
 `;
 
@@ -528,11 +418,7 @@ const HeroSubtitle = styled.p`
   }
   
   [data-theme="light"] & {
-<<<<<<< HEAD
-    color: #4a5568;
-=======
     color: var(--light-text, #484B6A);
->>>>>>> my-changes
   }
 `;
 
@@ -772,21 +658,12 @@ const HireMeButton = styled(Link)`
   }
   
   &[data-theme="light"] {
-<<<<<<< HEAD
-    background-color: var(--light-lavender, #8E7DBE);
-    box-shadow: 0 4px 16px rgba(142, 125, 190, 0.2);
-    color: white;
-    
-    &:hover {
-      box-shadow: 0 8px 24px rgba(142, 125, 190, 0.3);
-=======
     background-color: var(--light-accent, #9394A5);
     box-shadow: 0 4px 16px rgba(147, 148, 165, 0.2);
     color: white;
     
     &:hover {
       box-shadow: 0 8px 24px rgba(147, 148, 165, 0.3);
->>>>>>> my-changes
     }
   }
 `;
@@ -808,21 +685,12 @@ const ResumeButton = styled(HireMeButton)`
   
   &[data-theme="light"] {
     background-color: transparent;
-<<<<<<< HEAD
-    color: var(--light-lavender, #8E7DBE);
-    border: 1px solid var(--light-lavender, #8E7DBE);
-    
-    &:hover {
-      background-color: rgba(142, 125, 190, 0.1);
-      color: var(--light-lavender, #8E7DBE);
-=======
     color: var(--light-accent, #9394A5);
     border: 1px solid var(--light-accent, #9394A5);
     
     &:hover {
       background-color: rgba(147, 148, 165, 0.1);
       color: var(--light-accent, #9394A5);
->>>>>>> my-changes
     }
   }
 `;
@@ -899,9 +767,6 @@ const HeroBackground = styled.div`
   }
 `;
 
-<<<<<<< HEAD
-export default Hero;
-=======
 const ScrollIndicatorWrapper = styled.div`
   position: absolute;
   bottom: 2rem;
@@ -919,4 +784,3 @@ const ScrollArrow = styled.div`
 `;
 
 export default Hero;
->>>>>>> my-changes

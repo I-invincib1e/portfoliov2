@@ -1,62 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-<<<<<<< HEAD
-=======
 import SplitType from 'split-type';
->>>>>>> my-changes
 import { Brain, Layout, Zap, PackagePlus } from 'lucide-react';
 import styled from 'styled-components';
 import { useTheme } from '../context/ThemeContext';
 import { skills, technologies } from '../config/siteConfig';
 
-<<<<<<< HEAD
-interface SkillCardProps {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  delay: number;
-  index: number;
-}
-
-const SkillCard: React.FC<SkillCardProps> = ({ icon, title, description, delay, index }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const { theme } = useTheme();
-
-  useEffect(() => {
-    if (!cardRef.current) return;
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    gsap.fromTo(
-      cardRef.current,
-      { 
-        y: 50,
-        opacity: 0,
-      },
-      { 
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: cardRef.current,
-          start: 'top bottom-=100',
-          toggleActions: 'play none none none',
-        },
-        delay: delay * 0.2
-      }
-    );
-  }, [delay]);
-
-  return (
-    <StyledCard ref={cardRef} data-theme={theme} className={`card-${index % 3}`}>
-      <CardNumber>0{index + 1}</CardNumber>
-      <IconContainer data-theme={theme}>{icon}</IconContainer>
-      <CardTitle className="text-heading">{title}</CardTitle>
-      <CardDescription className="text-body">{description}</CardDescription>
-    </StyledCard>
-=======
 interface SkillItemProps {
   icon: React.ReactNode;
   title: string;
@@ -106,7 +56,6 @@ const SkillItem: React.FC<SkillItemProps> = ({ icon, title, description, index }
         <SkillDescription className="text-body">{description}</SkillDescription>
       </SkillContent>
     </StyledSkillItem>
->>>>>>> my-changes
   );
 };
 
@@ -115,10 +64,7 @@ const About: React.FC = () => {
   const contentRef = useRef<HTMLDivElement>(null);
   const stickyTitleRef = useRef<HTMLDivElement>(null);
   const techGridRef = useRef<HTMLDivElement>(null);
-<<<<<<< HEAD
-=======
   const paragraphRef = useRef<HTMLParagraphElement>(null);
->>>>>>> my-changes
   const { theme } = useTheme();
 
   // Animate tech logos on scroll
@@ -127,27 +73,6 @@ const About: React.FC = () => {
 
     gsap.registerPlugin(ScrollTrigger);
 
-<<<<<<< HEAD
-    gsap.fromTo(
-      techGridRef.current.querySelectorAll('.tech-logo'),
-      { 
-        scale: 0.8,
-        opacity: 0 
-      },
-      {
-        scale: 1,
-        opacity: 1,
-        stagger: 0.05,
-        duration: 0.6,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: techGridRef.current,
-          start: 'top bottom-=50',
-          toggleActions: 'play none none none',
-        }
-      }
-    );
-=======
     const techLogos = techGridRef.current.querySelectorAll('.tech-logo');
     
     // Set initial state for all tech logos
@@ -171,27 +96,12 @@ const About: React.FC = () => {
       },
       once: true // This ensures the animation only runs once
     });
->>>>>>> my-changes
   }, []);
 
   // Create parallax effect for the section
   useEffect(() => {
     if (!sectionRef.current) return;
 
-<<<<<<< HEAD
-    gsap.to(sectionRef.current, {
-      backgroundPosition: '50% 100%',
-      ease: 'none',
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: true,
-      },
-    });
-  }, []);
-
-=======
     gsap.registerPlugin(ScrollTrigger);
 
     // One-way background parallax
@@ -264,7 +174,6 @@ const About: React.FC = () => {
     };
   }, [theme]);
 
->>>>>>> my-changes
   const skillsConfig = [
     {
       icon: <Brain size={28} />,
@@ -302,11 +211,7 @@ const About: React.FC = () => {
             <HeadingTitle className="text-heading">
               About Me<span className="dot">.</span>
             </HeadingTitle>
-<<<<<<< HEAD
-            <Paragraph className="text-body">
-=======
             <Paragraph ref={paragraphRef} className="text-body">
->>>>>>> my-changes
               I'm a passionate designer and developer with expertise in creating intuitive and engaging digital experiences. When I'm not coding or debugging something at 2AM, I'm probably analyzing AI trends, experimenting with design, or plotting my next side project.
             </Paragraph>
             <StickyCTA href="#work" data-theme={theme} className="text-accent">
@@ -319,20 +224,6 @@ const About: React.FC = () => {
         <ContentColumn ref={contentRef}>
           <ContentSection>
             <SectionSubtitle className="text-heading">My Expertise</SectionSubtitle>
-<<<<<<< HEAD
-            <SkillsGrid>
-              {skills.map((skill, index) => (
-                <SkillCard 
-                  key={index}
-                  icon={skillsConfig[index].icon}
-                  title={skill.title}
-                  description={skill.description}
-                  delay={index}
-                  index={index}
-                />
-              ))}
-            </SkillsGrid>
-=======
             <SkillsList>
               {skills.map((skill, index) => (
                 <React.Fragment key={index}>
@@ -346,7 +237,6 @@ const About: React.FC = () => {
                 </React.Fragment>
               ))}
             </SkillsList>
->>>>>>> my-changes
             <SectionDivider data-theme={theme} />
           </ContentSection>
           
@@ -383,11 +273,7 @@ const AboutSection = styled.section`
   }
   
   &[data-theme="light"] {
-<<<<<<< HEAD
-    background-color: var(--light-pale-lime, #F4F8D3);
-=======
     background-color: var(--light-background, #FAFAFA);
->>>>>>> my-changes
   }
 `;
 
@@ -453,17 +339,10 @@ const HeadingTitle = styled.h2`
   }
   
   [data-theme="light"] & {
-<<<<<<< HEAD
-    color: #2d3748;
-    
-    .dot {
-      color: var(--light-lavender, #8E7DBE);
-=======
     color: var(--light-text, #484B6A);
     
     .dot {
       color: var(--light-accent, #9394A5);
->>>>>>> my-changes
     }
   }
 `;
@@ -481,12 +360,8 @@ const Paragraph = styled.p`
   }
   
   [data-theme="light"] & {
-<<<<<<< HEAD
-    color: #4a5568;
-=======
     color: var(--light-text, #484B6A);
     opacity: 0.85;
->>>>>>> my-changes
   }
 `;
 
@@ -513,15 +388,6 @@ const StickyCTA = styled.a`
   }
   
   &[data-theme="light"] {
-<<<<<<< HEAD
-    background-color: var(--light-lavender, #8E7DBE);
-    box-shadow: 0 2px 10px rgba(142, 125, 190, 0.2);
-    color: white;
-    
-    &:hover {
-      background-color: #7d6eb0;
-      box-shadow: 0 6px 16px rgba(142, 125, 190, 0.3);
-=======
     background-color: var(--light-accent, #9394A5);
     box-shadow: 0 2px 10px rgba(147, 148, 165, 0.2);
     color: white;
@@ -529,7 +395,6 @@ const StickyCTA = styled.a`
     &:hover {
       background-color: #7F8091;
       box-shadow: 0 6px 16px rgba(147, 148, 165, 0.3);
->>>>>>> my-changes
     }
   }
 `;
@@ -550,11 +415,7 @@ const SectionSubtitle = styled.h3`
   }
   
   [data-theme="light"] & {
-<<<<<<< HEAD
-    color: #4a5568;
-=======
     color: var(--light-text, #484B6A);
->>>>>>> my-changes
   }
 `;
 
@@ -564,122 +425,6 @@ const SectionDivider = styled.div`
   margin: 2rem 0;
   
   &[data-theme="light"] {
-<<<<<<< HEAD
-    background: linear-gradient(90deg, rgba(142, 125, 190, 0.3), transparent);
-  }
-`;
-
-const SkillsGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-  max-width: 100%;
-  margin: 0 auto;
-  
-  @media (min-width: 640px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-`;
-
-const StyledCard = styled.div`
-  background-color: rgba(30, 41, 59, 0.5);
-  backdrop-filter: blur(4px);
-  padding: 1.75rem;
-  border-radius: 0.5rem;
-  border-left: 3px solid rgba(51, 65, 85, 0.5);
-  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-  height: 100%;
-  min-height: 200px;
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  
-  &:hover {
-    border-left-color: var(--accent-500, #f97316);
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.3);
-  }
-  
-  &.card-0 {
-    border-left-color: var(--accent-500, #f97316);
-  }
-  
-  &.card-1 {
-    border-left-color: var(--primary-500, #0ea5e9);
-  }
-  
-  &.card-2 {
-    border-left-color: var(--light-teal, #A6D6D6);
-  }
-  
-  &.card-3 {
-    border-left-color: var(--light-soft-pink, #F7CFD8);
-  }
-  
-  &[data-theme="light"] {
-    background-color: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(166, 214, 214, 0.5);
-    border-left-width: 3px;
-    
-    &:hover {
-      box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.1);
-    }
-    
-    &.card-0 {
-      border-left-color: var(--light-lavender, #8E7DBE);
-    }
-    
-    &.card-1 {
-      border-left-color: var(--light-teal, #A6D6D6);
-    }
-    
-    &.card-2 {
-      border-left-color: var(--light-soft-pink, #F7CFD8);
-    }
-    
-    &.card-3 {
-      border-left-color: var(--light-lavender, #8E7DBE);
-    }
-  }
-`;
-
-const CardNumber = styled.div`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 1.25rem;
-  font-weight: 300;
-  opacity: 0.2;
-  color: var(--dark-200, #e2e8f0);
-  
-  [data-theme="light"] & {
-    color: #4a5568;
-  }
-`;
-
-const IconContainer = styled.div`
-  color: var(--secondary-500, #14b8a6);
-  margin-bottom: 0.75rem;
-  
-  &[data-theme="light"] {
-    color: var(--light-teal, #A6D6D6);
-  }
-`;
-
-const CardTitle = styled.h3`
-  font-size: 1.125rem;
-  font-weight: 500;
-  margin-bottom: 0.75rem;
-  
-  [data-theme="light"] & {
-    color: #4a5568;
-  }
-`;
-
-const CardDescription = styled.p`
-=======
     background: linear-gradient(90deg, rgba(147, 148, 165, 0.3), transparent);
   }
 `;
@@ -748,17 +493,12 @@ const SkillTitle = styled.h4`
 `;
 
 const SkillDescription = styled.p`
->>>>>>> my-changes
   color: var(--dark-300, #cbd5e1);
   font-size: 0.875rem;
   line-height: 1.5;
   hyphens: none;
   word-break: normal;
   
-<<<<<<< HEAD
-  [data-theme="light"] & {
-    color: #4a5568;
-=======
   @media (min-width: 640px) {
     font-size: 0.9375rem;
   }
@@ -766,7 +506,6 @@ const SkillDescription = styled.p`
   [data-theme="light"] & {
     color: var(--light-text, #484B6A);
     opacity: 0.85;
->>>>>>> my-changes
   }
 `;
 
@@ -856,11 +595,7 @@ const TechName = styled.div`
   z-index: 5;
   
   &[data-theme="light"] {
-<<<<<<< HEAD
-    background-color: var(--light-lavender, #8E7DBE);
-=======
     background-color: var(--light-accent, #9394A5);
->>>>>>> my-changes
   }
 `;
 
