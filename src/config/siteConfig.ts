@@ -15,10 +15,10 @@ export const siteConfig = {
   
   // Social media links
   social: {
-    github: "https://github.com/Neorex80",
+    github: "https://github.com/I-invincib1e",
     linkedin: "https://www.linkedin.com/in/devrex/",
     twitter: "https://twitter.com/username",
-    instagram: "https://www.instagram.com/k_rishi.exe/",
+    instagram: "https://www.instagram.com/i_invincib1e/",
     telegram: "https://t.me/iamproasfuck",
   },
   
