@@ -20,28 +20,31 @@ const SkillItem: React.FC<SkillItemProps> = ({ icon, title, description, index }
 
     gsap.registerPlugin(ScrollTrigger);
 
-    // Create a one-way animation that doesn't reverse when scrolling backward
-    ScrollTrigger.create({
-      trigger: itemRef.current,
-      start: 'top bottom-=100',
-      onEnter: () => {
-        gsap.to(itemRef.current, { 
-          opacity: 1, 
-          y: 0, 
-          duration: 0.8, 
-          ease: 'power2.out' 
-        });
-      },
-      once: true // This ensures the animation only runs once
-    });
-    
     // Set initial state
     gsap.set(itemRef.current, { 
       opacity: 0, 
-      y: 30 
+      y: 40,
+      scale: 0.95
+    });
+
+    // Create enhanced animation with scale
+    ScrollTrigger.create({
+      trigger: itemRef.current,
+      start: 'top bottom-=120',
+      onEnter: () => {
+        gsap.to(itemRef.current, { 
+          opacity: 1, 
+          y: 0,
+          scale: 1,
+          duration: 0.9, 
+          ease: 'power3.out',
+          delay: index * 0.1
+        });
+      },
+      once: true
     });
     
-  }, []);
+  }, [index]);
 
   return (
     <StyledSkillItem ref={itemRef} className={`skill-item-${index}`}>
@@ -63,40 +66,42 @@ const About: React.FC = () => {
   const techGridRef = useRef<HTMLDivElement>(null);
   const paragraphRef = useRef<HTMLParagraphElement>(null);
 
-  // Animate tech logos on scroll
+  // Animate tech logos on scroll with enhanced effect
   useEffect(() => {
     if (!techGridRef.current) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
-    const techLogos = techGridRef.current.querySelectorAll('.tech-logo');
+    const gridElement = techGridRef.current;
+    const techLogos = gridElement.querySelectorAll('.tech-logo');
     
     // Set initial state for all tech logos
     gsap.set(techLogos, { 
-      scale: 0.8, 
-      opacity: 0 
+      scale: 0.7, 
+      opacity: 0,
+      y: 20
     });
 
-    // Create a one-way animation that doesn't reverse when scrolling backward
+    // Create enhanced animation with bounce effect
     ScrollTrigger.create({
-      trigger: techGridRef.current,
-      start: 'top bottom-=50',
+      trigger: gridElement,
+      start: 'top bottom-=100',
       onEnter: () => {
         gsap.to(techLogos, {
           scale: 1,
           opacity: 1,
-          stagger: 0.05,
-          duration: 0.6,
-          ease: 'power2.out'
+          y: 0,
+          stagger: 0.06,
+          duration: 0.7,
+          ease: 'back.out(1.4)'
         });
       },
-      once: true // This ensures the animation only runs once
+      once: true
     });
     
     return () => {
-      // Clean up ScrollTrigger instance
       ScrollTrigger.getAll().forEach(trigger => {
-        if (trigger.vars.trigger === techGridRef.current) {
+        if (trigger.vars.trigger === gridElement) {
           trigger.kill();
         }
       });
@@ -109,6 +114,8 @@ const About: React.FC = () => {
 
     gsap.registerPlugin(ScrollTrigger);
 
+    const sectionElement = sectionRef.current;
+
     // Use transform for better performance instead of backgroundPosition
     const parallaxElement = document.createElement('div');
     parallaxElement.style.position = 'absolute';
@@ -120,18 +127,15 @@ const About: React.FC = () => {
     parallaxElement.style.backgroundSize = 'cover';
     parallaxElement.style.zIndex = '-1';
     
-    if (sectionRef.current) {
-      sectionRef.current.appendChild(parallaxElement);
-    }
+    sectionElement.appendChild(parallaxElement);
 
     // One-way parallax using transform for better performance
     ScrollTrigger.create({
-      trigger: sectionRef.current,
+      trigger: sectionElement,
       start: 'top bottom',
       end: 'bottom top',
-      scrub: 0.5, // Smoother scrub
+      scrub: 0.5,
       onUpdate: (self) => {
-        // Only apply parallax when scrolling down
         if (self.direction === 1) {
           gsap.to(parallaxElement, {
             y: `${self.progress * 20}%`,
@@ -144,15 +148,14 @@ const About: React.FC = () => {
     });
     
     return () => {
-      // Clean up ScrollTrigger and remove the parallax element
       ScrollTrigger.getAll().forEach(trigger => {
-        if (trigger.vars.trigger === sectionRef.current) {
+        if (trigger.vars.trigger === sectionElement) {
           trigger.kill();
         }
       });
       
-      if (sectionRef.current && parallaxElement.parentNode === sectionRef.current) {
-        sectionRef.current.removeChild(parallaxElement);
+      if (parallaxElement.parentNode === sectionElement) {
+        sectionElement.removeChild(parallaxElement);
       }
     };
   }, []);
@@ -348,21 +351,47 @@ const StickyCTA = styled.a`
   background-color: var(--accent-500, #f97316);
   color: white;
   padding: 0.75rem 1.25rem;
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
   font-weight: 500;
-  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   letter-spacing: 0.02em;
   font-size: 0.875rem;
+  box-shadow: 0 4px 16px rgba(249, 115, 22, 0.2);
+  position: relative;
+  overflow: hidden;
   
   @media (min-width: 640px) {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
   }
   
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+  }
+  
   &:hover {
     background-color: var(--accent-600, #ea580c);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 8px 24px rgba(249, 115, 22, 0.35);
+  }
+  
+  &:hover::before {
+    width: 300px;
+    height: 300px;
+  }
+  
+  &:active {
+    transform: translateY(-2px) scale(1.02);
+    transition-duration: 0.1s;
   }
 `;
 
@@ -469,14 +498,16 @@ const TechLogoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: transform 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
   
   &:hover {
-    transform: translateY(-8px);
+    transform: translateY(-12px) scale(1.1);
     
     img {
       filter: grayscale(0%);
       opacity: 1;
+      transform: rotate(5deg);
     }
     
     div {
@@ -490,7 +521,7 @@ const TechLogoWrapper = styled.div`
 const TechLogo = styled.img`
   width: 40px;
   height: 40px;
-  transition: filter 0.3s ease, opacity 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   filter: grayscale(30%);
   opacity: 0.8;
   

@@ -9,15 +9,16 @@ export const registerGSAP = (): void => {
   // Register GSAP plugins
   gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
-  // Set default ease for all animations
+  // Set default ease for all animations - using more dynamic easing
   gsap.defaults({
-    ease: 'power2.out',
-    duration: 0.8,
+    ease: 'power3.out',
+    duration: 0.7,
   });
 
   // Enable GPU acceleration for animations
   gsap.config({
-    force3D: true
+    force3D: true,
+    nullTargetWarn: false
   });
 
   // Make sure ScrollTrigger is properly refreshed when the page loads
@@ -25,10 +26,10 @@ export const registerGSAP = (): void => {
 
   // Set up ScrollTrigger defaults
   ScrollTrigger.defaults({
-    toggleActions: 'play none none none', // play, reverse, restart, reset, pause, resume, complete, none
-    start: 'top bottom',
+    toggleActions: 'play none none none',
+    start: 'top bottom-=100',
     end: 'bottom top',
-    markers: false // Make sure markers are disabled in production
+    markers: false
   });
 
   // Handle smooth scrolling for all anchor links
@@ -81,7 +82,7 @@ const setupScrollAnimations = (): void => {
   // Use simpler animations on mobile devices
   if (isMobile) {
     // Fade in animations for sections - simplified for mobile
-    gsap.utils.toArray('.section').forEach((section: any) => {
+    gsap.utils.toArray<HTMLElement>('.section').forEach((section) => {
       ScrollTrigger.create({
         trigger: section,
         start: 'top bottom-=50',
@@ -97,7 +98,7 @@ const setupScrollAnimations = (): void => {
     });
   } else {
     // Full animations for desktop
-    gsap.utils.toArray('.section').forEach((section: any) => {
+    gsap.utils.toArray<HTMLElement>('.section').forEach((section) => {
       ScrollTrigger.create({
         trigger: section,
         start: 'top bottom-=100',
@@ -148,20 +149,20 @@ const optimizeScrollTrigger = () => {
  */
 export const createStaggeredReveal = (
   elements: HTMLElement[] | NodeListOf<Element>,
-  options = { y: 20, stagger: 0.1, duration: 0.6 }
+  options = { y: 30, stagger: 0.12, duration: 0.7 }
 ): gsap.core.Timeline => {
-  // Check if on mobile and simplify animation
   const isMobile = window.innerWidth < 768;
   
   if (isMobile) {
     return gsap.fromTo(
       elements,
-      { opacity: 0 },
+      { opacity: 0, y: 15 },
       {
         opacity: 1,
+        y: 0,
         stagger: options.stagger,
-        duration: options.duration * 0.8, // Slightly faster on mobile
-        ease: 'power1.out',
+        duration: options.duration * 0.8,
+        ease: 'power2.out',
       }
     );
   }
@@ -174,9 +175,102 @@ export const createStaggeredReveal = (
       opacity: 1,
       stagger: options.stagger,
       duration: options.duration,
-      ease: 'power2.out',
+      ease: 'power3.out',
     }
   );
+};
+
+/**
+ * Creates a fade-in with scale animation
+ */
+export const createFadeInScale = (
+  element: HTMLElement | Element,
+  options = { scale: 0.95, duration: 0.6, delay: 0 }
+): gsap.core.Tween => {
+  return gsap.fromTo(
+    element,
+    { opacity: 0, scale: options.scale },
+    {
+      opacity: 1,
+      scale: 1,
+      duration: options.duration,
+      delay: options.delay,
+      ease: 'back.out(1.7)',
+    }
+  );
+};
+
+/**
+ * Creates a slide-in animation from a direction
+ */
+export const createSlideIn = (
+  element: HTMLElement | Element,
+  direction: 'left' | 'right' | 'top' | 'bottom' = 'left',
+  options = { distance: 60, duration: 0.7, delay: 0 }
+): gsap.core.Tween => {
+  const fromVars: Record<string, number> = { opacity: 0 };
+  const toVars: Record<string, number | string> = { opacity: 1, duration: options.duration, delay: options.delay, ease: 'power3.out' };
+  
+  switch (direction) {
+    case 'left':
+      fromVars.x = -options.distance;
+      toVars.x = 0;
+      break;
+    case 'right':
+      fromVars.x = options.distance;
+      toVars.x = 0;
+      break;
+    case 'top':
+      fromVars.y = -options.distance;
+      toVars.y = 0;
+      break;
+    case 'bottom':
+      fromVars.y = options.distance;
+      toVars.y = 0;
+      break;
+  }
+  
+  return gsap.fromTo(element, fromVars, toVars);
+};
+
+/**
+ * Creates a magnetic effect for an element
+ */
+export const createMagneticEffect = (
+  element: HTMLElement,
+  strength: number = 0.3
+): (() => void) => {
+  const handleMouseMove = (e: MouseEvent) => {
+    const rect = element.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const deltaX = (e.clientX - centerX) * strength;
+    const deltaY = (e.clientY - centerY) * strength;
+    
+    gsap.to(element, {
+      x: deltaX,
+      y: deltaY,
+      duration: 0.4,
+      ease: 'power2.out',
+    });
+  };
+  
+  const handleMouseLeave = () => {
+    gsap.to(element, {
+      x: 0,
+      y: 0,
+      duration: 0.6,
+      ease: 'elastic.out(1, 0.5)',
+    });
+  };
+  
+  element.addEventListener('mousemove', handleMouseMove);
+  element.addEventListener('mouseleave', handleMouseLeave);
+  
+  return () => {
+    element.removeEventListener('mousemove', handleMouseMove);
+    element.removeEventListener('mouseleave', handleMouseLeave);
+  };
 };
 
 /**

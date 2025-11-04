@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useTheme } from '../context/ThemeContext';
 import Footer from '../components/Footer';
-import { Mail, Github as github, Linkedin, Twitter, Download, MapPin, Phone, Send, Sparkles, ArrowRight, ExternalLink } from 'lucide-react';
+import { Mail, Github as GitHub, Linkedin, Twitter, Download, MapPin, Phone, Send, Sparkles, ArrowRight, ExternalLink } from 'lucide-react';
 import { siteConfig } from '../config/siteConfig';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -27,9 +27,12 @@ const ContactPage: React.FC = () => {
     // Scroll to top when page loads
     window.scrollTo(0, 0);
     
+    // Capture ref value for cleanup
+    const bgElementsContainer = backgroundElementsRef.current;
+    
     // Create floating background elements
     const createBackgroundElements = () => {
-      if (!backgroundElementsRef.current) return;
+      if (!bgElementsContainer) return;
       
       // Create floating elements
       for (let i = 0; i < 6; i++) {
@@ -50,7 +53,7 @@ const ContactPage: React.FC = () => {
           filter: blur(${Math.random() * 10 + 5}px);
         `;
         
-        backgroundElementsRef.current.appendChild(element);
+        bgElementsContainer.appendChild(element);
         
         // Animate floating elements
         gsap.to(element, {
@@ -66,76 +69,78 @@ const ContactPage: React.FC = () => {
       }
     };
 
-    // Hero section animations
+    // Enhanced hero section animations
     const animateHero = () => {
       const tl = gsap.timeline();
       
       tl.fromTo(".hero-title", 
-        { y: 50, opacity: 0 }, 
-        { y: 0, opacity: 1, duration: 0.8, ease: "back.out(1.4)" }
+        { y: 60, opacity: 0, scale: 0.95 }, 
+        { y: 0, opacity: 1, scale: 1, duration: 0.9, ease: "power3.out" }
       )
       .fromTo(".hero-subtitle", 
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.7, ease: "power2.out" },
+        { y: 40, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
         "-=0.5"
       );
     };
 
-    // Contact cards animation
+    // Enhanced contact cards animation with scale
     const animateCards = () => {
       gsap.fromTo(".contact-card",
-        { opacity: 0, y: 30, scale: 0.9 },
+        { opacity: 0, y: 50, scale: 0.9 },
         { 
           opacity: 1, 
           y: 0,
           scale: 1,
-          stagger: 0.15, 
-          duration: 0.7, 
-          ease: "power2.out",
+          stagger: 0.12, 
+          duration: 0.8, 
+          ease: "power3.out",
           delay: 0.3
         }
       );
     };
 
-    // Form animation
+    // Enhanced form animation
     const animateForm = () => {
       if (!formRef.current) return;
       
       gsap.fromTo(formRef.current,
-        { opacity: 0, y: 30 },
+        { opacity: 0, y: 50, scale: 0.95 },
         { 
           opacity: 1, 
           y: 0,
-          duration: 0.7, 
-          ease: "power2.out",
-          delay: 0.6
+          scale: 1,
+          duration: 0.8, 
+          ease: "power3.out",
+          delay: 0.5
         }
       );
       
       gsap.fromTo(".form-group",
-        { opacity: 0, x: -20 },
+        { opacity: 0, x: -30 },
         { 
           opacity: 1, 
           x: 0,
           stagger: 0.1, 
-          duration: 0.5, 
-          ease: "power2.out",
-          delay: 0.8
+          duration: 0.6, 
+          ease: "power3.out",
+          delay: 0.7
         }
       );
     };
 
-    // Social links animation
+    // Enhanced social links animation
     const animateSocial = () => {
       gsap.fromTo(".social-card",
-        { opacity: 0, x: 30 },
+        { opacity: 0, x: 40, scale: 0.9 },
         { 
           opacity: 1, 
           x: 0,
-          stagger: 0.15, 
-          duration: 0.7, 
-          ease: "power2.out",
-          delay: 0.9
+          scale: 1,
+          stagger: 0.1, 
+          duration: 0.8, 
+          ease: "power3.out",
+          delay: 0.8
         }
       );
     };
@@ -152,8 +157,8 @@ const ContactPage: React.FC = () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
       
       // Clean up background elements
-      if (backgroundElementsRef.current) {
-        backgroundElementsRef.current.innerHTML = '';
+      if (bgElementsContainer) {
+        bgElementsContainer.innerHTML = '';
       }
     };
   }, [theme]);

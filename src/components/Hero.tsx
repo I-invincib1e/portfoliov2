@@ -55,42 +55,42 @@ const Hero: React.FC = () => {
       }
     });
     
-    // Orchestrated entrance animations with better easing
+    // Orchestrated entrance animations with better easing and timing
     const entranceTimeline = gsap.timeline();
     
     entranceTimeline
       .to(titleRef.current, {
         x: "0%",
         opacity: 1,
-        duration: 0.6,
-        ease: "back.out(1.2)",
+        duration: 0.8,
+        ease: "power3.out",
       })
       .to(subtitleRef.current, {
         x: "0%",
         opacity: 1,
-        duration: 0.5,
-        ease: "power2.out",
-      }, "-=0.3")
+        duration: 0.7,
+        ease: "power3.out",
+      }, "-=0.4")
       .to(socialsRef.current, {
         x: "0%",
         opacity: 1,
-        duration: 0.5,
-        ease: "power2.out",
-      }, "-=0.2")
+        duration: 0.6,
+        ease: "power3.out",
+      }, "-=0.3")
       .to(ctaRef.current, {
         x: "0%",
         opacity: 1,
-        duration: 0.5,
-        ease: "power2.out",
-      }, "-=0.1");
+        duration: 0.6,
+        ease: "power3.out",
+      }, "-=0.2");
     
-    // Background elements with stagger
+    // Background elements with stagger and improved timing
     const bgTimeline = gsap.timeline();
     bgTimeline.to([bgBlobOneRef.current, bgBlobTwoRef.current], {
       scale: 1,
       opacity: theme === 'dark' ? 0.4 : 0.2,
-      duration: 0.8,
-      stagger: 0.2,
+      duration: 1.2,
+      stagger: 0.3,
       ease: "power2.out",
     });
     
@@ -115,18 +115,18 @@ const Hero: React.FC = () => {
       .add(bgTimeline, 0.1)
       .add(overlayTimeline, 0.2);
     
-    // Improved dot animation with better performance
+    // Enhanced dot animation with smoother pulse
     const dot = document.querySelector('.hero-dot');
     const dotAnimation = dot ? gsap.to(dot, {
       textShadow: theme === 'dark' 
-        ? '0 0 15px rgba(249,115,22,0.8)' 
-        : '0 0 15px rgba(147,148,165,0.8)',
-      scale: 1.08,
-      duration: 1.2,
+        ? '0 0 20px rgba(249,115,22,0.9), 0 0 40px rgba(249,115,22,0.4)' 
+        : '0 0 20px rgba(147,148,165,0.9), 0 0 40px rgba(147,148,165,0.4)',
+      scale: 1.12,
+      duration: 1.5,
       repeat: -1,
       yoyo: true,
       ease: "sine.inOut",
-      delay: 1,
+      delay: 1.2,
     }) : null;
     
     // Optimized background blob animations
@@ -630,16 +630,17 @@ const HireMeButton = styled(Link)`
   }
   
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 24px rgba(249, 115, 22, 0.35);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 8px 28px rgba(249, 115, 22, 0.4);
+  }
+  
+  &:active {
+    transform: translateY(-2px) scale(0.98);
+    transition-duration: 0.1s;
   }
   
   &:hover::before {
     width: 100%;
-  }
-  
-  &:active {
-    transform: translateY(-1px);
   }
   
   &[data-theme="light"] {
@@ -656,7 +657,8 @@ const HireMeButton = styled(Link)`
 const ResumeButton = styled(HireMeButton)`
   background-color: transparent;
   color: var(--accent-500, #f97316);
-  border: 1px solid var(--accent-500, #f97316);
+  border: 2px solid var(--accent-500, #f97316);
+  box-shadow: 0 4px 16px rgba(249, 115, 22, 0.15);
   
   @media (max-width: 375px) {
     padding: 0.66rem 1rem;
@@ -664,18 +666,27 @@ const ResumeButton = styled(HireMeButton)`
   }
   
   &:hover {
-    background-color: rgba(249, 115, 22, 0.1);
+    background-color: rgba(249, 115, 22, 0.15);
     color: var(--accent-500, #f97316);
+    border-color: var(--accent-500, #f97316);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(249, 115, 22, 0.3);
+  }
+  
+  &:active {
+    transform: translateY(-2px) scale(0.98);
+    transition-duration: 0.1s;
   }
   
   &[data-theme="light"] {
     background-color: transparent;
     color: var(--light-accent, #9394A5);
-    border: 1px solid var(--light-accent, #9394A5);
+    border: 2px solid var(--light-accent, #9394A5);
     
     &:hover {
-      background-color: rgba(147, 148, 165, 0.1);
+      background-color: rgba(147, 148, 165, 0.15);
       color: var(--light-accent, #9394A5);
+      box-shadow: 0 8px 24px rgba(147, 148, 165, 0.25);
     }
   }
 `;

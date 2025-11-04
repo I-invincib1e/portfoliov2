@@ -44,8 +44,9 @@ const ScrollProgressContainer = styled.div`
 const ScrollProgressBar = styled.div`
   height: 100%;
   width: 0;
-  background-color: var(--accent-500, #f97316);
+  background: linear-gradient(90deg, var(--accent-500, #f97316) 0%, var(--accent-600, #ea580c) 100%);
   transition: width 0.05s ease;
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.5);
 `;
 
 export default ScrollIndicator;

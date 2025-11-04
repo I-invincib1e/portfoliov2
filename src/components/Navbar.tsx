@@ -27,16 +27,16 @@ const Navbar: React.FC = () => {
     const timer = setTimeout(() => {
       try {
         // Reset for animation
-        gsap.set('.nav-item', { y: -20, opacity: 0 });
+        gsap.set('.nav-item', { y: -30, opacity: 0 });
         
-        // Animate navbar items on initial load
+        // Enhanced navbar animation with smoother easing
         gsap.to('.nav-item', {
           y: 0, 
           opacity: 1, 
-          stagger: 0.1, 
-          duration: 0.8, 
-          ease: "power2.out",
-          delay: 0.2,
+          stagger: 0.08, 
+          duration: 0.9, 
+          ease: "power3.out",
+          delay: 0.3,
           onComplete: () => {
             setAnimationComplete(true);
           }

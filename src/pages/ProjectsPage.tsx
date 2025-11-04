@@ -2,8 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { useTheme } from '../context/ThemeContext';
 import Footer from '../components/Footer';
-import { ExternalLink, Github, Search, Code, Briefcase, Filter, TagsIcon, Sparkles } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ExternalLink, Github, Search, Code, Filter, TagsIcon, Sparkles } from 'lucide-react';
 import { allProjects } from '../config/siteConfig';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -60,9 +59,12 @@ const ProjectsPage: React.FC = () => {
     // Register GSAP plugins
     gsap.registerPlugin(ScrollTrigger);
     
+    // Capture ref value for cleanup
+    const bgContainer = backgroundRef.current;
+    
     // Create floating background elements
     const createBackgroundElements = () => {
-      if (!backgroundRef.current) return;
+      if (!bgContainer) return;
       
       // Create floating code symbols
       const symbols = ['{ }', '</>', '()', '[]', '/**/'];
@@ -87,7 +89,7 @@ const ProjectsPage: React.FC = () => {
           transform: rotate(${Math.random() * 40 - 20}deg);
         `;
         
-        backgroundRef.current.appendChild(element);
+        bgContainer.appendChild(element);
         
         // Animate each element
         gsap.to(element, {
@@ -103,49 +105,51 @@ const ProjectsPage: React.FC = () => {
       }
     };
     
-    // Hero section animations
+    // Enhanced hero section animations
     const animateHero = () => {
       const tl = gsap.timeline();
       
       tl.fromTo(".hero-title", 
-        { opacity: 0, y: 50 }, 
-        { opacity: 1, y: 0, duration: 0.8, ease: "back.out(1.4)" }
+        { opacity: 0, y: 60, scale: 0.95 }, 
+        { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: "power3.out" }
       )
       .fromTo(".hero-subtitle", 
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" },
+        { opacity: 0, y: 40 },
+        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" },
         "-=0.5"
       );
     };
     
-    // Filter bar animation
+    // Enhanced filter bar animation
     const animateFilters = () => {
       gsap.fromTo(".filter-element",
-        { opacity: 0, y: 20 },
+        { opacity: 0, y: 30, scale: 0.9 },
         { 
           opacity: 1, 
-          y: 0, 
-          stagger: 0.1, 
-          duration: 0.6, 
-          ease: "power2.out",
+          y: 0,
+          scale: 1, 
+          stagger: 0.08, 
+          duration: 0.7, 
+          ease: "power3.out",
           delay: 0.3
         }
       );
     };
     
-    // Project cards animation
+    // Enhanced project cards animation
     const animateProjects = () => {
       gsap.fromTo(".project-card",
-        { opacity: 0, y: 30 },
+        { opacity: 0, y: 50, scale: 0.95 },
         { 
           opacity: 1, 
-          y: 0, 
-          stagger: 0.1, 
-          duration: 0.6, 
-          ease: "power2.out",
+          y: 0,
+          scale: 1, 
+          stagger: 0.12, 
+          duration: 0.8, 
+          ease: "power3.out",
           scrollTrigger: {
             trigger: ".projects-grid",
-            start: "top bottom-=100",
+            start: "top bottom-=120",
             toggleActions: "play none none none"
           }
         }
@@ -163,8 +167,8 @@ const ProjectsPage: React.FC = () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
       
       // Clean up background elements
-      if (backgroundRef.current) {
-        backgroundRef.current.innerHTML = '';
+      if (bgContainer) {
+        bgContainer.innerHTML = '';
       }
     };
   }, [theme]);
