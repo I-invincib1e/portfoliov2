@@ -54,76 +54,49 @@ export const siteConfig = {
 // All projects in unified format
 export const allProjects = [
   {
-    title: "AI Prompt Generator",
-    description: "Build a prompt generator tool that suggests better prompts for different LLMs (Gemini, GPT, Claude, etc.).",
-    image: "https://images.pexels.com/photos/7567444/pexels-photo-7567444.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    tags: ["React", "TypeScript", "OpenAI API", "AI"],
-    link: "#",
-    github: "https://github.com/username/ai-prompt-generator",
+    title: "Pyscrape",
+    description: "Professional Python Web Scraper with Multi-Backend Support - Built by analyzing simple scrapers and integrating powerful libraries.",
+    image: "https://images.pexels.com/photos/577585/pexels-photo-577585.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    tags: ["Python", "Web Scraping", "BeautifulSoup", "Selenium"],
+    link: "https://github.com/I-invincib1e/Pyscrape",
+    github: "https://github.com/I-invincib1e/Pyscrape",
     featured: true
   },
   {
-    title: "Mini LLM Chatbot",
-    description: "A chatbot with presets using Groq or TypeGPT API to interact with different models.",
-    image: "https://images.pexels.com/photos/6153354/pexels-photo-6153354.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    tags: ["React", "TypeScript", "Groq API", "AI"],
-    link: "#",
-    github: "https://github.com/username/mini-llm-chatbot",
-    featured: true
-  },
-  {
-    title: "Modern Portfolio Website",
-    description: "The current responsive portfolio website built with React, TypeScript, and GSAP animations.",
-    image: "https://images.pexels.com/photos/196645/pexels-photo-196645.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    tags: ["React", "TypeScript", "GSAP", "Styled Components"],
-    link: "#",
-    github: "https://github.com/username/portfolio-website",
-    featured: true
-  },
-  {
-    title: "Data Dashboard with Charts",
-    description: "Interactive dashboard pulling public data (COVID-19 or Stock Data) with visualizations using chart.js and Tailwind CSS.",
+    title: "CleanEngine",
+    description: "Automated Data Cleaning, Profiling, and EDA in One Engine - Streamline your data preprocessing workflow.",
     image: "https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    tags: ["React", "Chart.js", "Tailwind CSS", "Public APIs"],
-    link: "#",
-    github: "https://github.com/username/data-dashboard",
+    tags: ["Python", "Data Cleaning", "EDA", "Pandas"],
+    link: "https://github.com/I-invincib1e/CleanEngine",
+    github: "https://github.com/I-invincib1e/CleanEngine",
     featured: true
   },
   {
-    title: "EDA on Real-World Dataset",
-    description: "Exploratory Data Analysis on a Kaggle dataset showcasing insights through a Jupyter Notebook with markdown explanations.",
-    image: "https://images.pexels.com/photos/590016/pexels-photo-590016.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    tags: ["Python", "Pandas", "Data Analysis", "Jupyter"],
-    link: "#",
-    github: "https://github.com/username/kaggle-eda-project",
+    title: "Go-Pro",
+    description: "Collection of small, practical, and beginner-friendly Go projects — perfect for learning and building a useful toolkit.",
+    image: "https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    tags: ["Go", "Golang", "Backend", "Learning"],
+    link: "https://github.com/I-invincib1e/Go-Pro",
+    github: "https://github.com/I-invincib1e/Go-Pro",
     featured: true
   },
   {
-    title: "E-Commerce Store Front",
-    description: "A modern e-commerce storefront with shopping cart and checkout functionality.",
-    image: "https://images.pexels.com/photos/5632402/pexels-photo-5632402.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    tags: ["Next.js", "TypeScript", "Stripe", "Tailwind CSS"],
-    link: "#",
-    github: "https://github.com/username/ecommerce-store",
-    featured: false
+    title: "Quick-Link",
+    description: "Quick Link URL Shortener - Fast and efficient URL shortening service for simplified link management.",
+    image: "https://images.pexels.com/photos/1181467/pexels-photo-1181467.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    tags: ["URL Shortener", "Web App", "JavaScript", "Backend"],
+    link: "https://github.com/I-invincib1e/Quick-Link",
+    github: "https://github.com/I-invincib1e/Quick-Link",
+    featured: true
   },
   {
-    title: "Weather Application",
-    description: "A weather application that displays current weather and forecast data for any location.",
-    image: "https://images.pexels.com/photos/2448749/pexels-photo-2448749.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    tags: ["React", "Weather API", "CSS", "JavaScript"],
-    link: "#",
-    github: "https://github.com/username/weather-app",
-    featured: false
-  },
-  {
-    title: "Task Management App",
-    description: "A task management application with drag-and-drop functionality for organizing tasks.",
-    image: "https://images.pexels.com/photos/3243/pen-calendar-to-do-checklist.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    tags: ["React", "TypeScript", "Firebase", "Tailwind CSS"],
-    link: "#",
-    github: "https://github.com/username/task-management",
-    featured: false
+    title: "Here i come Python",
+    description: "Python Learning Guide: Complete Programming Education - Comprehensive resource for mastering Python from basics to advanced.",
+    image: "https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    tags: ["Python", "Education", "Tutorial", "Learning"],
+    link: "https://github.com/I-invincib1e/Here-i-come-Python",
+    github: "https://github.com/I-invincib1e/Here-i-come-Python",
+    featured: true
   }
 ];
 
