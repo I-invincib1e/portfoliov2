@@ -20,9 +20,12 @@ const CertificationsPage: React.FC = () => {
     // Scroll to top when page loads
     window.scrollTo(0, 0);
     
+    // Capture ref value for cleanup
+    const bgElementsContainer = backgroundElementsRef.current;
+    
     // Create floating background elements
     const createBackgroundElements = () => {
-      if (!backgroundElementsRef.current) return;
+      if (!bgElementsContainer) return;
       
       // Create floating elements
       for (let i = 0; i < 5; i++) {
@@ -45,7 +48,7 @@ const CertificationsPage: React.FC = () => {
           filter: blur(${Math.random() * 10 + 5}px);
         `;
         
-        backgroundElementsRef.current.appendChild(element);
+        bgElementsContainer.appendChild(element);
         
         // Animate each element
         gsap.to(element, {
@@ -59,74 +62,75 @@ const CertificationsPage: React.FC = () => {
       }
     };
     
-    // Hero section animations
+    // Enhanced hero section animations
     const animateHero = () => {
       const tl = gsap.timeline();
       
       tl.fromTo(".hero-title", 
-        { y: 50, opacity: 0 }, 
-        { y: 0, opacity: 1, duration: 0.8, ease: "back.out(1.2)" }
+        { y: 60, opacity: 0, scale: 0.95 }, 
+        { y: 0, opacity: 1, scale: 1, duration: 0.9, ease: "power3.out" }
       )
       .fromTo(".hero-subtitle", 
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.7, ease: "power2.out" },
-        "-=0.4"
+        { y: 40, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
+        "-=0.5"
       )
       .fromTo(".cert-stat",
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, stagger: 0.15, duration: 0.6, ease: "power2.out" },
-        "-=0.3"
+        { y: 30, opacity: 0, scale: 0.9 },
+        { y: 0, opacity: 1, scale: 1, stagger: 0.12, duration: 0.7, ease: "back.out(1.4)" },
+        "-=0.4"
       );
     };
     
-    // Animate certificate items with stagger
+    // Enhanced certificate items animation
     const animateCertItems = () => {
       gsap.fromTo(".cert-item",
-        { x: -30, opacity: 0 },
+        { x: -50, opacity: 0, scale: 0.95 },
         { 
           x: 0, 
-          opacity: 1, 
-          stagger: 0.1,
-          duration: 0.6,
-          ease: "power2.out",
+          opacity: 1,
+          scale: 1, 
+          stagger: 0.12,
+          duration: 0.8,
+          ease: "power3.out",
           scrollTrigger: {
             trigger: ".cert-list",
-            start: "top bottom-=100",
+            start: "top bottom-=120",
             toggleActions: "play none none none"
           }
         }
       );
     };
     
-    // Animate certificate spotlight
+    // Enhanced certificate spotlight animation
     const animateSpotlight = () => {
       const spotlightTl = gsap.timeline({
         scrollTrigger: {
           trigger: ".cert-spotlight",
-          start: "top bottom-=100",
+          start: "top bottom-=120",
           toggleActions: "play none none none"
         }
       });
       
       spotlightTl
         .fromTo(".cert-spotlight-header", 
-          { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.7, ease: "power2.out" }
+          { y: 50, opacity: 0, scale: 0.95 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: "power3.out" }
         )
         .fromTo(".cert-image-wrapper", 
-          { scale: 0.9, opacity: 0 },
-          { scale: 1, opacity: 1, duration: 0.7, ease: "power2.out" },
-          "-=0.4"
+          { scale: 0.85, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.9, ease: "back.out(1.4)" },
+          "-=0.5"
         )
         .fromTo(".cert-badge", 
-          { scale: 0.8, opacity: 0 },
-          { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.7)" },
-          "-=0.3"
+          { scale: 0.7, opacity: 0, rotation: -10 },
+          { scale: 1, opacity: 1, rotation: 0, duration: 0.7, ease: "back.out(2)" },
+          "-=0.4"
         )
         .fromTo(".cert-detail",
-          { y: 20, opacity: 0 },
-          { y: 0, opacity: 1, stagger: 0.1, duration: 0.6, ease: "power2.out" },
-          "-=0.3"
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, stagger: 0.1, duration: 0.7, ease: "power3.out" },
+          "-=0.4"
         );
     };
     
@@ -150,8 +154,8 @@ const CertificationsPage: React.FC = () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
       
       // Clean up background elements
-      if (backgroundElementsRef.current) {
-        backgroundElementsRef.current.innerHTML = '';
+      if (bgElementsContainer) {
+        bgElementsContainer.innerHTML = '';
       }
     };
   }, [theme]);

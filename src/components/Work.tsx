@@ -7,106 +7,6 @@ import Pattern from './Pattern';
 import { useTheme } from '../context/ThemeContext';
 import { allProjects } from '../config/siteConfig';
 
-interface ProjectProps {
-  title: string;
-  description: string;
-  tags: string[];
-  image: string;
-  link: string;
-  github?: string;
-  index: number;
-}
-
-const Project: React.FC<ProjectProps> = ({ title, description, tags, image, link, github, index }) => {
-  const projectRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!projectRef.current) return;
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Create animation for project card
-    gsap.fromTo(
-      projectRef.current,
-      { 
-        y: 60, 
-        opacity: 0 
-      },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: projectRef.current,
-          start: 'top bottom-=50',
-          toggleActions: 'play none none none',
-        },
-        delay: index * 0.2,
-      }
-    );
-
-    // Create hover animation
-    const hoverTl = gsap.timeline({ paused: true });
-    hoverTl.to(projectRef.current.querySelector('.project-image'), {
-      scale: 1.05,
-      duration: 0.4,
-      ease: 'power1.out',
-    });
-
-    // Add event listeners for hover
-    projectRef.current.addEventListener('mouseenter', () => hoverTl.play());
-    projectRef.current.addEventListener('mouseleave', () => hoverTl.reverse());
-
-    return () => {
-      if (projectRef.current) {
-        projectRef.current.removeEventListener('mouseenter', () => hoverTl.play());
-        projectRef.current.removeEventListener('mouseleave', () => hoverTl.reverse());
-      }
-    };
-  }, [index]);
-
-  return (
-    <div 
-      ref={projectRef} 
-      className="group relative overflow-hidden bg-dark-800/50 rounded-lg transition-all duration-300 hover:shadow-xl"
-    >
-      <div className="project-image aspect-video w-full overflow-hidden">
-        <img 
-          src={image} 
-          alt={title} 
-          className="w-full h-full object-cover transition-transform duration-700"
-          loading="lazy"
-        />
-      </div>
-      <div className="p-6">
-        <div className="flex justify-between items-start mb-3">
-          <h3 className="text-xl font-medium text-heading">{title}</h3>
-          <a 
-            href={link} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="text-accent-500 hover:text-accent-400 transition-colors"
-          >
-            <ExternalLink size={18} />
-          </a>
-        </div>
-        <p className="text-dark-300 mb-4 text-body">{description}</p>
-        <div className="flex flex-wrap gap-2">
-          {tags.map((tag) => (
-            <span 
-              key={tag} 
-              className="text-xs px-2 py-1 rounded-full bg-dark-700/50 text-dark-200 text-accent"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const Work: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -119,53 +19,56 @@ const Work: React.FC = () => {
 
     gsap.registerPlugin(ScrollTrigger);
 
-    // Animate the heading
+    // Animate the heading with enhanced effect
     gsap.fromTo(
       headingRef.current,
-      { y: 50, opacity: 0 },
+      { y: 60, opacity: 0, scale: 0.95 },
       {
         y: 0,
         opacity: 1,
-        duration: 0.8,
-        ease: 'power2.out',
+        scale: 1,
+        duration: 0.9,
+        ease: 'power3.out',
         scrollTrigger: {
           trigger: headingRef.current,
-          start: 'top bottom-=100',
+          start: 'top bottom-=120',
           toggleActions: 'play none none none',
         },
       }
     );
 
-    // Animate the bento box projects
+    // Animate the bento box projects with enhanced stagger
     gsap.fromTo(
       bentoBoxRef.current.querySelectorAll('.bento-item'),
-      { y: 30, opacity: 0 },
+      { y: 50, opacity: 0, scale: 0.95 },
       {
         y: 0,
         opacity: 1,
-        stagger: 0.1,
-        duration: 0.8,
-        ease: 'power2.out',
+        scale: 1,
+        stagger: 0.12,
+        duration: 0.9,
+        ease: 'power3.out',
         scrollTrigger: {
           trigger: bentoBoxRef.current,
-          start: 'top bottom-=50',
+          start: 'top bottom-=80',
           toggleActions: 'play none none none',
         },
       }
     );
 
-    // Animate the experience section
+    // Animate the experience section with scale
     gsap.fromTo(
       experienceRef.current,
-      { y: 30, opacity: 0 },
+      { y: 50, opacity: 0, scale: 0.95 },
       {
         y: 0,
         opacity: 1,
-        duration: 0.8,
-        ease: 'power2.out',
+        scale: 1,
+        duration: 0.9,
+        ease: 'power3.out',
         scrollTrigger: {
           trigger: experienceRef.current,
-          start: 'top bottom-=50',
+          start: 'top bottom-=80',
           toggleActions: 'play none none none',
         },
       }
