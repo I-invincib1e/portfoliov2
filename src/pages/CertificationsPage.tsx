@@ -328,12 +328,51 @@ const PageContainer = styled.div`
   overflow-x: hidden;
   background: var(--dark-950, #020617);
   color: var(--dark-50, #f8fafc);
-  
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: -0.5px -0.5px;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 10%;
+    left: 15%;
+    width: 25vw;
+    height: 25vw;
+    background: linear-gradient(135deg, #14b8a6 0%, #3b82f6 100%);
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    z-index: 0;
+    pointer-events: none;
+  }
+
   &[data-theme="light"] {
     background: #fcfcfc;
     color: #2d3748;
+
+    &::before {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    }
+
+    &::after {
+      opacity: 0.2;
+    }
   }
-  
+
   @media (max-width: 640px) {
     padding-top: 70px;
   }

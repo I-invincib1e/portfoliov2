@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Brain, Layout, Zap, PackagePlus } from 'lucide-react';
 import styled from 'styled-components';
 import { skills, technologies } from '../config/siteConfig';
+import { useTheme } from '../context/ThemeContext';
 
 interface SkillItemProps {
   icon: React.ReactNode;
@@ -60,6 +61,7 @@ const SkillItem: React.FC<SkillItemProps> = ({ icon, title, description, index }
 };
 
 const About: React.FC = () => {
+  const { theme } = useTheme();
   const sectionRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const stickyTitleRef = useRef<HTMLDivElement>(null);
@@ -202,7 +204,13 @@ const About: React.FC = () => {
       id="about"
       ref={sectionRef}
       className="section bg-dark-900 noise-bg relative"
+      data-theme={theme}
     >
+      <HeroBackground data-theme={theme}>
+        <div className="blob blob-1"></div>
+        <div className="blob blob-2"></div>
+        <div className="grid-overlay"></div>
+      </HeroBackground>
       <StickyContainer>
         {/* Left side - Sticky content */}
         <StickyTitleColumn ref={stickyTitleRef}>
@@ -265,9 +273,74 @@ const AboutSection = styled.section`
   position: relative;
   min-height: 100vh;
   padding: 4rem 0;
-  
+  overflow: hidden;
+
+  &[data-theme="light"] {
+    background-color: var(--light-pale-lime, #F4F8D3);
+  }
+
   @media (min-width: 768px) {
     padding: 6rem 0;
+  }
+`;
+
+const HeroBackground = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    z-index: -1;
+    will-change: transform;
+  }
+
+  .blob-1 {
+    top: 20%;
+    right: 10%;
+    width: 30vw;
+    height: 30vw;
+    background: linear-gradient(135deg, #f97316 0%, #155e75 100%);
+  }
+
+  .blob-2 {
+    bottom: 10%;
+    left: 15%;
+    width: 25vw;
+    height: 25vw;
+    background: linear-gradient(135deg, #14b8a6 0%, #3b82f6 100%);
+  }
+
+  .grid-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: -0.5px -0.5px;
+    z-index: -1;
+  }
+
+  &[data-theme="light"] {
+    .blob-1, .blob-2 {
+      opacity: 0.2;
+    }
+
+    .grid-overlay {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    }
   }
 `;
 
