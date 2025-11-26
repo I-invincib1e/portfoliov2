@@ -32,8 +32,8 @@ function App() {
 
   return (
     <ThemeProvider>
-      <MaskReveal>
-        <Router>
+      <Router>
+        <MaskReveal>
           <div className="min-h-screen bg-dark-950 text-dark-50 noise-bg transition-colors duration-300" data-theme="dark">
             <ScrollIndicator />
             <Navbar />
@@ -46,8 +46,8 @@ function App() {
               </Routes>
             </Suspense>
           </div>
-        </Router>
-      </MaskReveal>
+        </MaskReveal>
+      </Router>
     </ThemeProvider>
   );
 }
