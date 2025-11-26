@@ -336,12 +336,13 @@ const PageContainer = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-    background-size: 40px 40px;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+    background-size: 60px 60px;
     background-position: -0.5px -0.5px;
     z-index: 0;
     pointer-events: none;
+    opacity: 0.4;
   }
 
   &::after {
@@ -353,8 +354,8 @@ const PageContainer = styled.div`
     height: 25vw;
     background: linear-gradient(135deg, #14b8a6 0%, #3b82f6 100%);
     border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.4;
+    filter: blur(100px);
+    opacity: 0.25;
     z-index: 0;
     pointer-events: none;
   }
@@ -364,12 +365,13 @@ const PageContainer = styled.div`
     color: #2d3748;
 
     &::before {
-      background-image: linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+      background-image: linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+      opacity: 0.3;
     }
 
     &::after {
-      opacity: 0.2;
+      opacity: 0.12;
     }
   }
 

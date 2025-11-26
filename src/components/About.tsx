@@ -326,10 +326,11 @@ const HeroBackground = styled.div`
   .blob {
     position: absolute;
     border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.4;
+    filter: blur(100px);
+    opacity: 0.25;
     z-index: -1;
     will-change: transform;
+    transition: opacity 0.5s ease;
   }
 
   .blob-1 {
@@ -354,21 +355,23 @@ const HeroBackground = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-    background-size: 40px 40px;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+    background-size: 60px 60px;
     background-position: -0.5px -0.5px;
     z-index: -1;
+    opacity: 0.4;
   }
 
   &[data-theme="light"] {
     .blob-1, .blob-2 {
-      opacity: 0.2;
+      opacity: 0.12;
     }
 
     .grid-overlay {
-      background-image: linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+      background-image: linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+      opacity: 0.3;
     }
   }
 `;

@@ -273,10 +273,11 @@ const HeroBackground = styled.div`
   .blob {
     position: absolute;
     border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.4;
+    filter: blur(100px);
+    opacity: 0.25;
     z-index: -1;
     will-change: transform;
+    transition: opacity 0.5s ease;
   }
 
   .blob-1 {
@@ -301,21 +302,23 @@ const HeroBackground = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-    background-size: 40px 40px;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+    background-size: 60px 60px;
     background-position: -0.5px -0.5px;
     z-index: -1;
+    opacity: 0.4;
   }
 
   &[data-theme="light"] {
     .blob-1, .blob-2 {
-      opacity: 0.2;
+      opacity: 0.12;
     }
 
     .grid-overlay {
-      background-image: linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+      background-image: linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+      opacity: 0.3;
     }
   }
 `;
@@ -407,24 +410,36 @@ const BentoPanel = styled.div`
   flex: 1;
   overflow: hidden;
   cursor: pointer;
-  border-radius: 0;
-  transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
-  background: rgba(15, 23, 42, 0.6);
-  border-top: 1px solid rgba(51, 65, 85, 0.5);
-  border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+  border-radius: 8px;
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(51, 65, 85, 0.3);
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(12px);
   margin: 0 4px;
-  
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.05), rgba(20, 184, 166, 0.05));
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    border-radius: 8px;
+  }
+
   &:hover {
     flex: 4;
-    border-top-color: rgba(249, 115, 22, 0.4);
-    border-bottom-color: rgba(249, 115, 22, 0.4);
-    box-shadow: 0 10px 30px -15px rgba(2, 6, 23, 0.7);
-    transform: translateY(-5px);
+    border-color: rgba(249, 115, 22, 0.4);
+    box-shadow: 0 20px 60px -15px rgba(249, 115, 22, 0.3), 0 0 0 1px rgba(249, 115, 22, 0.1);
+    transform: translateY(-8px) scale(1.02);
+
+    &::before {
+      opacity: 1;
+    }
   }
   
   &[data-theme="light"] {

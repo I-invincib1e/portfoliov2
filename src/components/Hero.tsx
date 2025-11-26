@@ -39,21 +39,52 @@ const Hero: React.FC = () => {
       elements.forEach(el => el && gsap.set(el, props));
     });
     
+    // Parallax scroll effects for content
+    if (heroContentRef.current) {
+      gsap.to(heroContentRef.current, {
+        y: 150,
+        opacity: 0.3,
+        scale: 0.95,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 1.5,
+        }
+      });
+    }
+
+    // Parallax for background blobs
+    if (bgBlobOneRef.current) {
+      gsap.to(bgBlobOneRef.current, {
+        y: -100,
+        x: 50,
+        scale: 1.2,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 2,
+        }
+      });
+    }
+
+    if (bgBlobTwoRef.current) {
+      gsap.to(bgBlobTwoRef.current, {
+        y: -120,
+        x: -50,
+        scale: 0.8,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 2.5,
+        }
+      });
+    }
+
     // Create master timeline with improved performance settings
-    const master = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top top",
-        end: "bottom top",
-        pin: true,
-        anticipatePin: 1,
-        pinReparent: true,
-        pinSpacing: true,
-        refreshPriority: 1,
-        fastScrollEnd: true, // Better performance on fast scrolling
-        preventOverlaps: true, // Prevent animation conflicts
-      }
-    });
+    const master = gsap.timeline();
     
     // Orchestrated entrance animations with better easing and timing
     const entranceTimeline = gsap.timeline();
@@ -699,53 +730,57 @@ const HeroBackground = styled.div`
   height: 100%;
   z-index: 1;
   overflow: hidden;
-  
+  pointer-events: none;
+
   .blob {
     position: absolute;
     border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.4;
+    filter: blur(100px);
+    opacity: 0.25;
     z-index: -1;
     will-change: transform;
+    transition: opacity 0.5s ease;
   }
-  
+
   .blob-1 {
-    top: 20%;
-    right: 10%;
-    width: 30vw;
-    height: 30vw;
+    top: 15%;
+    right: 5%;
+    width: 35vw;
+    height: 35vw;
     background: linear-gradient(135deg, #f97316 0%, #155e75 100%);
   }
-  
+
   .blob-2 {
-    bottom: 10%;
-    left: 15%;
-    width: 25vw;
-    height: 25vw;
+    bottom: 5%;
+    left: 10%;
+    width: 30vw;
+    height: 30vw;
     background: linear-gradient(135deg, #14b8a6 0%, #3b82f6 100%);
   }
-  
+
   .grid-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-    background-size: 40px 40px;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+    background-size: 60px 60px;
     background-position: -0.5px -0.5px;
     z-index: -1;
+    opacity: 0.4;
   }
-  
+
   &[data-theme="light"] {
     .blob-1, .blob-2 {
-      opacity: 0.2;
+      opacity: 0.12;
     }
-    
+
     .grid-overlay {
-      background-image: linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+      background-image: linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+      opacity: 0.3;
     }
   }
 `;
