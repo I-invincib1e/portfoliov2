@@ -400,37 +400,46 @@ const NameWrapper = styled.span`
 `;
 
 const SpecialLetter = styled.span`
-  color: var(--accent-500, #f97316);
-  font-weight: 500;
+  color: var(--electric-cyan);
+  font-weight: 900;
   display: inline-block;
   position: relative;
   will-change: transform, text-shadow;
-  
+  animation: pulse-glow 2s ease-in-out infinite;
+
   [data-theme="light"] & {
-    color: var(--light-accent, #9394A5);
+    color: var(--electric-cyan);
+    animation: none;
   }
 `;
 
 const HeroSubtitle = styled.p`
-  font-size: 1rem;
-  line-height: 1.6;
-  color: var(--dark-300, #cbd5e1);
+  font-family: var(--font-mono);
+  font-size: clamp(0.875rem, 2vw, 1.125rem);
+  line-height: 1.8;
+  color: var(--text-secondary);
   white-space: normal;
   word-wrap: break-word;
   hyphens: none;
   will-change: transform, opacity;
-  
-  @media (min-width: 640px) {
-    font-size: 1.125rem;
+  max-width: 600px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  border-left: 3px solid var(--electric-cyan);
+  padding-left: 1.5rem;
+  position: relative;
+
+  &::before {
+    content: '//';
+    position: absolute;
+    left: 0.5rem;
+    color: var(--electric-cyan);
+    opacity: 0.6;
   }
-  
-  @media (min-width: 768px) {
-    font-size: 1.25rem;
-    max-width: 32rem;
-  }
-  
+
   [data-theme="light"] & {
-    color: var(--light-text, #484B6A);
+    color: var(--text-secondary);
+    border-left-color: var(--electric-cyan);
   }
 `;
 
@@ -469,9 +478,11 @@ const SocialIconLink = styled.a`
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  color: var(--dark-300, #cbd5e1);
-  transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  
+  color: var(--text-secondary);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 2px solid transparent;
+  background: rgba(10, 14, 39, 0.5);
+
   @media (max-width: 375px) {
     width: 40px;
     height: 40px;
