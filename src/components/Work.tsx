@@ -3,7 +3,6 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ExternalLink, Github, Briefcase } from 'lucide-react';
 import styled from 'styled-components';
-import Pattern from './Pattern';
 import { useTheme } from '../context/ThemeContext';
 import { allProjects } from '../config/siteConfig';
 
@@ -12,12 +11,44 @@ const Work: React.FC = () => {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const bentoBoxRef = useRef<HTMLDivElement>(null);
   const experienceRef = useRef<HTMLDivElement>(null);
+  const bgBlobOneRef = useRef<HTMLDivElement>(null);
+  const bgBlobTwoRef = useRef<HTMLDivElement>(null);
+  const gridOverlayRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
 
   useEffect(() => {
     if (!sectionRef.current || !headingRef.current || !bentoBoxRef.current || !experienceRef.current) return;
 
     gsap.registerPlugin(ScrollTrigger);
+
+    // Animate background blobs
+    if (bgBlobOneRef.current && bgBlobTwoRef.current) {
+      const blobAnimations = [
+        gsap.to(bgBlobOneRef.current, {
+          motionPath: {
+            path: "M0,0 Q20,10 40,0 T80,0",
+            autoRotate: false,
+          },
+          scale: 1.08,
+          duration: 20,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+        }),
+        gsap.to(bgBlobTwoRef.current, {
+          motionPath: {
+            path: "M0,0 Q-15,-8 -30,0 T-60,0",
+            autoRotate: false,
+          },
+          scale: 0.92,
+          duration: 25,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+          delay: 0.5,
+        })
+      ];
+    }
 
     // Animate the heading with enhanced effect
     gsap.fromTo(
@@ -89,7 +120,11 @@ const Work: React.FC = () => {
       className="section noise-bg relative"
       data-theme={theme}
     >
-      <Pattern />
+      <HeroBackground data-theme={theme}>
+        <div className="blob blob-1" ref={bgBlobOneRef}></div>
+        <div className="blob blob-2" ref={bgBlobTwoRef}></div>
+        <div className="grid-overlay" ref={gridOverlayRef}></div>
+      </HeroBackground>
       <div className="container mx-auto px-4 relative z-10">
         <WorkHeading ref={headingRef} className="text-heading">
           Recent Work / Projects<span className="dot">.</span>
@@ -189,16 +224,16 @@ const WorkSection = styled.section`
   overflow: hidden;
   padding-top: 4rem;
   padding-bottom: 6rem;
-  
+
   @media (min-width: 768px) {
     padding-top: 6rem;
     padding-bottom: 8rem;
   }
-  
+
   &[data-theme="light"] {
     background-color: var(--light-pale-lime, #F4F8D3);
   }
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -208,7 +243,7 @@ const WorkSection = styled.section`
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(249, 115, 22, 0.3), transparent);
   }
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -218,10 +253,70 @@ const WorkSection = styled.section`
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(249, 115, 22, 0.3), transparent);
   }
-  
+
   &[data-theme="light"]::before,
   &[data-theme="light"]::after {
     background: linear-gradient(90deg, transparent, rgba(142, 125, 190, 0.3), transparent);
+  }
+`;
+
+const HeroBackground = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    z-index: -1;
+    will-change: transform;
+  }
+
+  .blob-1 {
+    top: 20%;
+    right: 10%;
+    width: 30vw;
+    height: 30vw;
+    background: linear-gradient(135deg, #f97316 0%, #155e75 100%);
+  }
+
+  .blob-2 {
+    bottom: 10%;
+    left: 15%;
+    width: 25vw;
+    height: 25vw;
+    background: linear-gradient(135deg, #14b8a6 0%, #3b82f6 100%);
+  }
+
+  .grid-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: -0.5px -0.5px;
+    z-index: -1;
+  }
+
+  &[data-theme="light"] {
+    .blob-1, .blob-2 {
+      opacity: 0.2;
+    }
+
+    .grid-overlay {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    }
   }
 `;
 

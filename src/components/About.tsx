@@ -67,6 +67,47 @@ const About: React.FC = () => {
   const stickyTitleRef = useRef<HTMLDivElement>(null);
   const techGridRef = useRef<HTMLDivElement>(null);
   const paragraphRef = useRef<HTMLParagraphElement>(null);
+  const bgBlobOneRef = useRef<HTMLDivElement>(null);
+  const bgBlobTwoRef = useRef<HTMLDivElement>(null);
+  const gridOverlayRef = useRef<HTMLDivElement>(null);
+
+  // Animate background blobs
+  useEffect(() => {
+    if (!bgBlobOneRef.current || !bgBlobTwoRef.current) return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Animate background blobs
+    const blobAnimations = [
+      gsap.to(bgBlobOneRef.current, {
+        motionPath: {
+          path: "M0,0 Q20,10 40,0 T80,0",
+          autoRotate: false,
+        },
+        scale: 1.08,
+        duration: 20,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      }),
+      gsap.to(bgBlobTwoRef.current, {
+        motionPath: {
+          path: "M0,0 Q-15,-8 -30,0 T-60,0",
+          autoRotate: false,
+        },
+        scale: 0.92,
+        duration: 25,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        delay: 0.5,
+      })
+    ];
+
+    return () => {
+      blobAnimations.forEach(anim => anim?.kill());
+    };
+  }, []);
 
   // Animate tech logos on scroll with enhanced effect
   useEffect(() => {
@@ -76,10 +117,10 @@ const About: React.FC = () => {
 
     const gridElement = techGridRef.current;
     const techLogos = gridElement.querySelectorAll('.tech-logo');
-    
+
     // Set initial state for all tech logos
-    gsap.set(techLogos, { 
-      scale: 0.7, 
+    gsap.set(techLogos, {
+      scale: 0.7,
       opacity: 0,
       y: 20
     });
@@ -100,7 +141,7 @@ const About: React.FC = () => {
       },
       once: true
     });
-    
+
     return () => {
       ScrollTrigger.getAll().forEach(trigger => {
         if (trigger.vars.trigger === gridElement) {
@@ -110,55 +151,43 @@ const About: React.FC = () => {
     };
   }, []);
 
-  // Create parallax effect for the section - OPTIMIZED
+  // Scroll-based animation - sticky title while content scrolls
   useEffect(() => {
-    if (!sectionRef.current) return;
+    if (!contentRef.current || !stickyTitleRef.current) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
-    const sectionElement = sectionRef.current;
+    const contentElement = contentRef.current;
+    const titleElement = stickyTitleRef.current;
 
-    // Use transform for better performance instead of backgroundPosition
-    const parallaxElement = document.createElement('div');
-    parallaxElement.style.position = 'absolute';
-    parallaxElement.style.top = '0';
-    parallaxElement.style.left = '0';
-    parallaxElement.style.width = '100%';
-    parallaxElement.style.height = '100%';
-    parallaxElement.style.backgroundImage = 'var(--bg-gradient, linear-gradient(135deg, rgba(15, 23, 42, 0), rgba(15, 23, 42, 0.1)))';
-    parallaxElement.style.backgroundSize = 'cover';
-    parallaxElement.style.zIndex = '-1';
-    
-    sectionElement.appendChild(parallaxElement);
+    // Animate content items as they come into view
+    const contentItems = contentElement.querySelectorAll('.content-section');
 
-    // One-way parallax using transform for better performance
-    ScrollTrigger.create({
-      trigger: sectionElement,
-      start: 'top bottom',
-      end: 'bottom top',
-      scrub: 0.5,
-      onUpdate: (self) => {
-        if (self.direction === 1) {
-          gsap.to(parallaxElement, {
-            y: `${self.progress * 20}%`,
-            ease: 'none',
-            overwrite: 'auto',
-            duration: 0.1
-          });
+    contentItems.forEach((item) => {
+      gsap.fromTo(item,
+        {
+          opacity: 0,
+          y: 60,
+          scale: 0.95
+        },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: item,
+            start: 'top bottom-=100',
+            end: 'top center',
+            toggleActions: 'play none none none',
+          }
         }
-      }
+      );
     });
-    
+
     return () => {
-      ScrollTrigger.getAll().forEach(trigger => {
-        if (trigger.vars.trigger === sectionElement) {
-          trigger.kill();
-        }
-      });
-      
-      if (parallaxElement.parentNode === sectionElement) {
-        sectionElement.removeChild(parallaxElement);
-      }
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
   }, []);
 
@@ -207,9 +236,9 @@ const About: React.FC = () => {
       data-theme={theme}
     >
       <HeroBackground data-theme={theme}>
-        <div className="blob blob-1"></div>
-        <div className="blob blob-2"></div>
-        <div className="grid-overlay"></div>
+        <div className="blob blob-1" ref={bgBlobOneRef}></div>
+        <div className="blob blob-2" ref={bgBlobTwoRef}></div>
+        <div className="grid-overlay" ref={gridOverlayRef}></div>
       </HeroBackground>
       <StickyContainer>
         {/* Left side - Sticky content */}
@@ -229,7 +258,7 @@ const About: React.FC = () => {
         
         {/* Right side - Scrolling content */}
         <ContentColumn ref={contentRef}>
-          <ContentSection>
+          <ContentSection className="content-section">
             <SectionSubtitle className="text-heading">My Expertise</SectionSubtitle>
             <SkillsList>
               {skills.map((skill, index) => (
@@ -247,7 +276,7 @@ const About: React.FC = () => {
             <SectionDivider />
           </ContentSection>
           
-          <ContentSection>
+          <ContentSection className="content-section">
             <SectionSubtitle className="text-heading">Technologies I Work With</SectionSubtitle>
             <TechLogoContainer ref={techGridRef}>
               {technologies.map((tech, index) => (
