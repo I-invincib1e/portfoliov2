@@ -1,13 +1,12 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { inject as injectAnalytics } from '@vercel/analytics';
-import { injectSpeedInsights } from '@vercel/speed-insights';
 import App from './App';
 import './index.css';
 
 if (typeof window !== 'undefined' && import.meta.env.PROD) {
-  injectAnalytics();
-  injectSpeedInsights();
+  const load = (name: string) => import(/* @vite-ignore */ name);
+  load('@vercel/analytics').then((m: { inject: () => void }) => m.inject()).catch(() => {});
+  load('@vercel/speed-insights').then((m: { injectSpeedInsights: () => void }) => m.injectSpeedInsights()).catch(() => {});
 }
 
 // Performance monitoring
