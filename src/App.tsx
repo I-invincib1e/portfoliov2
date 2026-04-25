@@ -10,6 +10,8 @@ const HomePage = lazy(() => import('./pages/HomePage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const ProjectsPage = lazy(() => import('./pages/ProjectsPage'));
 const CertificationsPage = lazy(() => import('./pages/CertificationsPage'));
+const JournalPage = lazy(() => import('./pages/JournalPage'));
+const JournalPostPage = lazy(() => import('./pages/JournalPostPage'));
 
 const PageFallback = () => (
   <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -39,6 +41,8 @@ function App() {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/certifications" element={<CertificationsPage />} />
+            <Route path="/journal" element={<JournalPage />} />
+            <Route path="/journal/:slug" element={<JournalPostPage />} />
           </Routes>
         </Suspense>
       </Router>

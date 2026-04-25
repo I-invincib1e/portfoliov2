@@ -1,9 +1,34 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { allProjects } from '../config/siteConfig';
+import { allProjects as fallbackProjects } from '../config/siteConfig';
+import { fetchProjects, Project } from '../lib/supabase';
 import Footer from '../components/Footer';
 import { useSeo, SITE_URL, breadcrumbJsonLd } from '../lib/seo';
+
+type DisplayProject = {
+  title: string;
+  description: string;
+  link: string;
+  tags: string[];
+};
+
+const toDisplay = (rows: Project[] | null): DisplayProject[] => {
+  if (rows && rows.length > 0) {
+    return rows.map(p => ({
+      title: p.title,
+      description: p.summary || p.description,
+      link: p.live_url || p.repo_url || '#',
+      tags: p.tags ?? [],
+    }));
+  }
+  return fallbackProjects.map(p => ({
+    title: p.title,
+    description: p.description,
+    link: p.link,
+    tags: p.tags,
+  }));
+};
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,7 +45,7 @@ const ProjectsPage = () => {
         '@id': `${SITE_URL}/projects`,
         name: 'Selected Work',
         url: `${SITE_URL}/projects`,
-        hasPart: allProjects.map(p => ({
+        hasPart: fallbackProjects.map(p => ({
           '@type': 'CreativeWork',
           name: p.title,
           description: p.description,
@@ -36,6 +61,11 @@ const ProjectsPage = () => {
     ],
   });
   const ref = useRef<HTMLElement>(null);
+  const [projects, setProjects] = useState<DisplayProject[]>(() => toDisplay(null));
+
+  useEffect(() => {
+    fetchProjects().then(rows => setProjects(toDisplay(rows)));
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -48,7 +78,7 @@ const ProjectsPage = () => {
       });
     }, ref);
     return () => ctx.revert();
-  }, []);
+  }, [projects]);
 
   return (
     <main ref={ref} id="main">
@@ -68,23 +98,13 @@ const ProjectsPage = () => {
       <section style={{ padding: '40px 0 120px' }}>
         <div className="container-ed">
           <div style={{ borderTop: '1px solid var(--rule)' }}>
-            {allProjects.map((p, i) => (
+            {projects.map((p, i) => (
               <a
                 key={p.title}
                 href={p.link}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="proj-row"
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '60px 1.2fr 2fr 1.4fr 64px',
-                  gap: 24,
-                  padding: '40px 0',
-                  borderBottom: '1px solid var(--rule)',
-                  alignItems: 'center',
-                  color: 'inherit',
-                  textDecoration: 'none',
-                }}
               >
                 <span className="numtag">/{String(i + 1).padStart(2, '0')}</span>
                 <div>
@@ -121,6 +141,34 @@ const ProjectsPage = () => {
         </div>
       </section>
       <Footer />
+      <style>{`
+        .proj-row {
+          display: grid;
+          grid-template-columns: 60px 1.2fr 2fr 1.4fr 64px;
+          gap: 24px;
+          padding: 40px 0;
+          border-bottom: 1px solid var(--rule);
+          align-items: center;
+          color: inherit;
+          text-decoration: none;
+        }
+        @media (max-width: 980px) {
+          .proj-row {
+            grid-template-columns: 40px 1fr 48px;
+            grid-template-areas:
+              "num title arrow"
+              ". desc desc"
+              ". tags tags";
+            row-gap: 14px;
+            padding: 28px 0;
+          }
+          .proj-row > :nth-child(1) { grid-area: num; }
+          .proj-row > :nth-child(2) { grid-area: title; }
+          .proj-row > :nth-child(3) { grid-area: desc; }
+          .proj-row > :nth-child(4) { grid-area: tags; }
+          .proj-row > :nth-child(5) { grid-area: arrow; }
+        }
+      `}</style>
     </main>
   );
 };

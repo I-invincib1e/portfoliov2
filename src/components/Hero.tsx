@@ -1,23 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { Link } from 'react-router-dom';
-import { fetchAvailability, fetchNow, NowWidget } from '../lib/supabase';
+import { fetchNow, NowWidget } from '../lib/supabase';
 import { siteConfig } from '../config/siteConfig';
 
 type HeroProps = { ready?: boolean };
 
 const Hero = ({ ready = true }: HeroProps) => {
   const ref = useRef<HTMLDivElement>(null);
-  const [availMsg, setAvailMsg] = useState('Available for select Q3 collaborations');
-  const [availStatus, setAvailStatus] = useState('available');
   const [now, setNow] = useState<NowWidget | null>(null);
   const [time, setTime] = useState('');
 
   useEffect(() => {
-    fetchAvailability().then(a => {
-      if (a?.message) setAvailMsg(a.message);
-      if (a?.status) setAvailStatus(a.status);
-    });
     fetchNow().then(n => setNow(n));
   }, []);
 
@@ -73,8 +67,7 @@ const Hero = ({ ready = true }: HeroProps) => {
     };
   }, [ready]);
 
-  const closed = availStatus === 'closed';
-  const ctaLabel = closed ? 'Currently closed — join waitlist' : 'Commission a project';
+  const ctaLabel = 'Commission a project';
 
   return (
     <section
@@ -167,7 +160,7 @@ const Hero = ({ ready = true }: HeroProps) => {
       <div className="container-ed" style={{ position: 'relative', zIndex: 2 }}>
         <div className="hero-fade" style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, marginBottom: 28 }}>
           <div className="eyebrow">Portfolio / 2026 Edition</div>
-          <span className="pill"><span className="dot" />{availMsg}</span>
+          <div className="eyebrow" style={{ color: 'var(--ink-muted)' }}>Mumbai · Edition 04</div>
         </div>
 
         <h1
@@ -226,11 +219,9 @@ const Hero = ({ ready = true }: HeroProps) => {
 
           <div style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'flex-end', gap: 14 }}>
             <Link
-              to={closed ? '/contact' : '/contact'}
+              to="/contact"
               className="btn-ink hero-cta"
               data-magnetic
-              aria-disabled={closed}
-              style={closed ? { opacity: 0.65 } : undefined}
             >
               <span className="ember-asterisk" aria-hidden>✦</span>
               {ctaLabel}
@@ -300,6 +291,15 @@ const Hero = ({ ready = true }: HeroProps) => {
           animation: spin-ember 6s linear infinite;
         }
         @keyframes spin-ember { to { transform: rotate(360deg); } }
+        @media (max-width: 720px) {
+          .hero-side { display: none; }
+        }
+        @media (max-width: 768px) {
+          .hero-numeral { font-size: min(80vw, 22rem) !important; top: 8vh !important; right: -8vw !important; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hero-strip, .hero-cta .ember-asterisk { animation: none !important; transform: none !important; }
+        }
       `}</style>
     </section>
   );
