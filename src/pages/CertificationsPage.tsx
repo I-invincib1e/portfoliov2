@@ -1,9 +1,38 @@
 import { certificates } from '../config/siteConfig';
 import Footer from '../components/Footer';
+import { useSeo, SITE_URL, breadcrumbJsonLd } from '../lib/seo';
 
 const CertificationsPage = () => {
+  useSeo({
+    title: 'Archive & Certifications — Rushikesh Pawar',
+    description: 'Verified certifications by Rushikesh Pawar from Google, IBM, DeepLearning.AI and more — Python, Machine Learning, Generative AI and Prompt Engineering.',
+    path: '/certifications',
+    keywords: ['Rushikesh Pawar certifications', 'Google Crash Course Python', 'IBM Machine Learning', 'DeepLearning.AI Generative AI', 'Coursera certificates'],
+    jsonLd: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        '@id': `${SITE_URL}/certifications`,
+        name: 'Archive & Certifications',
+        url: `${SITE_URL}/certifications`,
+        hasPart: certificates.map(c => ({
+          '@type': 'EducationalOccupationalCredential',
+          name: c.title,
+          credentialCategory: 'Certificate',
+          recognizedBy: { '@type': 'Organization', name: c.organization },
+          url: c.credentialURL,
+          dateCreated: c.date,
+          identifier: c.credentialID,
+        })),
+      },
+      breadcrumbJsonLd([
+        { name: 'Home', url: `${SITE_URL}/` },
+        { name: 'Archive', url: `${SITE_URL}/certifications` },
+      ]),
+    ],
+  });
   return (
-    <main>
+    <main id="main">
       <section style={{ padding: '160px 0 60px' }}>
         <div className="container-ed">
           <div className="hairline">03 / Archive</div>

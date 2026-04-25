@@ -3,10 +3,38 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { allProjects } from '../config/siteConfig';
 import Footer from '../components/Footer';
+import { useSeo, SITE_URL, breadcrumbJsonLd } from '../lib/seo';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const ProjectsPage = () => {
+  useSeo({
+    title: 'Selected Work — Rushikesh Pawar',
+    description: 'Selected projects by Rushikesh Pawar — Pyscrape, CleanEngine, Go-Pro, Quick-Link and more. Python, Go, React and AI-driven tools shipped from Mumbai.',
+    path: '/projects',
+    keywords: ['Rushikesh Pawar projects', 'React portfolio projects', 'open source AI tools', 'Pyscrape', 'CleanEngine', 'Go-Pro', 'Quick-Link'],
+    jsonLd: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        '@id': `${SITE_URL}/projects`,
+        name: 'Selected Work',
+        url: `${SITE_URL}/projects`,
+        hasPart: allProjects.map(p => ({
+          '@type': 'CreativeWork',
+          name: p.title,
+          description: p.description,
+          url: p.link,
+          keywords: p.tags.join(', '),
+          image: p.image,
+        })),
+      },
+      breadcrumbJsonLd([
+        { name: 'Home', url: `${SITE_URL}/` },
+        { name: 'Work', url: `${SITE_URL}/projects` },
+      ]),
+    ],
+  });
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -23,7 +51,7 @@ const ProjectsPage = () => {
   }, []);
 
   return (
-    <main ref={ref}>
+    <main ref={ref} id="main">
       <section style={{ padding: '160px 0 60px' }}>
         <div className="container-ed">
           <div className="hairline">02 / Selected Work</div>
