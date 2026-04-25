@@ -45,10 +45,21 @@ export async function fetchProjects(opts?: { featuredOnly?: boolean }): Promise<
   return (data ?? []) as Project[];
 }
 
+export type PostChapterKind = 'premise' | 'stakes' | 'hypothesis' | 'friction' | 'resolution' | 'field_note';
+export type PostBlockKind = PostChapterKind | 'paragraph' | 'image' | 'code' | 'quote' | 'list' | 'callout' | 'divider';
+
 export type PostSection = {
-  kind: 'premise' | 'stakes' | 'hypothesis' | 'friction' | 'resolution' | 'field_note';
-  body: string;
+  kind: PostBlockKind;
+  body?: string;
   confidence?: number;
+  src?: string;
+  alt?: string;
+  caption?: string;
+  language?: string;
+  filename?: string;
+  items?: string[];
+  tone?: 'note' | 'warn' | 'tip';
+  attribution?: string;
 };
 
 export type Post = {
@@ -59,12 +70,21 @@ export type Post = {
   cover_url: string;
   tags: string[];
   series: string;
+  series_slug: string | null;
   stage: string;
   confidence: number;
   reading_time_min: number;
   sections: PostSection[];
   published_at: string | null;
   view_count: number;
+  related_slugs: string[];
+};
+
+export type Series = {
+  slug: string;
+  title: string;
+  summary: string;
+  accent_color: string;
 };
 
 export async function fetchPosts(): Promise<Post[]> {
@@ -84,6 +104,44 @@ export async function fetchPost(slug: string): Promise<Post | null> {
     .eq('published', true)
     .maybeSingle();
   return data as Post | null;
+}
+
+export async function fetchPostsByTag(tag: string): Promise<Post[]> {
+  const { data } = await supabase
+    .from('posts')
+    .select('*')
+    .eq('published', true)
+    .contains('tags', [tag])
+    .order('published_at', { ascending: false });
+  return (data ?? []) as Post[];
+}
+
+export async function fetchPostsBySeries(seriesSlug: string): Promise<Post[]> {
+  const { data } = await supabase
+    .from('posts')
+    .select('*')
+    .eq('published', true)
+    .eq('series_slug', seriesSlug)
+    .order('published_at', { ascending: true });
+  return (data ?? []) as Post[];
+}
+
+export async function fetchSeries(): Promise<Series[]> {
+  const { data } = await supabase.from('series').select('*').order('slug');
+  return (data ?? []) as Series[];
+}
+
+export async function fetchSeriesBySlug(slug: string): Promise<Series | null> {
+  const { data } = await supabase.from('series').select('*').eq('slug', slug).maybeSingle();
+  return (data ?? null) as Series | null;
+}
+
+export async function incrementPostView(slug: string): Promise<void> {
+  await supabase.rpc('increment_post_view', { post_slug: slug });
+}
+
+export async function subscribeNewsletter(email: string) {
+  return supabase.from('subscribers').insert({ email });
 }
 
 export type ContactPayload = {

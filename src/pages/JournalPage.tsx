@@ -1,15 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { fetchPosts, Post } from '../lib/supabase';
+import { fetchPosts, fetchSeries, Post, Series } from '../lib/supabase';
+import JournalList from '../components/JournalList';
 import Footer from '../components/Footer';
 import { useSeo, SITE_URL, breadcrumbJsonLd } from '../lib/seo';
-
-gsap.registerPlugin(ScrollTrigger);
-
-const fmtDate = (iso: string | null) =>
-  iso ? new Date(iso).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) : '';
 
 const JournalPage = () => {
   useSeo({
@@ -32,29 +26,22 @@ const JournalPage = () => {
     ],
   });
 
-  const ref = useRef<HTMLElement>(null);
   const [posts, setPosts] = useState<Post[] | null>(null);
+  const [series, setSeries] = useState<Series[]>([]);
 
   useEffect(() => {
-    fetchPosts().then(p => setPosts(p));
+    fetchPosts().then(setPosts);
+    fetchSeries().then(setSeries);
   }, []);
 
-  useEffect(() => {
-    if (!posts) return;
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>('.journal-row').forEach((row, i) => {
-        gsap.fromTo(row, { y: 30, opacity: 0 }, {
-          y: 0, opacity: 1, duration: 0.9, ease: 'power3.out',
-          delay: i * 0.05,
-          scrollTrigger: { trigger: row, start: 'top 90%' },
-        });
-      });
-    }, ref);
-    return () => ctx.revert();
+  const tagCounts = useMemo(() => {
+    const m = new Map<string, number>();
+    posts?.forEach(p => p.tags.forEach(t => m.set(t, (m.get(t) ?? 0) + 1)));
+    return [...m.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12);
   }, [posts]);
 
   return (
-    <main ref={ref} id="main">
+    <main id="main">
       <section style={{ padding: 'clamp(120px, 16vw, 180px) 0 60px' }}>
         <div className="container-ed">
           <div className="hairline">03 / Field Notes</div>
@@ -69,111 +56,68 @@ const JournalPage = () => {
         </div>
       </section>
 
-      <section style={{ padding: '20px 0 120px' }}>
-        <div className="container-ed">
-          <div style={{ borderTop: '1px solid var(--rule)' }}>
-            {posts === null && (
-              <div style={{ padding: '60px 0', fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--ink-muted)' }}>
-                Loading entries…
-              </div>
-            )}
-            {posts && posts.length === 0 && (
-              <div style={{ padding: '60px 0', fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--ink-muted)' }}>
-                No entries yet — first field note shipping soon.
-              </div>
-            )}
-            {posts?.map((p, i) => (
-              <Link
-                key={p.id}
-                to={`/journal/${p.slug}`}
-                className="journal-row"
-              >
-                <span className="numtag">/{String(i + 1).padStart(2, '0')}</span>
-                <div>
-                  <div className="journal-meta">
-                    {p.series && <span>{p.series}</span>}
-                    {p.series && <span aria-hidden>·</span>}
-                    <span>{fmtDate(p.published_at)}</span>
-                    <span aria-hidden>·</span>
-                    <span>{p.reading_time_min} min</span>
-                  </div>
-                  <h3 style={{
-                    fontSize: 'clamp(1.4rem, 3vw, 2.2rem)',
-                    fontWeight: 400,
-                    letterSpacing: '-0.02em',
-                    fontStyle: i % 2 ? 'italic' : 'normal',
-                    marginTop: 6,
-                  }}>
-                    {p.title}
-                  </h3>
-                </div>
-                <p style={{ fontSize: 14, color: 'var(--ink-soft)', maxWidth: 520, lineHeight: 1.6 }}>
-                  {p.excerpt}
-                </p>
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                  {p.tags.slice(0, 4).map(t => (
-                    <span key={t} className="tag-chip">{t}</span>
-                  ))}
-                </div>
-                <span style={{ color: 'var(--ember)', fontSize: 18, textAlign: 'right' }}>→</span>
-              </Link>
-            ))}
+      {series.length > 0 && (
+        <section style={{ padding: '20px 0 0' }}>
+          <div className="container-ed">
+            <div className="hairline" style={{ marginBottom: 14 }}>Series</div>
+            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+              {series.map(s => (
+                <Link
+                  key={s.slug}
+                  to={`/journal/series/${s.slug}`}
+                  style={{
+                    border: '1px solid var(--rule)',
+                    borderRadius: 4,
+                    padding: '14px 18px',
+                    display: 'inline-flex',
+                    flexDirection: 'column',
+                    gap: 4,
+                    textDecoration: 'none',
+                    color: 'inherit',
+                    minWidth: 220,
+                    transition: 'border-color 0.3s var(--ease-out)',
+                    borderLeft: `3px solid ${s.accent_color}`,
+                  }}
+                >
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--ink-muted)' }}>
+                    Series
+                  </span>
+                  <span style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 18 }}>{s.title}</span>
+                  <span style={{ fontSize: 12, color: 'var(--ink-soft)', maxWidth: 280, lineHeight: 1.5 }}>{s.summary}</span>
+                </Link>
+              ))}
+            </div>
           </div>
+        </section>
+      )}
+
+      {tagCounts.length > 0 && (
+        <section style={{ padding: '40px 0 0' }}>
+          <div className="container-ed">
+            <div className="hairline" style={{ marginBottom: 14 }}>Filter by tag</div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {tagCounts.map(([t, c]) => (
+                <Link
+                  key={t}
+                  to={`/journal/tag/${encodeURIComponent(t)}`}
+                  className="tag-chip"
+                  style={{ textDecoration: 'none' }}
+                >
+                  {t} <span style={{ opacity: 0.5, marginLeft: 4 }}>{c}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section style={{ padding: '40px 0 120px' }}>
+        <div className="container-ed">
+          <JournalList posts={posts} />
         </div>
       </section>
 
       <Footer />
-
-      <style>{`
-        .journal-row {
-          display: grid;
-          grid-template-columns: 60px 1.2fr 2fr 1.4fr 64px;
-          gap: 24px;
-          padding: 40px 0;
-          border-bottom: 1px solid var(--rule);
-          align-items: center;
-          color: inherit;
-          text-decoration: none;
-          transition: background 0.4s var(--ease-out);
-        }
-        .journal-row:hover { background: rgba(0,0,0,0.02); }
-        .journal-meta {
-          font-family: var(--font-mono);
-          font-size: 10px;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          color: var(--ink-muted);
-          display: inline-flex;
-          gap: 8px;
-          flex-wrap: wrap;
-        }
-        .tag-chip {
-          font-family: var(--font-mono);
-          font-size: 10px;
-          letter-spacing: 0.16em;
-          text-transform: uppercase;
-          color: var(--ink-muted);
-          border: 1px solid var(--rule);
-          padding: 4px 10px;
-          border-radius: 999px;
-        }
-        @media (max-width: 980px) {
-          .journal-row {
-            grid-template-columns: 40px 1fr 48px;
-            grid-template-areas:
-              "num title arrow"
-              ". desc desc"
-              ". tags tags";
-            row-gap: 12px;
-            padding: 28px 0;
-          }
-          .journal-row > :nth-child(1) { grid-area: num; }
-          .journal-row > :nth-child(2) { grid-area: title; }
-          .journal-row > :nth-child(3) { grid-area: desc; }
-          .journal-row > :nth-child(4) { grid-area: tags; }
-          .journal-row > :nth-child(5) { grid-area: arrow; }
-        }
-      `}</style>
     </main>
   );
 };
