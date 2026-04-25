@@ -176,19 +176,16 @@ p { margin: 0; line-height: 1.55; }
 
 /* mask reveal */
 .mask {
-  display: inline-block;
+  display: block;
   overflow: hidden;
   vertical-align: bottom;
 }
 .mask > span {
   display: inline-block;
-  transform: translateY(110%);
   will-change: transform;
 }
-.mask.in > span {
-  transform: translateY(0);
-  transition: transform 1.05s cubic-bezier(0.22, 1, 0.36, 1);
-}
+/* JS-driven: when .ready is added we let GSAP fully control transforms */
+.fonts-loading .mask > span { transform: translateY(110%); }
 
 .cursor-magnetic { cursor: none; }
 

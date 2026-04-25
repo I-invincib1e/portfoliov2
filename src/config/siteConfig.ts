@@ -10,7 +10,7 @@ export const siteConfig = {
   // Personal Information
   name: "Rushikesh Pawar",
   title: "Designer & Developer",
-  email: "contact@rushikeshpawar.com",
+  email: "rishipawar8999@gmail.com",
   location: "Mumbai, India",
   
   // Social media links

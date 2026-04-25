@@ -22,6 +22,25 @@ export async function fetchAvailability(): Promise<Availability | null> {
   return data as Availability | null;
 }
 
+export type NowWidget = {
+  id: string;
+  location: string;
+  status: string;
+  currently_reading: string;
+  currently_listening: string;
+  updated_at: string;
+};
+
+export async function fetchNow(): Promise<NowWidget | null> {
+  const { data } = await supabase
+    .from('now_widget')
+    .select('*')
+    .order('updated_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  return data as NowWidget | null;
+}
+
 export type ContactPayload = {
   name: string;
   email: string;

@@ -35,7 +35,7 @@ function App() {
         <Navbar />
         <Suspense fallback={<PageFallback />}>
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<HomePage ready={loaded} />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/certifications" element={<CertificationsPage />} />
