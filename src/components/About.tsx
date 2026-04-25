@@ -1,670 +1,122 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Brain, Layout, Zap, PackagePlus } from 'lucide-react';
-import styled from 'styled-components';
-import { skills, technologies } from '../config/siteConfig';
-import { useTheme } from '../context/ThemeContext';
+import { skills } from '../config/siteConfig';
 
-interface SkillItemProps {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  index: number;
-}
+gsap.registerPlugin(ScrollTrigger);
 
-const SkillItem: React.FC<SkillItemProps> = ({ icon, title, description, index }) => {
-  const itemRef = useRef<HTMLDivElement>(null);
+const About = () => {
+  const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (!itemRef.current) return;
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Set initial state
-    gsap.set(itemRef.current, { 
-      opacity: 0, 
-      y: 40,
-      scale: 0.95
-    });
-
-    // Create enhanced animation with scale
-    ScrollTrigger.create({
-      trigger: itemRef.current,
-      start: 'top bottom-=120',
-      onEnter: () => {
-        gsap.to(itemRef.current, { 
-          opacity: 1, 
-          y: 0,
-          scale: 1,
-          duration: 0.9, 
-          ease: 'power3.out',
-          delay: index * 0.1
+    const ctx = gsap.context(() => {
+      gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach(el => {
+        gsap.fromTo(el, { y: 40, opacity: 0 }, {
+          y: 0, opacity: 1, duration: 1, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 85%' },
         });
-      },
-      once: true
-    });
-    
-  }, [index]);
-
-  return (
-    <StyledSkillItem ref={itemRef} className={`skill-item-${index}`}>
-      <SkillIconContainer>
-        {icon}
-      </SkillIconContainer>
-      <SkillContent>
-        <SkillTitle className="text-heading">{title}</SkillTitle>
-        <SkillDescription className="text-body">{description}</SkillDescription>
-      </SkillContent>
-    </StyledSkillItem>
-  );
-};
-
-const About: React.FC = () => {
-  const { theme } = useTheme();
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const stickyTitleRef = useRef<HTMLDivElement>(null);
-  const techGridRef = useRef<HTMLDivElement>(null);
-  const paragraphRef = useRef<HTMLParagraphElement>(null);
-  const bgBlobOneRef = useRef<HTMLDivElement>(null);
-  const bgBlobTwoRef = useRef<HTMLDivElement>(null);
-  const gridOverlayRef = useRef<HTMLDivElement>(null);
-
-  // Animate background blobs
-  useEffect(() => {
-    if (!bgBlobOneRef.current || !bgBlobTwoRef.current) return;
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Animate background blobs
-    const blobAnimations = [
-      gsap.to(bgBlobOneRef.current, {
-        motionPath: {
-          path: "M0,0 Q20,10 40,0 T80,0",
-          autoRotate: false,
-        },
-        scale: 1.08,
-        duration: 20,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-      }),
-      gsap.to(bgBlobTwoRef.current, {
-        motionPath: {
-          path: "M0,0 Q-15,-8 -30,0 T-60,0",
-          autoRotate: false,
-        },
-        scale: 0.92,
-        duration: 25,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        delay: 0.5,
-      })
-    ];
-
-    return () => {
-      blobAnimations.forEach(anim => anim?.kill());
-    };
-  }, []);
-
-  // Animate tech logos on scroll with enhanced effect
-  useEffect(() => {
-    if (!techGridRef.current) return;
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    const gridElement = techGridRef.current;
-    const techLogos = gridElement.querySelectorAll('.tech-logo');
-
-    // Set initial state for all tech logos
-    gsap.set(techLogos, {
-      scale: 0.7,
-      opacity: 0,
-      y: 20
-    });
-
-    // Create enhanced animation with bounce effect
-    ScrollTrigger.create({
-      trigger: gridElement,
-      start: 'top bottom-=100',
-      onEnter: () => {
-        gsap.to(techLogos, {
-          scale: 1,
-          opacity: 1,
-          y: 0,
-          stagger: 0.06,
-          duration: 0.7,
-          ease: 'back.out(1.4)'
-        });
-      },
-      once: true
-    });
-
-    return () => {
-      ScrollTrigger.getAll().forEach(trigger => {
-        if (trigger.vars.trigger === gridElement) {
-          trigger.kill();
-        }
       });
-    };
+    }, ref);
+    return () => ctx.revert();
   }, []);
-
-  // Scroll-based animation - sticky title while content scrolls
-  useEffect(() => {
-    if (!contentRef.current || !stickyTitleRef.current) return;
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    const contentElement = contentRef.current;
-    const titleElement = stickyTitleRef.current;
-
-    // Animate content items as they come into view
-    const contentItems = contentElement.querySelectorAll('.content-section');
-
-    contentItems.forEach((item) => {
-      gsap.fromTo(item,
-        {
-          opacity: 0,
-          y: 60,
-          scale: 0.95
-        },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: item,
-            start: 'top bottom-=100',
-            end: 'top center',
-            toggleActions: 'play none none none',
-          }
-        }
-      );
-    });
-
-    return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    };
-  }, []);
-
-  // No text animation for paragraph - display normally
-  useEffect(() => {
-    if (!paragraphRef.current) return;
-    
-    // Ensure paragraph is fully visible with no animation
-    gsap.set(paragraphRef.current, { 
-      opacity: 1,
-      color: 'rgba(203, 213, 225, 1)',
-      scale: 1,
-      y: 0,
-      rotationX: 0
-    });
-  }, []);
-
-  const skillsConfig = [
-    {
-      icon: <Brain size={28} />,
-      title: "AI/LLM Integration",
-      description: "Specialized in integrating and orchestrating large language models using LangChain, Groq, OpenAI, and the TypeGPT API."
-    },
-    {
-      icon: <Layout size={28} />,
-      title: "Frontend Development",
-      description: "Crafting fast, clean, and responsive UIs with Next.js, React, Tailwind CSS, and ShadCN."
-    },
-    {
-      icon: <Zap size={28} />,
-      title: "Realtime Web Apps",
-      description: "Experienced in building real-time features using Supabase and WebSockets — including live chat apps."
-    },
-    {
-      icon: <PackagePlus size={28} />,
-      title: "Machine Learning & MLOps",
-      description: "Foundational understanding of ML pipelines, model deployment, and serving LLMs via APIs."
-    }
-  ];
 
   return (
-    <AboutSection
-      id="about"
-      ref={sectionRef}
-      className="section bg-dark-900 noise-bg relative"
-      data-theme={theme}
-    >
-      <HeroBackground data-theme={theme}>
-        <div className="blob blob-1" ref={bgBlobOneRef}></div>
-        <div className="blob blob-2" ref={bgBlobTwoRef}></div>
-        <div className="grid-overlay" ref={gridOverlayRef}></div>
-      </HeroBackground>
-      <StickyContainer>
-        {/* Left side - Sticky content */}
-        <StickyTitleColumn ref={stickyTitleRef}>
-          <StickyTitleWrapper>
-            <HeadingTitle className="text-heading">
-              About Me<span className="dot">.</span>
-            </HeadingTitle>
-            <Paragraph ref={paragraphRef} className="text-body">
-              I'm a passionate designer and developer with expertise in creating intuitive and engaging digital experiences. When I'm not coding or debugging something at 2AM, I'm probably analyzing AI trends, experimenting with design, or plotting my next side project.
-            </Paragraph>
-            <StickyCTA href="#work" className="text-accent">
-              Check out my work
-            </StickyCTA>
-          </StickyTitleWrapper>
-        </StickyTitleColumn>
-        
-        {/* Right side - Scrolling content */}
-        <ContentColumn ref={contentRef}>
-          <ContentSection className="content-section">
-            <SectionSubtitle className="text-heading">My Expertise</SectionSubtitle>
-            <SkillsList>
-              {skills.map((skill, index) => (
-                <React.Fragment key={index}>
-                  <SkillItem 
-                    icon={skillsConfig[index].icon}
-                    title={skill.title}
-                    description={skill.description}
-                    index={index}
-                  />
-                  {index < skills.length - 1 && <SkillDivider />}
-                </React.Fragment>
-              ))}
-            </SkillsList>
-            <SectionDivider />
-          </ContentSection>
-          
-          <ContentSection className="content-section">
-            <SectionSubtitle className="text-heading">Technologies I Work With</SectionSubtitle>
-            <TechLogoContainer ref={techGridRef}>
-              {technologies.map((tech, index) => (
-                <TechLogoWrapper key={index} className="tech-logo">
-                  <TechLogo 
-                    src={tech.logo} 
-                    alt={tech.name}
-                    title={tech.name}
-                    loading="lazy"
-                  />
-                  <TechName>{tech.name}</TechName>
-                </TechLogoWrapper>
-              ))}
-            </TechLogoContainer>
-          </ContentSection>
-        </ContentColumn>
-      </StickyContainer>
-    </AboutSection>
+    <section ref={ref} style={{ padding: '180px 0 140px', background: 'var(--paper)' }}>
+      <div className="container-ed">
+        <div className="editorial-grid" style={{ marginBottom: 80 }}>
+          <div style={{ gridColumn: 'span 5' }}>
+            <div className="hairline" data-reveal>02 / Profile</div>
+            <h2
+              data-reveal
+              style={{
+                fontSize: 'clamp(2.5rem, 6vw, 5.5rem)',
+                marginTop: 24,
+                lineHeight: 0.96,
+                letterSpacing: '-0.03em',
+              }}
+            >
+              <span style={{ fontWeight: 400 }}>I build</span>{' '}
+              <em style={{ fontWeight: 400 }}>quiet</em>
+              <br />
+              <span style={{ fontWeight: 400 }}>interfaces</span>{' '}
+              <em style={{ fontWeight: 400, color: 'var(--ember)' }}>that move.</em>
+            </h2>
+          </div>
+
+          <div style={{ gridColumn: 'span 1' }} />
+
+          <div style={{ gridColumn: 'span 6' }} data-reveal>
+            <p style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(1.5rem, 2.4vw, 2.2rem)',
+              lineHeight: 1.25,
+              letterSpacing: '-0.01em',
+              color: 'var(--ink)',
+              fontWeight: 300,
+            }}>
+              <span style={{
+                float: 'left',
+                fontSize: 'clamp(4rem, 7vw, 6rem)',
+                lineHeight: 0.85,
+                paddingRight: 14,
+                paddingTop: 6,
+                fontStyle: 'italic',
+                color: 'var(--ember)',
+              }}>R</span>
+              ushikesh works at the intersection of typography, motion and
+              language models — crafting React systems that feel composed
+              rather than assembled. He treats every pixel like printed matter
+              and every interaction like a small piece of cinema.
+            </p>
+
+            <div style={{ marginTop: 28, display: 'flex', gap: 28, flexWrap: 'wrap', fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--ink-muted)' }}>
+              <div><span style={{ display: 'block', color: 'var(--ink)' }}>04 yrs</span>experimenting</div>
+              <div><span style={{ display: 'block', color: 'var(--ink)' }}>20+</span>shipped projects</div>
+              <div><span style={{ display: 'block', color: 'var(--ink)' }}>Mumbai</span>India / GMT+5:30</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="rule" data-reveal />
+
+        <div className="editorial-grid" style={{ marginTop: 60 }}>
+          <div style={{ gridColumn: 'span 3' }}>
+            <div className="hairline" data-reveal>Capabilities</div>
+          </div>
+          <div style={{ gridColumn: 'span 9' }}>
+            {skills.map((s, i) => (
+              <div
+                key={s.title}
+                data-reveal
+                className="cap-row"
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '60px 1fr 2fr',
+                  gap: 24,
+                  padding: '28px 0',
+                  borderBottom: '1px solid var(--rule)',
+                  alignItems: 'baseline',
+                }}
+              >
+                <span className="numtag">/{String(i + 1).padStart(2, '0')}</span>
+                <h3 style={{
+                  fontSize: 'clamp(1.4rem, 2.4vw, 2rem)',
+                  fontWeight: 400,
+                  letterSpacing: '-0.02em',
+                  fontStyle: i % 2 === 0 ? 'normal' : 'italic',
+                }}>
+                  {s.title}
+                </h3>
+                <p style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--ink-soft)' }}>
+                  {s.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 };
-
-const AboutSection = styled.section`
-  position: relative;
-  min-height: 100vh;
-  padding: 4rem 0;
-  overflow: hidden;
-
-  &[data-theme="light"] {
-    background-color: var(--light-pale-lime, #F4F8D3);
-  }
-
-  @media (min-width: 768px) {
-    padding: 6rem 0;
-  }
-`;
-
-const HeroBackground = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  overflow: hidden;
-  pointer-events: none;
-
-  .blob {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(100px);
-    opacity: 0.25;
-    z-index: -1;
-    will-change: transform;
-    transition: opacity 0.5s ease;
-  }
-
-  .blob-1 {
-    top: 20%;
-    right: 10%;
-    width: 30vw;
-    height: 30vw;
-    background: linear-gradient(135deg, #f97316 0%, #155e75 100%);
-  }
-
-  .blob-2 {
-    bottom: 10%;
-    left: 15%;
-    width: 25vw;
-    height: 25vw;
-    background: linear-gradient(135deg, #14b8a6 0%, #3b82f6 100%);
-  }
-
-  .grid-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
-    background-size: 60px 60px;
-    background-position: -0.5px -0.5px;
-    z-index: -1;
-    opacity: 0.4;
-  }
-
-  &[data-theme="light"] {
-    .blob-1, .blob-2 {
-      opacity: 0.12;
-    }
-
-    .grid-overlay {
-      background-image: linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
-      opacity: 0.3;
-    }
-  }
-`;
-
-const StickyContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-  
-  @media (min-width: 640px) {
-    padding: 0 1.5rem;
-  }
-  
-  @media (min-width: 1024px) {
-    grid-template-columns: 35% 65%;
-    gap: 2rem;
-  }
-`;
-
-const StickyTitleColumn = styled.div`
-  position: relative;
-  
-  @media (min-width: 1024px) {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-`;
-
-const StickyTitleWrapper = styled.div`
-  @media (min-width: 1024px) {
-    position: sticky;
-    top: 120px;
-    padding-bottom: 2rem;
-  }
-`;
-
-const ContentColumn = styled.div`
-  margin-top: 3rem;
-  
-  @media (min-width: 1024px) {
-    margin-top: 0;
-  }
-`;
-
-const HeadingTitle = styled.h2`
-  font-size: 2rem;
-  font-weight: 300;
-  margin-bottom: 1.5rem;
-  letter-spacing: -0.02em;
-  
-  @media (min-width: 640px) {
-    font-size: 2.5rem;
-  }
-  
-  @media (min-width: 768px) {
-    font-size: 3rem;
-  }
-  
-  .dot {
-    color: var(--accent-500, #f97316);
-  }
-`;
-
-const Paragraph = styled.p`
-  font-size: 1rem;
-  color: var(--dark-300, #cbd5e1);
-  line-height: 1.7;
-  margin-bottom: 1.5rem;
-  hyphens: none;
-  word-break: normal;
-  
-  @media (min-width: 640px) {
-    font-size: 1.125rem;
-  }
-`;
-
-const StickyCTA = styled.a`
-  display: inline-block;
-  background-color: var(--accent-500, #f97316);
-  color: white;
-  padding: 0.75rem 1.25rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  letter-spacing: 0.02em;
-  font-size: 0.875rem;
-  box-shadow: 0 4px 16px rgba(249, 115, 22, 0.2);
-  position: relative;
-  overflow: hidden;
-  
-  @media (min-width: 640px) {
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-  }
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.2);
-    transform: translate(-50%, -50%);
-    transition: width 0.6s ease, height 0.6s ease;
-  }
-  
-  &:hover {
-    background-color: var(--accent-600, #ea580c);
-    transform: translateY(-4px) scale(1.05);
-    box-shadow: 0 8px 24px rgba(249, 115, 22, 0.35);
-  }
-  
-  &:hover::before {
-    width: 300px;
-    height: 300px;
-  }
-  
-  &:active {
-    transform: translateY(-2px) scale(1.02);
-    transition-duration: 0.1s;
-  }
-`;
-
-const ContentSection = styled.div`
-  margin-bottom: 4rem;
-`;
-
-const SectionSubtitle = styled.h3`
-  font-size: 1.25rem;
-  font-weight: 400;
-  margin-bottom: 1.5rem;
-  color: var(--dark-200, #e2e8f0);
-  letter-spacing: -0.01em;
-  
-  @media (min-width: 640px) {
-    font-size: 1.5rem;
-  }
-`;
-
-const SectionDivider = styled.div`
-  height: 1px;
-  background: linear-gradient(90deg, rgba(249, 115, 22, 0.3), transparent);
-  margin: 2rem 0;
-`;
-
-// New vertical list for skills instead of grid
-const SkillsList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  max-width: 100%;
-  margin: 0 auto;
-`;
-
-const StyledSkillItem = styled.div`
-  padding: 1.5rem 0;
-  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-  display: flex;
-  align-items: flex-start;
-  gap: 1.5rem;
-  
-  @media (max-width: 640px) {
-    flex-direction: column;
-    gap: 1rem;
-  }
-`;
-
-const SkillDivider = styled.div`
-  height: 1px;
-  background-color: rgba(51, 65, 85, 0.2);
-  width: 100%;
-`;
-
-const SkillIconContainer = styled.div`
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(30, 41, 59, 0.5);
-  color: var(--accent-500, #f97316);
-  flex-shrink: 0;
-`;
-
-const SkillContent = styled.div`
-  flex: 1;
-`;
-
-const SkillTitle = styled.h4`
-  font-size: 1.125rem;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-`;
-
-const SkillDescription = styled.p`
-  color: var(--dark-300, #cbd5e1);
-  font-size: 0.875rem;
-  line-height: 1.5;
-  hyphens: none;
-  word-break: normal;
-  
-  @media (min-width: 640px) {
-    font-size: 0.9375rem;
-  }
-`;
-
-// Technology logos styling - OPTIMIZED
-const TechLogoContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 1.5rem;
-  padding: 1.5rem 0;
-  
-  @media (min-width: 640px) {
-    gap: 2rem;
-    padding: 2rem 0;
-  }
-`;
-
-const TechLogoWrapper = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  cursor: pointer;
-  
-  &:hover {
-    transform: translateY(-12px) scale(1.1);
-    
-    img {
-      filter: grayscale(0%);
-      opacity: 1;
-      transform: rotate(5deg);
-    }
-    
-    div {
-      opacity: 1;
-      transform: translateY(0);
-      visibility: visible;
-    }
-  }
-`;
-
-const TechLogo = styled.img`
-  width: 40px;
-  height: 40px;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  filter: grayscale(30%);
-  opacity: 0.8;
-  
-  @media (min-width: 640px) {
-    width: 50px;
-    height: 50px;
-  }
-  
-  @media (min-width: 768px) {
-    width: 60px;
-    height: 60px;
-  }
-  
-  @media (max-width: 375px) {
-    width: 35px;
-    height: 35px;
-    margin: 0.25rem;
-  }
-`;
-
-const TechName = styled.div`
-  position: absolute;
-  top: 100%;
-  margin-top: 0.5rem;
-  background-color: var(--accent-500, #f97316);
-  color: white;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  visibility: hidden;
-  white-space: nowrap;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-  pointer-events: none;
-  font-weight: 500;
-  z-index: 5;
-`;
 
 export default About;
