@@ -120,22 +120,6 @@ const Hero = ({ ready = true }: HeroProps) => {
         <rect width="100%" height="100%" fill="url(#grid)" />
       </svg>
 
-      {/* organic ink shapes */}
-      <svg
-        aria-hidden
-        viewBox="0 0 200 200"
-        style={{ position: 'absolute', top: '20%', left: '-40px', width: 180, height: 180, color: 'var(--ember)', opacity: 0.85, pointerEvents: 'none' }}
-      >
-        <path d="M30,100 C30,50 80,30 130,50 C170,68 175,120 140,150 C100,180 50,160 30,120 Z" fill="none" stroke="currentColor" strokeWidth="1" />
-      </svg>
-      <svg
-        aria-hidden
-        viewBox="0 0 200 200"
-        style={{ position: 'absolute', bottom: '14%', right: '6%', width: 140, height: 140, color: 'var(--moss)', opacity: 0.5, pointerEvents: 'none' }}
-      >
-        <path d="M20,60 Q100,-10 180,60 T180,160 Q100,200 20,140 Z" fill="none" stroke="currentColor" strokeWidth="1" />
-      </svg>
-
       {/* vertical caption */}
       <div
         className="hero-side"
