@@ -231,8 +231,14 @@ const Hero = ({ ready = true }: HeroProps) => {
               href={siteConfig.resumeUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="ed-link"
-              style={{ fontSize: 13 }}
+              className="resume-link"
+              style={{
+                fontSize: 13,
+                color: 'var(--ink-soft)',
+                textDecoration: 'none',
+                fontFamily: 'var(--font-sans)',
+                fontWeight: 500,
+              }}
             >
               or download résumé
             </a>
