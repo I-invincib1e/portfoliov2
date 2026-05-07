@@ -144,6 +144,37 @@ export async function subscribeNewsletter(email: string) {
   return supabase.from('subscribers').insert({ email });
 }
 
+export type BuildLog = {
+  id: string;
+  slug: string;
+  title: string;
+  body_md: string;
+  tags: string[];
+  published: boolean;
+  created_at: string;
+};
+
+export async function fetchBuildLogs(limit?: number): Promise<BuildLog[]> {
+  let q = supabase
+    .from('build_logs')
+    .select('*')
+    .eq('published', true)
+    .order('created_at', { ascending: false });
+  if (limit) q = q.limit(limit);
+  const { data } = await q;
+  return (data ?? []) as BuildLog[];
+}
+
+export async function fetchBuildLog(slug: string): Promise<BuildLog | null> {
+  const { data } = await supabase
+    .from('build_logs')
+    .select('*')
+    .eq('slug', slug)
+    .eq('published', true)
+    .maybeSingle();
+  return (data ?? null) as BuildLog | null;
+}
+
 export type ContactPayload = {
   name: string;
   email: string;

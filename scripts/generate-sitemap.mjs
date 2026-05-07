@@ -9,6 +9,7 @@ const key = process.env.VITE_SUPABASE_ANON_KEY;
 const baseUrls = [
   { loc: '/',               changefreq: 'weekly',  priority: '1.0' },
   { loc: '/projects',       changefreq: 'weekly',  priority: '0.9' },
+  { loc: '/logs',           changefreq: 'daily',   priority: '0.9' },
   { loc: '/journal',        changefreq: 'weekly',  priority: '0.9' },
   { loc: '/certifications', changefreq: 'monthly', priority: '0.7' },
   { loc: '/contact',        changefreq: 'monthly', priority: '0.8' },
@@ -59,6 +60,18 @@ async function run() {
       const { data: projects } = await sb.from('projects').select('slug, updated_at').eq('published', true);
       // Project detail pages aren't routed yet; skip.
       void projects;
+
+      const { data: logs } = await sb
+        .from('build_logs')
+        .select('slug, created_at')
+        .eq('published', true);
+      for (const l of logs ?? []) {
+        entries.push({
+          loc: `/logs/${l.slug}`,
+          lastmod: (l.created_at ?? '').slice(0, 10),
+          changefreq: 'monthly', priority: '0.7',
+        });
+      }
     } catch (e) {
       console.warn('[sitemap] supabase fetch failed, falling back to static:', e?.message ?? e);
     }

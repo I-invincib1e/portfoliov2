@@ -67,7 +67,7 @@ const Hero = ({ ready = true }: HeroProps) => {
     };
   }, [ready]);
 
-  const ctaLabel = 'Commission a project';
+  const ctaLabel = 'See Adloom';
 
   return (
     <section
@@ -149,26 +149,31 @@ const Hero = ({ ready = true }: HeroProps) => {
 
         <h1
           style={{
-            fontSize: 'clamp(3rem, 12vw, 13rem)',
-            lineHeight: 0.92,
-            letterSpacing: '-0.04em',
+            fontSize: 'clamp(2.6rem, 9.5vw, 10rem)',
+            lineHeight: 0.95,
+            letterSpacing: '-0.035em',
             margin: 0,
+            maxWidth: '18ch',
           }}
         >
           <div className="mask hero-mask">
-            <span style={{ fontWeight: 300 }}>Frontend</span>
-          </div>
-          <div className="mask hero-mask">
-            <span style={{ fontStyle: 'italic', fontWeight: 400 }}>
-              craft<span style={{ color: 'var(--ember)' }}>,</span>
-            </span>
-          </div>
-          <div className="mask hero-mask" style={{ textAlign: 'right' }}>
-            <span style={{ fontWeight: 500 }}>
-              for the AI<span style={{ color: 'var(--ember)' }}>—</span>era.
+            <span style={{ fontWeight: 300 }}>
+              AI <em style={{ fontStyle: 'italic', fontWeight: 400, color: 'var(--ember)' }}>Product</em> Engineer
             </span>
           </div>
         </h1>
+
+        <p className="hero-fade" style={{
+          marginTop: 28,
+          maxWidth: 560,
+          fontFamily: 'var(--font-sans)',
+          fontSize: 'clamp(1rem, 1.6vw, 1.25rem)',
+          lineHeight: 1.5,
+          color: 'var(--ink-soft)',
+        }}>
+          Building SaaS, Voice AI systems and automation tools.
+          Shipped <a href="#adloom" style={{ color: 'var(--ink)', borderBottom: '1px solid var(--ember)', textDecoration: 'none' }}>Adloom</a> on the Shopify App Store — next up, voice.
+        </p>
       </div>
 
       <div className="container-ed hero-fade" style={{ marginTop: 'auto', paddingTop: 60, position: 'relative', zIndex: 2 }}>
@@ -182,9 +187,9 @@ const Hero = ({ ready = true }: HeroProps) => {
               maxWidth: 360,
               lineHeight: 1.6,
             }}>
-              Frontend engineer pairing <em>typography</em>, motion and large
-              language models — building React systems that feel composed
-              rather than assembled.
+              Technical founder shipping real products:
+              Shopify SaaS, voice automation, and LLM-driven
+              systems that hold up under real usage.
             </p>
           </div>
 
@@ -202,19 +207,21 @@ const Hero = ({ ready = true }: HeroProps) => {
           </div>
 
           <div style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'flex-end', gap: 14 }}>
-            <Link
-              to="/contact"
+            <a
+              href="#adloom"
               className="btn-ink hero-cta"
               data-magnetic
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('adloom')?.scrollIntoView({ behavior: 'smooth' });
+              }}
             >
               <span className="ember-asterisk" aria-hidden>✦</span>
               {ctaLabel}
               <span aria-hidden>→</span>
-            </Link>
-            <a
-              href={siteConfig.resumeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+            </a>
+            <Link
+              to="/logs"
               className="resume-link"
               style={{
                 fontSize: 13,
@@ -224,7 +231,22 @@ const Hero = ({ ready = true }: HeroProps) => {
                 fontWeight: 500,
               }}
             >
-              or download résumé
+              or read build logs →
+            </Link>
+            <a
+              href={siteConfig.resumeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontSize: 12,
+                color: 'var(--ink-muted)',
+                textDecoration: 'none',
+                fontFamily: 'var(--font-mono)',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+              }}
+            >
+              résumé ↗
             </a>
           </div>
         </div>

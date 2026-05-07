@@ -14,6 +14,8 @@ const JournalPage = lazy(() => import('./pages/JournalPage'));
 const JournalPostPage = lazy(() => import('./pages/JournalPostPage'));
 const JournalTagPage = lazy(() => import('./pages/JournalTagPage'));
 const JournalSeriesPage = lazy(() => import('./pages/JournalSeriesPage'));
+const BuildLogsPage = lazy(() => import('./pages/BuildLogsPage'));
+const BuildLogPostPage = lazy(() => import('./pages/BuildLogPostPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 const PageFallback = () => (
@@ -48,6 +50,8 @@ function App() {
             <Route path="/journal/tag/:tag" element={<JournalTagPage />} />
             <Route path="/journal/series/:slug" element={<JournalSeriesPage />} />
             <Route path="/journal/:slug" element={<JournalPostPage />} />
+            <Route path="/logs" element={<BuildLogsPage />} />
+            <Route path="/logs/:slug" element={<BuildLogPostPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Suspense>
