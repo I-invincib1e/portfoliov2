@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { journalPath } from '../lib/journalPath';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { Post } from '../lib/supabase';
@@ -45,7 +46,7 @@ const JournalList = ({ posts, empty = 'No entries yet — first field note shipp
           </div>
         )}
         {posts?.map((p, i) => (
-          <Link key={p.id} to={`/journal/${p.slug}`} className="journal-row">
+          <Link key={p.id} to={journalPath(`/journal/${p.slug}`)} className="journal-row">
             <span className="numtag">/{String(i + 1).padStart(2, '0')}</span>
             <div>
               <div className="journal-meta">

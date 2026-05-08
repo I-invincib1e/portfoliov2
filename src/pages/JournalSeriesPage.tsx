@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { journalPath } from '../lib/journalPath';
 import { fetchPostsBySeries, fetchSeriesBySlug, Post, Series } from '../lib/supabase';
 import Footer from '../components/Footer';
 import { useSeo, SITE_URL, breadcrumbJsonLd } from '../lib/seo';
@@ -91,7 +92,7 @@ const JournalSeriesPage = () => {
             {posts?.map((p, i) => (
               <li key={p.id} className="spine-item" style={{ ['--accent' as string]: accent } as React.CSSProperties}>
                 <span className="spine-dot" />
-                <Link to={`/journal/${p.slug}`} className="spine-card">
+                <Link to={journalPath(`/journal/${p.slug}`)} className="spine-card">
                   <div className="journal-meta">
                     <span>Entry {String(i + 1).padStart(2, '0')} / {String(posts.length).padStart(2, '0')}</span>
                     <span aria-hidden>·</span>
