@@ -34,6 +34,7 @@ const Navbar = () => {
   return (
     <>
       <header
+        className="nav-root"
         style={{
           position: 'fixed',
           top: 0, left: 0, right: 0,
@@ -45,6 +46,7 @@ const Navbar = () => {
           mixBlendMode: 'difference',
           color: '#efe9df',
           pointerEvents: 'none',
+          gap: 12,
         }}
       >
         <Link to="/" style={{ pointerEvents: 'auto', textDecoration: 'none', color: 'inherit' }}>
@@ -130,6 +132,10 @@ const Navbar = () => {
           .mobile-menu-btn { display: none; }
         }
         @media (max-width: 600px) { .hide-sm { display: none; } }
+        @media (max-width: 520px) {
+          .nav-root { padding: 14px 18px !important; }
+          .nav-root [aria-label="Toggle theme"] { display: none; }
+        }
       `}</style>
 
       {open && (

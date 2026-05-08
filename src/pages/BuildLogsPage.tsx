@@ -72,11 +72,12 @@ const BuildLogsPage = () => {
               <Link
                 key={log.id}
                 to={`/logs/${log.slug}`}
+                className="log-entry"
                 style={{
                   display: 'grid',
                   gridTemplateColumns: '110px 1fr auto 40px',
                   gap: 24,
-                  padding: '32px 0',
+                  padding: '28px 0',
                   borderBottom: '1px solid var(--rule)',
                   alignItems: 'baseline',
                   color: 'inherit',
@@ -136,6 +137,19 @@ const BuildLogsPage = () => {
 
       <NewsletterCTA />
       <Footer />
+      <style>{`
+        @media (max-width: 720px) {
+          .log-entry {
+            grid-template-columns: 1fr 28px !important;
+            gap: 8px 12px !important;
+          }
+          .log-entry > span:first-child {
+            grid-column: 1 / -1;
+            font-size: 9px !important;
+          }
+          .log-entry > div:nth-child(3) { display: none !important; }
+        }
+      `}</style>
     </main>
   );
 };

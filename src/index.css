@@ -378,6 +378,18 @@ section { position: relative; }
   *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
 }
 
+/* Mobile defaults */
+@media (max-width: 640px) {
+  body { font-size: 15px; }
+  .btn-ink, .btn-outline { padding: 14px 22px; font-size: 10px; letter-spacing: 0.18em; }
+  .hairline { font-size: 10px; gap: 8px; }
+  .eyebrow { font-size: 10px; letter-spacing: 0.18em; }
+  .container-ed { padding: 0 18px; }
+}
+@media (max-width: 480px) {
+  .container-ed { padding: 0 16px; }
+}
+
 /* form */
 .field {
   display: flex;

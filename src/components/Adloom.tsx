@@ -43,7 +43,7 @@ const Adloom = () => {
       id="adloom"
       ref={ref}
       style={{
-        padding: '120px 0 140px',
+        padding: 'clamp(72px, 12vw, 120px) 0 clamp(80px, 13vw, 140px)',
         background: 'var(--paper)',
         position: 'relative',
         borderTop: '1px solid var(--rule)',
@@ -167,6 +167,9 @@ const Adloom = () => {
 
       <style>{`
         @media (max-width: 800px) {
+          .adloom-screens { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+        }
+        @media (max-width: 520px) {
           .adloom-screens { grid-template-columns: 1fr !important; }
         }
       `}</style>

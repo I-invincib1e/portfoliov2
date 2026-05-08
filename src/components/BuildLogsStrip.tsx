@@ -17,7 +17,7 @@ const BuildLogsStrip = () => {
   return (
     <section
       style={{
-        padding: '100px 0 120px',
+        padding: 'clamp(64px, 11vw, 100px) 0 clamp(72px, 12vw, 120px)',
         background: 'var(--paper-soft)',
         borderTop: '1px solid var(--rule)',
       }}
@@ -48,11 +48,12 @@ const BuildLogsStrip = () => {
             <Link
               key={log.id}
               to={`/logs/${log.slug}`}
+              className="log-row"
               style={{
                 display: 'grid',
                 gridTemplateColumns: '80px 1fr auto 44px',
                 gap: 24,
-                padding: '28px 0',
+                padding: '24px 0',
                 borderBottom: '1px solid var(--rule)',
                 alignItems: 'center',
                 color: 'inherit',
@@ -98,6 +99,19 @@ const BuildLogsStrip = () => {
           ))}
         </div>
       </div>
+      <style>{`
+        @media (max-width: 720px) {
+          .log-row {
+            grid-template-columns: 1fr 28px !important;
+            gap: 8px 12px !important;
+          }
+          .log-row > span:first-child {
+            grid-column: 1 / -1;
+            font-size: 9px !important;
+          }
+          .log-row > div:nth-child(3) { display: none !important; }
+        }
+      `}</style>
     </section>
   );
 };

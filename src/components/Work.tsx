@@ -29,7 +29,7 @@ const Work = () => {
   const featured = allProjects.filter(p => p.featured).slice(0, 5);
 
   return (
-    <section ref={ref} style={{ padding: '120px 0 160px', background: 'var(--paper-soft)' }}>
+    <section ref={ref} className="work-section" style={{ padding: 'clamp(72px, 12vw, 120px) 0 clamp(90px, 14vw, 160px)', background: 'var(--paper-soft)' }}>
       <div className="container-ed">
         <div className="editorial-grid" style={{ marginBottom: 60 }}>
           <div style={{ gridColumn: 'span 6' }}>
@@ -96,6 +96,16 @@ const Work = () => {
           ))}
         </div>
       </div>
+      <style>{`
+        @media (max-width: 720px) {
+          .work-row {
+            grid-template-columns: 44px 1fr 36px !important;
+            padding: 22px 0 !important;
+          }
+          .work-row > .work-cell:nth-child(3),
+          .work-row > .work-cell:nth-child(4) { display: none !important; }
+        }
+      `}</style>
     </section>
   );
 };

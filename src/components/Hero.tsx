@@ -47,7 +47,9 @@ const Hero = ({ ready = true }: HeroProps) => {
         gsap.fromTo('.hero-numeral', { opacity: 0, scale: 0.96 }, {
           opacity: 1, scale: 1, duration: 1.6, delay: 0.3, ease: 'power3.out',
         });
-        gsap.to('.hero-strip', { xPercent: -50, duration: 40, ease: 'none', repeat: -1 });
+        if (window.innerWidth > 640) {
+          gsap.to('.hero-strip', { xPercent: -50, duration: 40, ease: 'none', repeat: -1 });
+        }
       }, ref);
       // store on element for cleanup
       (ref.current as any)._ctx = ctx;
@@ -72,6 +74,7 @@ const Hero = ({ ready = true }: HeroProps) => {
   return (
     <section
       ref={ref}
+      className="hero-root"
       style={{
         minHeight: '100vh',
         position: 'relative',
@@ -205,7 +208,7 @@ const Hero = ({ ready = true }: HeroProps) => {
             )}
           </div>
 
-          <div style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'flex-end', gap: 14 }}>
+          <div className="hero-cta-col" style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'flex-end', gap: 14 }}>
             <a
               href="#adloom"
               className="btn-ink hero-cta"
@@ -281,7 +284,7 @@ const Hero = ({ ready = true }: HeroProps) => {
                 <span key={t} style={{
                   fontFamily: 'var(--font-display)',
                   fontStyle: 'italic',
-                  fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+                  fontSize: 'clamp(1.3rem, 5vw, 3.5rem)',
                   letterSpacing: '-0.02em',
                   color: 'var(--ink)',
                 }}>
@@ -306,7 +309,14 @@ const Hero = ({ ready = true }: HeroProps) => {
           .hero-side { display: none; }
         }
         @media (max-width: 768px) {
-          .hero-numeral { font-size: min(80vw, 22rem) !important; top: 8vh !important; right: -8vw !important; }
+          .hero-numeral { font-size: min(80vw, 18rem) !important; top: 10vh !important; right: -10vw !important; opacity: 0.12 !important; }
+          .hero-root { padding-top: 96px !important; }
+          .hero-cta-col { align-items: flex-start !important; margin-top: 8px; }
+          .hero-cta-col .btn-ink { width: 100%; justify-content: center; }
+        }
+        @media (max-width: 640px) {
+          .hero-root { min-height: auto !important; padding-bottom: 24px !important; }
+          .hero-numeral { display: none !important; }
         }
         @media (prefers-reduced-motion: reduce) {
           .hero-strip, .hero-cta .ember-asterisk { animation: none !important; transform: none !important; }
