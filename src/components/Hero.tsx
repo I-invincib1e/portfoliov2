@@ -67,7 +67,7 @@ const Hero = ({ ready = true }: HeroProps) => {
     };
   }, [ready]);
 
-  const ctaLabel = 'See Adloom';
+  const ctaLabel = 'See what I ship';
 
   return (
     <section
@@ -171,8 +171,7 @@ const Hero = ({ ready = true }: HeroProps) => {
           lineHeight: 1.5,
           color: 'var(--ink-soft)',
         }}>
-          Building SaaS, Voice AI systems and automation tools.
-          Shipped <a href="#adloom" style={{ color: 'var(--ink)', borderBottom: '1px solid var(--ember)', textDecoration: 'none' }}>Adloom</a> on the Shopify App Store — next up, voice.
+          I build SaaS and AI-driven products made for real users at scale.
         </p>
       </div>
 
@@ -187,9 +186,9 @@ const Hero = ({ ready = true }: HeroProps) => {
               maxWidth: 360,
               lineHeight: 1.6,
             }}>
-              Technical founder shipping real products:
-              Shopify SaaS, voice automation, and LLM-driven
-              systems that hold up under real usage.
+              I design and ship products where software
+              meets AI — tools built to reach a wide audience
+              and hold up under real use.
             </p>
           </div>
 

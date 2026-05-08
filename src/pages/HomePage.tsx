@@ -11,8 +11,8 @@ type Props = { ready?: boolean };
 
 const HomePage = ({ ready }: Props) => {
   useSeo({
-    title: 'Rushikesh Pawar — AI Product Engineer | Adloom, Voice AI, Automation',
-    description: 'Rushikesh Pawar — AI Product Engineer building SaaS, Voice AI systems, and automation tools. Shipped Adloom on the Shopify App Store. Build logs, projects, and field notes.',
+    title: 'Rushikesh Pawar — AI Product Engineer',
+    description: 'Rushikesh Pawar — AI Product Engineer building SaaS and AI-driven products for real users at scale. Build logs, projects, and field notes.',
     path: '/',
     keywords: ['Rushikesh Pawar', 'AI Product Engineer', 'Shopify app developer', 'Adloom', 'Voice AI', 'React engineer', 'automation tools', 'technical founder'],
     jsonLd: [

@@ -5,22 +5,23 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 const ADLOOM = {
-  name: 'Adloom',
-  tagline: 'Ad performance + automation layer for Shopify stores.',
+  company: 'Adloom',
+  product: 'Loom Offer & Sales',
+  tagline: 'A Shopify app for running cleaner offers and sales.',
   description:
-    'Adloom helps Shopify merchants run smarter promotions — tiered discounts, coupon stacking rules, and automated billing, all in one clean dashboard.',
-  liveUrl: 'https://apps.shopify.com/adloom',
-  badge: 'Published on Shopify App Store',
+    'Loom Offer & Sales is our first app under Adloom — a small tool for Shopify stores to run tiered discounts and promotions without the usual setup friction.',
+  liveUrl: 'https://apps.shopify.com/loom-offer-sales',
+  badge: 'Live on Shopify',
   screenshots: [
     'https://images.pexels.com/photos/265087/pexels-photo-265087.jpeg?auto=compress&cs=tinysrgb&w=1200',
     'https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=1200',
     'https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?auto=compress&cs=tinysrgb&w=1200',
   ],
   challenges: [
-    'Solved a floating-point pricing corruption bug affecting tiered discounts.',
-    'Rewrote coupon stacking as an explicit state machine — one path per combination.',
-    'Collapsed onboarding from 5 steps to 3, cutting time-to-first-campaign to ~90s.',
-    'Passed Shopify review by making every billing path explicit and auditable.',
+    'Fixed a floating-point drift in tiered discount pricing.',
+    'Rewrote coupon stacking as an explicit state machine.',
+    'Trimmed onboarding from 5 steps to 3.',
+    'Made the billing paths explicit and auditable end-to-end.',
   ],
 };
 
@@ -51,14 +52,14 @@ const Adloom = () => {
       <div className="container-ed">
         <div className="editorial-grid adloom-fade" style={{ marginBottom: 48 }}>
           <div style={{ gridColumn: 'span 8' }}>
-            <div className="hairline">02 / Featured Product</div>
+            <div className="hairline">02 / Currently shipping — under {ADLOOM.company}</div>
             <h2 style={{
-              fontSize: 'clamp(2.4rem, 6.5vw, 5.5rem)',
+              fontSize: 'clamp(2.2rem, 5.8vw, 4.8rem)',
               marginTop: 18,
               letterSpacing: '-0.03em',
-              lineHeight: 0.95,
+              lineHeight: 0.98,
             }}>
-              {ADLOOM.name}<span style={{ color: 'var(--ember)' }}>.</span>{' '}
+              {ADLOOM.product}<span style={{ color: 'var(--ember)' }}>.</span>{' '}
               <em style={{ fontStyle: 'italic', color: 'var(--ink-soft)', fontWeight: 400 }}>
                 {ADLOOM.tagline}
               </em>
@@ -97,12 +98,12 @@ const Adloom = () => {
               className="btn-ink"
               data-magnetic
             >
-              Open on Shopify <span aria-hidden>↗</span>
+              View on Shopify <span aria-hidden>↗</span>
             </a>
           </div>
 
           <div style={{ gridColumn: 'span 7' }}>
-            <div className="hairline" style={{ marginBottom: 16 }}>Challenges solved</div>
+            <div className="hairline" style={{ marginBottom: 16 }}>Notes from the build</div>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
               {ADLOOM.challenges.map((c, i) => (
                 <li

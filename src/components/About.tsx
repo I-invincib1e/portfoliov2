@@ -62,11 +62,11 @@ const About = () => {
                 paddingTop: 6,
                 fontStyle: 'italic',
                 color: 'var(--ember)',
-              }}>R</span>
-              ushikesh works at the intersection of typography, motion and
-              language models — crafting React systems that feel composed
-              rather than assembled. He treats every pixel like printed matter
-              and every interaction like a small piece of cinema.
+              }}>I</span>
+              build at the intersection of software, design and
+              AI — shipping products made for a wide audience,
+              not just demo reels. Every pixel treated like printed
+              matter; every interaction tuned to hold up under real use.
             </p>
 
             <div style={{ marginTop: 28, display: 'flex', gap: 28, flexWrap: 'wrap', fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--ink-muted)' }}>
