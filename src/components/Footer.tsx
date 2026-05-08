@@ -17,8 +17,6 @@ const Footer = () => {
   useEffect(() => {
     if (reducedMotion()) return;
     const ctx = gsap.context(() => {
-      gsap.to('.foot-strip', { xPercent: -50, duration: 60, ease: 'none', repeat: -1 });
-
       gsap.to('.foot-numeral', {
         yPercent: -22,
         ease: 'none',
@@ -30,19 +28,6 @@ const Footer = () => {
         },
       });
 
-      gsap.utils.toArray<HTMLElement>('.foot-letter').forEach((el, i) => {
-        gsap.to(el, {
-          yPercent: (i % 2 === 0 ? -1 : 1) * (8 + (i % 5)),
-          ease: 'none',
-          scrollTrigger: {
-            trigger: ref.current,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 0.6,
-          },
-        });
-      });
-
       gsap.fromTo('.foot-fade', { opacity: 0, y: 20 },
         {
           opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.05,
@@ -52,8 +37,6 @@ const Footer = () => {
     }, ref);
     return () => ctx.revert();
   }, []);
-
-  const phrases = ['field notes', 'in motion', 'shipped from mumbai', 'edition 04 / 2026', 'set in fraunces'];
 
   return (
     <footer
@@ -193,44 +176,8 @@ const Footer = () => {
 
         <div
           aria-hidden
-          style={{
-            borderTop: '1px solid rgba(239,233,223,0.18)',
-            borderBottom: '1px solid rgba(239,233,223,0.18)',
-            overflow: 'hidden',
-            padding: '24px 0',
-          }}
-        >
-          <div
-            className="foot-strip"
-            style={{ display: 'flex', whiteSpace: 'nowrap', willChange: 'transform' }}
-          >
-            {Array.from({ length: 2 }).map((_, k) => (
-              <div key={k} style={{ display: 'flex', alignItems: 'center', gap: 'clamp(20px, 3vw, 36px)', paddingRight: 'clamp(20px, 3vw, 36px)' }}>
-                {phrases.map(p => (
-                  <span
-                    key={p}
-                    style={{
-                      fontFamily: 'var(--font-display)',
-                      fontStyle: 'italic',
-                      fontSize: 'clamp(1.6rem, 4vw, 3rem)',
-                      letterSpacing: '-0.02em',
-                      color: 'rgba(239,233,223,0.85)',
-                      display: 'inline-flex',
-                      gap: 8,
-                    }}
-                  >
-                    <span style={{ color: '#e26a3d' }}>✦</span>
-                    {p.split('').map((ch, i) => (
-                      <span key={i} className="foot-letter" style={{ display: 'inline-block', willChange: 'transform' }}>
-                        {ch === ' ' ? '\u00A0' : ch}
-                      </span>
-                    ))}
-                  </span>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
+          style={{ borderTop: '1px solid rgba(239,233,223,0.18)' }}
+        />
 
         <div
           className="foot-fade footer-meta"
@@ -268,8 +215,7 @@ const Footer = () => {
           .footer-meta { font-size: 9px !important; }
         }
         @media (prefers-reduced-motion: reduce) {
-          .foot-strip { transform: none !important; animation: none !important; }
-          .foot-numeral, .foot-letter { transform: none !important; }
+          .foot-numeral { transform: none !important; }
         }
       `}</style>
     </footer>
