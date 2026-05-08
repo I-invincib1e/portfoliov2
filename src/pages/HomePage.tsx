@@ -1,4 +1,5 @@
 import Hero from '../components/Hero';
+import ProofStrip from '../components/ProofStrip';
 import Adloom from '../components/Adloom';
 import BuildLogsStrip from '../components/BuildLogsStrip';
 import About from '../components/About';
@@ -12,7 +13,7 @@ type Props = { ready?: boolean };
 const HomePage = ({ ready }: Props) => {
   useSeo({
     title: 'Rushikesh Pawar — AI Product Engineer',
-    description: 'Rushikesh Pawar — AI Product Engineer building SaaS and AI-driven products for real users at scale. Build logs, projects, and field notes.',
+    description: 'Rushikesh Pawar — AI Product Engineer building SaaS, voice AI systems and automation tools. Shopify app shipped, voice AI infrastructure in progress.',
     path: '/',
     keywords: ['Rushikesh Pawar', 'AI Product Engineer', 'Shopify app developer', 'Adloom', 'Voice AI', 'React engineer', 'automation tools', 'technical founder'],
     jsonLd: [
@@ -41,10 +42,11 @@ const HomePage = ({ ready }: Props) => {
   return (
     <main id="main">
       <Hero ready={ready} />
+      <ProofStrip />
       <Adloom />
+      <Work />
       <BuildLogsStrip />
       <About />
-      <Work />
       <NewsletterCTA />
       <Footer />
     </main>

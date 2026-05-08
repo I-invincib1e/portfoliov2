@@ -16,6 +16,7 @@ const JournalTagPage = lazy(() => import('./pages/JournalTagPage'));
 const JournalSeriesPage = lazy(() => import('./pages/JournalSeriesPage'));
 const BuildLogsPage = lazy(() => import('./pages/BuildLogsPage'));
 const BuildLogPostPage = lazy(() => import('./pages/BuildLogPostPage'));
+const NowPage = lazy(() => import('./pages/NowPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 const PageFallback = () => (
@@ -52,6 +53,7 @@ function App() {
             <Route path="/journal/:slug" element={<JournalPostPage />} />
             <Route path="/logs" element={<BuildLogsPage />} />
             <Route path="/logs/:slug" element={<BuildLogPostPage />} />
+            <Route path="/now" element={<NowPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Suspense>

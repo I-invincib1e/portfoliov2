@@ -7,9 +7,9 @@ gsap.registerPlugin(ScrollTrigger);
 const ADLOOM = {
   company: 'Adloom',
   product: 'Loom Offer & Sales',
-  tagline: 'A Shopify app for running cleaner offers and sales.',
+  tagline: 'One Shopify dashboard for offers, timers, coupons and billing.',
   description:
-    'Loom Offer & Sales is our first app under Adloom — a small tool for Shopify stores to run tiered discounts and promotions without the usual setup friction.',
+    'Merchants lose hours stitching together discount apps, urgency timers, and coupon logic — and one bad edge case can break checkout. Loom Offer & Sales unifies pricing automation, coupon validation, urgency timers, and billing into a single Shopify-native dashboard, with merchant-safety checks built into every path.',
   liveUrl: 'https://apps.shopify.com/loom-offer-sales',
   badge: 'Live on Shopify',
   screenshots: [
@@ -17,11 +17,12 @@ const ADLOOM = {
     'https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=1200',
     'https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?auto=compress&cs=tinysrgb&w=1200',
   ],
-  challenges: [
-    'Fixed a floating-point drift in tiered discount pricing.',
-    'Rewrote coupon stacking as an explicit state machine.',
-    'Trimmed onboarding from 5 steps to 3.',
-    'Made the billing paths explicit and auditable end-to-end.',
+  solved: [
+    'Pricing automation across tiered discounts, with floating-point drift eliminated.',
+    'Coupon validation and stacking rewritten as an explicit state machine.',
+    'Urgency timer system with merchant-safe rollback on failure.',
+    'Billing paths made explicit and auditable end-to-end.',
+    'Onboarding trimmed from 5 steps to 3.',
   ],
 };
 
@@ -103,9 +104,9 @@ const Adloom = () => {
           </div>
 
           <div style={{ gridColumn: 'span 7' }}>
-            <div className="hairline" style={{ marginBottom: 16 }}>Notes from the build</div>
+            <div className="hairline" style={{ marginBottom: 16 }}>What it solves</div>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {ADLOOM.challenges.map((c, i) => (
+              {ADLOOM.solved.map((c, i) => (
                 <li
                   key={i}
                   style={{

@@ -54,7 +54,7 @@ const Navbar = () => {
             Rushikesh<span style={{ color: '#e26a3d' }}>.</span>
           </div>
           <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.22em', opacity: 0.7 }}>
-            Designer / Developer
+            AI Product Engineer
           </div>
         </Link>
 

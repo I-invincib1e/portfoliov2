@@ -1,28 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { Link } from 'react-router-dom';
-import { fetchNow, NowWidget } from '../lib/supabase';
 import { siteConfig } from '../config/siteConfig';
 
 type HeroProps = { ready?: boolean };
 
 const Hero = ({ ready = true }: HeroProps) => {
   const ref = useRef<HTMLDivElement>(null);
-  const [now, setNow] = useState<NowWidget | null>(null);
-  const [time, setTime] = useState('');
-
-  useEffect(() => {
-    fetchNow().then(n => setNow(n));
-  }, []);
-
-  useEffect(() => {
-    const tick = () => setTime(new Date().toLocaleTimeString('en-US', {
-      timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: false,
-    }));
-    tick();
-    const id = setInterval(tick, 30000);
-    return () => clearInterval(id);
-  }, []);
 
   useEffect(() => {
     if (!ready) return;
@@ -161,54 +145,46 @@ const Hero = ({ ready = true }: HeroProps) => {
         >
           <div className="mask hero-mask">
             <span style={{ fontWeight: 300 }}>
-              AI <em style={{ fontStyle: 'italic', fontWeight: 400, color: 'var(--ember)' }}>Product</em> Engineer
+              Building <em style={{ fontStyle: 'italic', fontWeight: 400, color: 'var(--ember)' }}>AI systems</em>, SaaS products,
+            </span>
+          </div>
+          <div className="mask hero-mask">
+            <span style={{ fontWeight: 300 }}>
+              and automation tools people actually use.
             </span>
           </div>
         </h1>
 
         <p className="hero-fade" style={{
           marginTop: 28,
-          maxWidth: 560,
+          maxWidth: 640,
           fontFamily: 'var(--font-sans)',
           fontSize: 'clamp(1rem, 1.6vw, 1.25rem)',
           lineHeight: 1.5,
           color: 'var(--ink-soft)',
         }}>
-          I build SaaS and AI-driven products made for real users at scale.
+          Built and launched Adloom on Shopify. Currently building voice AI infrastructure and experimental automation products.
         </p>
       </div>
 
       <div className="container-ed hero-fade" style={{ marginTop: 'auto', paddingTop: 60, position: 'relative', zIndex: 2 }}>
         <div className="editorial-grid">
-          <div style={{ gridColumn: 'span 4' }}>
-            <div className="hairline" style={{ marginBottom: 14 }}>About</div>
+          <div style={{ gridColumn: 'span 6' }}>
+            <div className="hairline" style={{ marginBottom: 14 }}>What I build</div>
             <p style={{
               fontFamily: 'var(--font-sans)',
               fontSize: 15,
               color: 'var(--ink-soft)',
-              maxWidth: 360,
+              maxWidth: 460,
               lineHeight: 1.6,
             }}>
-              I design and ship products where software
-              meets AI — tools built to reach a wide audience
-              and hold up under real use.
+              AI-powered SaaS, voice AI systems, and automation tools that
+              take messy, manual workflows and turn them into products merchants
+              and teams can actually rely on.
             </p>
           </div>
 
-          <div style={{ gridColumn: 'span 4' }}>
-            <div className="hairline" style={{ marginBottom: 14 }}>Now / Live</div>
-            {now ? (
-              <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-soft)', lineHeight: 2, letterSpacing: '0.04em' }}>
-                <li>↳ <span style={{ color: 'var(--ink-muted)' }}>loc</span> &nbsp; {now.location} · {time} IST</li>
-                <li>↳ <span style={{ color: 'var(--ink-muted)' }}>read</span>&nbsp; {now.currently_reading}</li>
-                <li>↳ <span style={{ color: 'var(--ink-muted)' }}>play</span>&nbsp; {now.currently_listening}</li>
-              </ul>
-            ) : (
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-muted)' }}>loading index card…</div>
-            )}
-          </div>
-
-          <div className="hero-cta-col" style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'flex-end', gap: 14 }}>
+          <div className="hero-cta-col" style={{ gridColumn: 'span 6', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'flex-end', gap: 14 }}>
             <a
               href="#adloom"
               className="btn-ink hero-cta"

@@ -36,10 +36,9 @@ const About = () => {
               }}
             >
               <span style={{ fontWeight: 400 }}>I build</span>{' '}
-              <em style={{ fontWeight: 400 }}>quiet</em>
+              <em style={{ fontWeight: 400 }}>AI systems,</em>
               <br />
-              <span style={{ fontWeight: 400 }}>interfaces</span>{' '}
-              <em style={{ fontWeight: 400, color: 'var(--ember)' }}>that move.</em>
+              <em style={{ fontWeight: 400, color: 'var(--ember)' }}>quietly — in public.</em>
             </h2>
           </div>
 
@@ -63,15 +62,16 @@ const About = () => {
                 fontStyle: 'italic',
                 color: 'var(--ember)',
               }}>I</span>
-              build at the intersection of software, design and
-              AI — shipping products made for a wide audience,
-              not just demo reels. Every pixel treated like printed
-              matter; every interaction tuned to hold up under real use.
+              build AI-powered SaaS, voice AI systems and automation tools —
+              products made for a wide audience, not demo reels. Every pixel
+              treated like printed matter; every interaction tuned to hold up
+              under real use.
             </p>
 
             <div style={{ marginTop: 28, display: 'flex', gap: 28, flexWrap: 'wrap', fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--ink-muted)' }}>
-              <div><span style={{ display: 'block', color: 'var(--ink)' }}>04 yrs</span>experimenting</div>
-              <div><span style={{ display: 'block', color: 'var(--ink)' }}>20+</span>shipped projects</div>
+              <div><span style={{ display: 'block', color: 'var(--ink)' }}>AI</span>systems &amp; agents</div>
+              <div><span style={{ display: 'block', color: 'var(--ink)' }}>SaaS</span>shipped products</div>
+              <div><span style={{ display: 'block', color: 'var(--ink)' }}>Automation</span>workflow tools</div>
               <div><span style={{ display: 'block', color: 'var(--ink)' }}>Mumbai</span>India / GMT+5:30</div>
             </div>
           </div>

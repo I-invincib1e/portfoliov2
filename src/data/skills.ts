@@ -6,8 +6,8 @@ export const skills: Skill[] = [
     description: 'Integrating and orchestrating large language models with LangChain, Groq, OpenAI and the TypeGPT API. Building agentic systems with multi-model workflows.',
   },
   {
-    title: 'Frontend Engineering',
-    description: 'Crafting fast, clean, responsive UIs with Next.js, React, Tailwind and ShadCN. Strong focus on UX, motion (Framer Motion / GSAP) and design systems.',
+    title: 'Product Engineering',
+    description: 'Shipping production-grade interfaces with Next.js, React, Tailwind and ShadCN — tuned for UX, motion (Framer Motion / GSAP) and design systems that hold up under real use.',
   },
   {
     title: 'Realtime Web Apps',
