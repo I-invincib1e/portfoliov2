@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { journalPath } from '../lib/journalPath';
 import { fetchPosts, fetchSeries, Post, Series } from '../lib/supabase';
 import JournalList from '../components/JournalList';
 import Footer from '../components/Footer';
@@ -65,7 +64,7 @@ const JournalPage = () => {
               {series.map(s => (
                 <Link
                   key={s.slug}
-                  to={journalPath(`/journal/series/${s.slug}`)}
+                  to={`/journal/series/${s.slug}`}
                   style={{
                     border: '1px solid var(--rule)',
                     borderRadius: 4,
@@ -100,7 +99,7 @@ const JournalPage = () => {
               {tagCounts.map(([t, c]) => (
                 <Link
                   key={t}
-                  to={journalPath(`/journal/tag/${encodeURIComponent(t)}`)}
+                  to={`/journal/tag/${encodeURIComponent(t)}`}
                   className="tag-chip"
                   style={{ textDecoration: 'none' }}
                 >

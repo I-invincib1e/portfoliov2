@@ -27,10 +27,6 @@ const PageFallback = () => (
   </div>
 );
 
-const isBlogSubdomain =
-  typeof window !== 'undefined' &&
-  window.location.hostname === 'blog.rushikeshpawar.dev';
-
 function App() {
   const [loaded, setLoaded] = useState(false);
 
@@ -44,32 +40,22 @@ function App() {
       <Router>
         {!loaded && <Loader onDone={() => setLoaded(true)} />}
         <Cursor />
-        <Navbar blogMode={isBlogSubdomain} />
+        <Navbar />
         <Suspense fallback={<PageFallback />}>
-          {isBlogSubdomain ? (
-            <Routes>
-              <Route path="/" element={<JournalPage />} />
-              <Route path="/tag/:tag" element={<JournalTagPage />} />
-              <Route path="/series/:slug" element={<JournalSeriesPage />} />
-              <Route path="/:slug" element={<JournalPostPage />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          ) : (
-            <Routes>
-              <Route path="/" element={<HomePage ready={loaded} />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/projects" element={<ProjectsPage />} />
-              <Route path="/certifications" element={<CertificationsPage />} />
-              <Route path="/journal" element={<JournalPage />} />
-              <Route path="/journal/tag/:tag" element={<JournalTagPage />} />
-              <Route path="/journal/series/:slug" element={<JournalSeriesPage />} />
-              <Route path="/journal/:slug" element={<JournalPostPage />} />
-              <Route path="/logs" element={<BuildLogsPage />} />
-              <Route path="/logs/:slug" element={<BuildLogPostPage />} />
-              <Route path="/now" element={<NowPage />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          )}
+          <Routes>
+            <Route path="/" element={<HomePage ready={loaded} />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/certifications" element={<CertificationsPage />} />
+            <Route path="/journal" element={<JournalPage />} />
+            <Route path="/journal/tag/:tag" element={<JournalTagPage />} />
+            <Route path="/journal/series/:slug" element={<JournalSeriesPage />} />
+            <Route path="/journal/:slug" element={<JournalPostPage />} />
+            <Route path="/logs" element={<BuildLogsPage />} />
+            <Route path="/logs/:slug" element={<BuildLogPostPage />} />
+            <Route path="/now" element={<NowPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
         </Suspense>
       </Router>
     </ThemeProvider>

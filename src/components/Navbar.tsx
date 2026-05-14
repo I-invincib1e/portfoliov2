@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 
-const portfolioLinks = [
+const links = [
   { to: '/', label: 'Index', num: '01' },
   { to: '/projects', label: 'Work', num: '02' },
   { to: '/logs', label: 'Build Logs', num: '03' },
@@ -11,13 +11,7 @@ const portfolioLinks = [
   { to: '/contact', label: 'Contact', num: '06' },
 ];
 
-const blogLinks = [
-  { to: '/', label: 'All Posts', num: '01' },
-  { to: 'https://rushikeshpawar.dev', label: 'Portfolio', num: '02', external: true },
-];
-
-const Navbar = ({ blogMode = false }: { blogMode?: boolean }) => {
-  const links = blogMode ? blogLinks : portfolioLinks;
+const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const [time, setTime] = useState('');
@@ -66,45 +60,24 @@ const Navbar = ({ blogMode = false }: { blogMode?: boolean }) => {
 
         <nav className="desktop-nav" style={{ pointerEvents: 'auto' }}>
           {links.map(l => (
-            (l as { external?: boolean }).external ? (
-              <a
-                key={l.to}
-                href={l.to}
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 11,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.2em',
-                  color: 'inherit',
-                  textDecoration: 'none',
-                  opacity: 0.7,
-                  display: 'inline-flex',
-                  gap: 8,
-                }}
-              >
-                <span style={{ opacity: 0.55 }}>{l.num}</span>
-                <span>{l.label}</span>
-              </a>
-            ) : (
-              <NavLink
-                key={l.to}
-                to={l.to}
-                style={({ isActive }) => ({
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 11,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.2em',
-                  color: 'inherit',
-                  textDecoration: 'none',
-                  opacity: isActive ? 1 : 0.7,
-                  display: 'inline-flex',
-                  gap: 8,
-                })}
-              >
-                <span style={{ opacity: 0.55 }}>{l.num}</span>
-                <span>{l.label}</span>
-              </NavLink>
-            )
+            <NavLink
+              key={l.to}
+              to={l.to}
+              style={({ isActive }) => ({
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11,
+                textTransform: 'uppercase',
+                letterSpacing: '0.2em',
+                color: 'inherit',
+                textDecoration: 'none',
+                opacity: isActive ? 1 : 0.7,
+                display: 'inline-flex',
+                gap: 8,
+              })}
+            >
+              <span style={{ opacity: 0.55 }}>{l.num}</span>
+              <span>{l.label}</span>
+            </NavLink>
           ))}
         </nav>
 
@@ -176,43 +149,23 @@ const Navbar = ({ blogMode = false }: { blogMode?: boolean }) => {
           }}
         >
           {links.map(l => (
-            (l as { external?: boolean }).external ? (
-              <a
-                key={l.to}
-                href={l.to}
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 'clamp(2.5rem, 9vw, 5rem)',
-                  color: 'inherit',
-                  textDecoration: 'none',
-                  fontStyle: 'italic',
-                  lineHeight: 1.05,
-                }}
-              >
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontStyle: 'normal', marginRight: 16, opacity: 0.6 }}>
-                  {l.num}
-                </span>
-                {l.label}
-              </a>
-            ) : (
-              <Link
-                key={l.to}
-                to={l.to}
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 'clamp(2.5rem, 9vw, 5rem)',
-                  color: 'inherit',
-                  textDecoration: 'none',
-                  fontStyle: 'italic',
-                  lineHeight: 1.05,
-                }}
-              >
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontStyle: 'normal', marginRight: 16, opacity: 0.6 }}>
-                  {l.num}
-                </span>
-                {l.label}
-              </Link>
-            )
+            <Link
+              key={l.to}
+              to={l.to}
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(2.5rem, 9vw, 5rem)',
+                color: 'inherit',
+                textDecoration: 'none',
+                fontStyle: 'italic',
+                lineHeight: 1.05,
+              }}
+            >
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontStyle: 'normal', marginRight: 16, opacity: 0.6 }}>
+                {l.num}
+              </span>
+              {l.label}
+            </Link>
           ))}
         </div>
       )}

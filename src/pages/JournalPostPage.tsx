@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { journalPath } from '../lib/journalPath';
 import { gsap } from 'gsap';
 import {
   fetchPost,
@@ -543,7 +542,7 @@ const JournalPostPage = () => {
         <h1 style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', textAlign: 'center', letterSpacing: '-0.03em' }}>
           This <em style={{ color: 'var(--ember)' }}>page</em> hasn&apos;t been written yet.
         </h1>
-        <Link to={journalPath("/journal")} className="btn-outline">Back to all field notes</Link>
+        <Link to="/journal" className="btn-outline">Back to all field notes</Link>
       </main>
     );
   }
@@ -602,7 +601,7 @@ const JournalPostPage = () => {
           )}
 
           <div className="post-column">
-            <Link to={journalPath("/journal")} className="ed-link" style={{ fontSize: 12, fontFamily: 'var(--font-mono)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
+            <Link to="/journal" className="ed-link" style={{ fontSize: 12, fontFamily: 'var(--font-mono)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
               ← Field Notes
             </Link>
 
@@ -610,7 +609,7 @@ const JournalPostPage = () => {
               <div className="post-meta">
                 {post.series && post.series_slug && (
                   <>
-                    <Link to={journalPath(`/journal/series/${post.series_slug}`)} className="ed-link" style={{ color: 'inherit' }}>{post.series}</Link>
+                    <Link to={`/journal/series/${post.series_slug}`} className="ed-link" style={{ color: 'inherit' }}>{post.series}</Link>
                     <span aria-hidden>·</span>
                   </>
                 )}
@@ -638,7 +637,7 @@ const JournalPostPage = () => {
               {post.tags.length > 0 && (
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 24 }}>
                   {post.tags.map(t => (
-                    <Link key={t} to={journalPath(`/journal/tag/${encodeURIComponent(t)}`)} className="tag-chip" style={{ textDecoration: 'none' }}>
+                    <Link key={t} to={`/journal/tag/${encodeURIComponent(t)}`} className="tag-chip" style={{ textDecoration: 'none' }}>
                       {t}
                     </Link>
                   ))}
@@ -674,13 +673,13 @@ const JournalPostPage = () => {
             {(prev || next) && (
               <nav style={{ marginTop: 56, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }} className="series-nav">
                 {prev ? (
-                  <Link to={journalPath(`/journal/${prev.slug}`)} className="series-nav-card" data-side="prev">
+                  <Link to={`/journal/${prev.slug}`} className="series-nav-card" data-side="prev">
                     <span className="hairline">← Previous in series</span>
                     <span className="series-nav-title">{prev.title}</span>
                   </Link>
                 ) : <span />}
                 {next ? (
-                  <Link to={journalPath(`/journal/${next.slug}`)} className="series-nav-card" data-side="next">
+                  <Link to={`/journal/${next.slug}`} className="series-nav-card" data-side="next">
                     <span className="hairline">Next in series →</span>
                     <span className="series-nav-title">{next.title}</span>
                   </Link>
@@ -693,7 +692,7 @@ const JournalPostPage = () => {
                 <div className="hairline" style={{ marginBottom: 18 }}>Related field notes</div>
                 <div className="related-grid">
                   {related.map(r => (
-                    <Link key={r.id} to={journalPath(`/journal/${r.slug}`)} className="related-card">
+                    <Link key={r.id} to={`/journal/${r.slug}`} className="related-card">
                       <div className="post-meta" style={{ marginBottom: 8 }}>
                         {r.series && <span>{r.series}</span>}
                         {r.series && <span aria-hidden>·</span>}
@@ -723,7 +722,7 @@ const JournalPostPage = () => {
                 Rushikesh Pawar — written from Mumbai, {fmtDate(post.published_at)}.
               </p>
               <div style={{ marginTop: 28, display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-                <Link to={journalPath("/journal")} className="btn-outline">All field notes</Link>
+                <Link to="/journal" className="btn-outline">All field notes</Link>
                 <Link to="/contact" className="btn-ink">Start a project →</Link>
               </div>
             </footer>
