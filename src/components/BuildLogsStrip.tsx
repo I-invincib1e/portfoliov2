@@ -39,7 +39,7 @@ const BuildLogsStrip = () => {
             </h2>
           </div>
           <div style={{ gridColumn: 'span 4', display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-            <Link to="/logs" className="ed-link">All build logs →</Link>
+            <Link to="/writing?tab=build-logs" className="ed-link">All build logs →</Link>
           </div>
         </div>
 

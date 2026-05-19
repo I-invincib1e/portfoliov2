@@ -542,7 +542,7 @@ const JournalPostPage = () => {
         <h1 style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', textAlign: 'center', letterSpacing: '-0.03em' }}>
           This <em style={{ color: 'var(--ember)' }}>page</em> hasn&apos;t been written yet.
         </h1>
-        <Link to="/journal" className="btn-outline">Back to all field notes</Link>
+        <Link to="/writing?tab=field-notes" className="btn-outline">Back to all field notes</Link>
       </main>
     );
   }
@@ -601,7 +601,7 @@ const JournalPostPage = () => {
           )}
 
           <div className="post-column">
-            <Link to="/journal" className="ed-link" style={{ fontSize: 12, fontFamily: 'var(--font-mono)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
+            <Link to="/writing?tab=field-notes" className="ed-link" style={{ fontSize: 12, fontFamily: 'var(--font-mono)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
               ← Field Notes
             </Link>
 
@@ -722,7 +722,7 @@ const JournalPostPage = () => {
                 Rushikesh Pawar — written from Mumbai, {fmtDate(post.published_at)}.
               </p>
               <div style={{ marginTop: 28, display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-                <Link to="/journal" className="btn-outline">All field notes</Link>
+                <Link to="/writing?tab=field-notes" className="btn-outline">All field notes</Link>
                 <Link to="/contact" className="btn-ink">Start a project →</Link>
               </div>
             </footer>

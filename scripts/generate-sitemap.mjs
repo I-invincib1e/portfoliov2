@@ -9,8 +9,8 @@ const key = process.env.VITE_SUPABASE_ANON_KEY;
 const baseUrls = [
   { loc: '/',               changefreq: 'weekly',  priority: '1.0' },
   { loc: '/projects',       changefreq: 'weekly',  priority: '0.9' },
-  { loc: '/logs',           changefreq: 'daily',   priority: '0.9' },
-  { loc: '/journal',        changefreq: 'weekly',  priority: '0.9' },
+  { loc: '/writing',        changefreq: 'daily',   priority: '0.9' },
+  { loc: '/now',            changefreq: 'weekly',  priority: '0.6' },
   { loc: '/certifications', changefreq: 'monthly', priority: '0.7' },
   { loc: '/contact',        changefreq: 'monthly', priority: '0.8' },
 ];

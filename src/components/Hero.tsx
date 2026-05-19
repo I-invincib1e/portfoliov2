@@ -199,7 +199,7 @@ const Hero = ({ ready = true }: HeroProps) => {
               <span aria-hidden>→</span>
             </a>
             <Link
-              to="/logs"
+              to="/writing"
               className="resume-link"
               style={{
                 fontSize: 13,

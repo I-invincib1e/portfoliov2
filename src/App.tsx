@@ -1,5 +1,5 @@
 import { useEffect, useState, lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Loader from './components/Loader';
 import Cursor from './components/Cursor';
@@ -10,11 +10,10 @@ const HomePage = lazy(() => import('./pages/HomePage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const ProjectsPage = lazy(() => import('./pages/ProjectsPage'));
 const CertificationsPage = lazy(() => import('./pages/CertificationsPage'));
-const JournalPage = lazy(() => import('./pages/JournalPage'));
+const WritingPage = lazy(() => import('./pages/WritingPage'));
 const JournalPostPage = lazy(() => import('./pages/JournalPostPage'));
 const JournalTagPage = lazy(() => import('./pages/JournalTagPage'));
 const JournalSeriesPage = lazy(() => import('./pages/JournalSeriesPage'));
-const BuildLogsPage = lazy(() => import('./pages/BuildLogsPage'));
 const BuildLogPostPage = lazy(() => import('./pages/BuildLogPostPage'));
 const NowPage = lazy(() => import('./pages/NowPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
@@ -47,11 +46,12 @@ function App() {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/certifications" element={<CertificationsPage />} />
-            <Route path="/journal" element={<JournalPage />} />
+            <Route path="/writing" element={<WritingPage />} />
+            <Route path="/journal" element={<Navigate to="/writing?tab=field-notes" replace />} />
+            <Route path="/logs" element={<Navigate to="/writing?tab=build-logs" replace />} />
             <Route path="/journal/tag/:tag" element={<JournalTagPage />} />
             <Route path="/journal/series/:slug" element={<JournalSeriesPage />} />
             <Route path="/journal/:slug" element={<JournalPostPage />} />
-            <Route path="/logs" element={<BuildLogsPage />} />
             <Route path="/logs/:slug" element={<BuildLogPostPage />} />
             <Route path="/now" element={<NowPage />} />
             <Route path="*" element={<NotFoundPage />} />

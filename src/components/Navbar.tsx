@@ -5,10 +5,9 @@ import { useTheme } from '../context/ThemeContext';
 const links = [
   { to: '/', label: 'Index', num: '01' },
   { to: '/projects', label: 'Work', num: '02' },
-  { to: '/logs', label: 'Build Logs', num: '03' },
-  { to: '/journal', label: 'Field Notes', num: '04' },
-  { to: '/certifications', label: 'Archive', num: '05' },
-  { to: '/contact', label: 'Contact', num: '06' },
+  { to: '/writing', label: 'Writing', num: '03' },
+  { to: '/certifications', label: 'Archive', num: '04' },
+  { to: '/contact', label: 'Contact', num: '05' },
 ];
 
 const Navbar = () => {
