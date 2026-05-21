@@ -75,6 +75,7 @@ export type Post = {
   confidence: number;
   reading_time_min: number;
   sections: PostSection[];
+  body_md: string | null;
   published_at: string | null;
   view_count: number;
   related_slugs: string[];

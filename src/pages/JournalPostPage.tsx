@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { gsap } from 'gsap';
+import { renderMarkdown } from '../utils/renderMarkdown';
 import {
   fetchPost,
   fetchPosts,
@@ -561,7 +562,7 @@ const JournalPostPage = () => {
 
       <article style={{ padding: 'clamp(120px, 16vw, 180px) 0 60px' }}>
         <div className="post-shell">
-          {toc.length > 0 && (
+          {toc.length > 0 && !post.body_md && (
             <aside className="chapter-rail" aria-label="Chapter navigation">
               <div className="hairline" style={{ marginBottom: 14 }}>Chapters</div>
               <ol style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -657,15 +658,19 @@ const JournalPostPage = () => {
               </div>
             )}
 
-            <div style={{ marginTop: 40, display: 'flex', flexDirection: 'column', gap: 56 }}>
-              {post.sections.map((s, i) => (
-                <SectionBlock
-                  key={i}
-                  section={s}
-                  idx={i}
-                  anchor={CHAPTER_KINDS.has(s.kind) ? slugifyChapter(s.kind as PostChapterKind, i) : undefined}
-                />
-              ))}
+            <div style={{ marginTop: 40, display: 'flex', flexDirection: 'column', gap: post.body_md ? 0 : 56 }}>
+              {post.body_md ? (
+                renderMarkdown(post.body_md)
+              ) : (
+                post.sections.map((s, i) => (
+                  <SectionBlock
+                    key={i}
+                    section={s}
+                    idx={i}
+                    anchor={CHAPTER_KINDS.has(s.kind) ? slugifyChapter(s.kind as PostChapterKind, i) : undefined}
+                  />
+                ))
+              )}
             </div>
 
             <ShareKit post={post} />
