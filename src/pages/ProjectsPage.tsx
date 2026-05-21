@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { allProjects as fallbackProjects } from '../config/siteConfig';
+import { allProjects as fallbackProjects, StaticProject } from '../data/projects';
 import { fetchProjects, Project } from '../lib/supabase';
 import Footer from '../components/Footer';
 import { useSeo, SITE_URL, breadcrumbJsonLd } from '../lib/seo';
@@ -10,7 +10,12 @@ type DisplayProject = {
   title: string;
   description: string;
   link: string;
+  github: string;
   tags: string[];
+  status: string;
+  role: string;
+  problemSolved: string;
+  outcome: string;
 };
 
 const toDisplay = (rows: Project[] | null): DisplayProject[] => {
@@ -19,47 +24,64 @@ const toDisplay = (rows: Project[] | null): DisplayProject[] => {
       title: p.title,
       description: p.summary || p.description,
       link: p.live_url || p.repo_url || '#',
+      github: p.repo_url || '',
       tags: p.tags ?? [],
+      status: 'Live',
+      role: 'Builder',
+      problemSolved: '',
+      outcome: '',
     }));
   }
   return fallbackProjects.map(p => ({
     title: p.title,
     description: p.description,
     link: p.link,
+    github: p.github,
     tags: p.tags,
+    status: p.status || 'Live',
+    role: p.role || 'Builder',
+    problemSolved: p.problemSolved || '',
+    outcome: p.outcome || '',
   }));
+};
+
+const statusColor: Record<string, string> = {
+  Idea: '#888',
+  Building: '#d4870e',
+  Live: '#2e8b57',
+  Archived: '#666',
 };
 
 gsap.registerPlugin(ScrollTrigger);
 
 const ProjectsPage = () => {
   useSeo({
-    title: 'Selected Work — Rushikesh Pawar',
-    description: 'Selected projects by Rushikesh Pawar — Pyscrape, CleanEngine, Go-Pro, Quick-Link and more. Python, Go, React and AI-driven tools shipped from Mumbai.',
+    title: 'Projects — Rushikesh Pawar | AI Products & Systems',
+    description: 'AI products, voice systems, automation tools, and SaaS experiments by Rushikesh Pawar. Each project solves a real problem — from AI receptionists to data pipelines.',
     path: '/projects',
-    keywords: ['Rushikesh Pawar projects', 'React portfolio projects', 'open source AI tools', 'Pyscrape', 'CleanEngine', 'Go-Pro', 'Quick-Link'],
+    keywords: ['AI product projects', 'voice AI systems', 'SaaS MVP', 'automation tools', 'Rushikesh Pawar work'],
     jsonLd: [
       {
         '@context': 'https://schema.org',
         '@type': 'CollectionPage',
         '@id': `${SITE_URL}/projects`,
-        name: 'Selected Work',
+        name: 'Projects',
         url: `${SITE_URL}/projects`,
-        hasPart: fallbackProjects.map(p => ({
+        hasPart: fallbackProjects.filter(p => p.featured).map(p => ({
           '@type': 'CreativeWork',
           name: p.title,
           description: p.description,
-          url: p.link,
+          url: p.link || p.github,
           keywords: p.tags.join(', '),
-          image: p.image,
         })),
       },
       breadcrumbJsonLd([
         { name: 'Home', url: `${SITE_URL}/` },
-        { name: 'Work', url: `${SITE_URL}/projects` },
+        { name: 'Projects', url: `${SITE_URL}/projects` },
       ]),
     ],
   });
+
   const ref = useRef<HTMLElement>(null);
   const [projects, setProjects] = useState<DisplayProject[]>(() => toDisplay(null));
 
@@ -69,11 +91,11 @@ const ProjectsPage = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>('.proj-row').forEach((row, i) => {
-        gsap.fromTo(row, { y: 40, opacity: 0 }, {
+      gsap.utils.toArray<HTMLElement>('.proj-card').forEach((card, i) => {
+        gsap.fromTo(card, { y: 40, opacity: 0 }, {
           y: 0, opacity: 1, duration: 0.9, ease: 'power3.out',
-          delay: i * 0.04,
-          scrollTrigger: { trigger: row, start: 'top 88%' },
+          delay: i * 0.06,
+          scrollTrigger: { trigger: card, start: 'top 88%' },
         });
       });
     }, ref);
@@ -84,89 +106,192 @@ const ProjectsPage = () => {
     <main ref={ref} id="main">
       <section style={{ padding: '160px 0 60px' }}>
         <div className="container-ed">
-          <div className="hairline">02 / Selected Work</div>
+          <div className="hairline">02 / Projects</div>
           <h1 style={{ fontSize: 'clamp(3rem, 9vw, 8rem)', marginTop: 18, letterSpacing: '-0.04em', lineHeight: 0.95 }}>
             The <em style={{ color: 'var(--ember)' }}>archive.</em>
           </h1>
-          <p style={{ marginTop: 18, maxWidth: 520, color: 'var(--ink-soft)', fontSize: 16, lineHeight: 1.6 }}>
-            A growing index of experiments, products and one-night ideas that
-            ship before they get precious.
+          <p style={{ marginTop: 18, maxWidth: 560, color: 'var(--ink-soft)', fontSize: 16, lineHeight: 1.6 }}>
+            AI products, voice systems, automation tools, and experiments.
+            Each one solves a real problem — or teaches something worth documenting.
           </p>
         </div>
       </section>
 
       <section style={{ padding: '40px 0 120px' }}>
         <div className="container-ed">
-          <div style={{ borderTop: '1px solid var(--rule)' }}>
-            {projects.map((p, i) => (
-              <a
-                key={p.title}
-                href={p.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="proj-row"
-              >
-                <span className="numtag">/{String(i + 1).padStart(2, '0')}</span>
-                <div>
-                  <h3 style={{
-                    fontSize: 'clamp(1.5rem, 3vw, 2.4rem)',
-                    fontWeight: 400,
-                    letterSpacing: '-0.02em',
-                    fontStyle: i % 2 ? 'italic' : 'normal',
-                  }}>
-                    {p.title}
-                  </h3>
+          <div className="projects-grid">
+            {projects.map((p) => {
+              const href = p.link && p.link !== '#' ? p.link : p.github;
+              return (
+                <div key={p.title} className="proj-card">
+                  <div className="proj-card-header">
+                    <span className="proj-status" style={{ color: statusColor[p.status] || '#888' }}>
+                      {p.status}
+                    </span>
+                    <span className="proj-role">{p.role}</span>
+                  </div>
+
+                  <h3 className="proj-title">{p.title}</h3>
+                  <p className="proj-desc">{p.description}</p>
+
+                  {p.problemSolved && (
+                    <div className="proj-meta-block">
+                      <span className="proj-meta-label">Problem</span>
+                      <span className="proj-meta-value">{p.problemSolved}</span>
+                    </div>
+                  )}
+
+                  {p.outcome && (
+                    <div className="proj-meta-block">
+                      <span className="proj-meta-label">Outcome</span>
+                      <span className="proj-meta-value">{p.outcome}</span>
+                    </div>
+                  )}
+
+                  <div className="proj-tags">
+                    {p.tags.map(t => (
+                      <span key={t} className="proj-tag">{t}</span>
+                    ))}
+                  </div>
+
+                  <div className="proj-links">
+                    {p.link && p.link !== '#' && (
+                      <a href={p.link} target="_blank" rel="noopener noreferrer" className="proj-link">
+                        Live Demo ↗
+                      </a>
+                    )}
+                    {p.github && (
+                      <a href={p.github} target="_blank" rel="noopener noreferrer" className="proj-link">
+                        GitHub ↗
+                      </a>
+                    )}
+                    {!p.link && !p.github && (
+                      <span className="proj-link proj-link-muted">Coming soon</span>
+                    )}
+                  </div>
+
+                  {href && (
+                    <a href={href} target="_blank" rel="noopener noreferrer" className="proj-card-overlay" aria-label={`View ${p.title}`} />
+                  )}
                 </div>
-                <p style={{ fontSize: 14, color: 'var(--ink-soft)', maxWidth: 480, lineHeight: 1.6 }}>
-                  {p.description}
-                </p>
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                  {p.tags.map(t => (
-                    <span key={t} style={{
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: 10,
-                      letterSpacing: '0.16em',
-                      textTransform: 'uppercase',
-                      color: 'var(--ink-muted)',
-                      border: '1px solid var(--rule)',
-                      padding: '4px 10px',
-                      borderRadius: 999,
-                    }}>{t}</span>
-                  ))}
-                </div>
-                <span style={{ textAlign: 'right', color: 'var(--ember)', fontSize: 18 }}>↗</span>
-              </a>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
       <Footer />
       <style>{`
-        .proj-row {
+        .projects-grid {
           display: grid;
-          grid-template-columns: 60px 1.2fr 2fr 1.4fr 64px;
-          gap: 24px;
-          padding: 40px 0;
-          border-bottom: 1px solid var(--rule);
-          align-items: center;
-          color: inherit;
-          text-decoration: none;
+          grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+          gap: 28px;
         }
-        @media (max-width: 980px) {
-          .proj-row {
-            grid-template-columns: 40px 1fr 48px;
-            grid-template-areas:
-              "num title arrow"
-              ". desc desc"
-              ". tags tags";
-            row-gap: 14px;
-            padding: 28px 0;
-          }
-          .proj-row > :nth-child(1) { grid-area: num; }
-          .proj-row > :nth-child(2) { grid-area: title; }
-          .proj-row > :nth-child(3) { grid-area: desc; }
-          .proj-row > :nth-child(4) { grid-area: tags; }
-          .proj-row > :nth-child(5) { grid-area: arrow; }
+        .proj-card {
+          position: relative;
+          border: 1px solid var(--rule);
+          padding: 28px 24px 24px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .proj-card:hover {
+          border-color: var(--ember);
+          box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+        }
+        .proj-card-overlay {
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+        }
+        .proj-card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .proj-status {
+          font-family: var(--font-mono);
+          font-size: 10px;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          font-weight: 600;
+        }
+        .proj-role {
+          font-family: var(--font-mono);
+          font-size: 10px;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: var(--ink-muted);
+        }
+        .proj-title {
+          font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+          font-weight: 400;
+          letter-spacing: -0.02em;
+          line-height: 1.2;
+          margin: 0;
+        }
+        .proj-desc {
+          font-size: 14px;
+          line-height: 1.6;
+          color: var(--ink-soft);
+          margin: 0;
+        }
+        .proj-meta-block {
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+        }
+        .proj-meta-label {
+          font-family: var(--font-mono);
+          font-size: 9px;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: var(--ink-muted);
+        }
+        .proj-meta-value {
+          font-size: 13px;
+          line-height: 1.5;
+          color: var(--ink-soft);
+        }
+        .proj-tags {
+          display: flex;
+          gap: 6px;
+          flex-wrap: wrap;
+          margin-top: 4px;
+        }
+        .proj-tag {
+          font-family: var(--font-mono);
+          font-size: 10px;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: var(--ink-muted);
+          border: 1px solid var(--rule);
+          padding: 3px 9px;
+          border-radius: 999px;
+        }
+        .proj-links {
+          display: flex;
+          gap: 16px;
+          margin-top: auto;
+          padding-top: 12px;
+          border-top: 1px solid var(--rule);
+          position: relative;
+          z-index: 2;
+        }
+        .proj-link {
+          font-family: var(--font-mono);
+          font-size: 11px;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          text-decoration: none;
+          color: var(--ember);
+          transition: opacity 0.2s;
+        }
+        .proj-link:hover { opacity: 0.7; }
+        .proj-link-muted { color: var(--ink-muted); }
+        @media (max-width: 480px) {
+          .projects-grid { grid-template-columns: 1fr; }
+          .proj-card { padding: 22px 18px 18px; }
         }
       `}</style>
     </main>

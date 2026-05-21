@@ -4,14 +4,33 @@ import { fetchNow, NowWidget } from '../lib/supabase';
 import { useSeo } from '../lib/seo';
 import Footer from '../components/Footer';
 
+const focusCards = [
+  {
+    label: 'Currently Building',
+    items: ['AI Receptionist MVP', 'SkillBarter product system', 'Portfolio content engine'],
+  },
+  {
+    label: 'Currently Learning',
+    items: ['AI agents & tool-use patterns', 'Voice workflows (Twilio, Deepgram)', 'Supabase architecture at scale', 'Product distribution channels'],
+  },
+  {
+    label: 'Current Experiments',
+    items: ['Deep research agent with RAG', 'Automated build log publishing', 'Voice-first interface prototypes'],
+  },
+  {
+    label: 'Open To',
+    items: ['Internships (AI / product engineering)', 'Freelance AI product builds', 'Collaborations on dev tools', 'Startup projects (co-building)'],
+  },
+];
+
 const NowPage = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [now, setNow] = useState<NowWidget | null>(null);
   const [time, setTime] = useState('');
 
   useSeo({
-    title: 'Now — Rushikesh Pawar',
-    description: 'What I am currently building, reading and listening to.',
+    title: 'Now — Rushikesh Pawar | Current Focus & Availability',
+    description: 'What Rushikesh Pawar is currently building, learning, and open to. AI receptionist, SkillBarter, voice workflows, and more.',
     path: '/now',
   });
 
@@ -36,16 +55,6 @@ const NowPage = () => {
     }, ref);
     return () => ctx.revert();
   }, [now]);
-
-  const entries: { label: string; value?: string }[] = now
-    ? [
-        { label: 'Location', value: `${now.location} · ${time} IST` },
-        { label: 'Status', value: now.status },
-        { label: 'Currently reading', value: now.currently_reading },
-        { label: 'Currently listening', value: now.currently_listening },
-        { label: 'Last updated', value: new Date(now.updated_at).toLocaleDateString() },
-      ]
-    : [];
 
   return (
     <main id="main">
@@ -93,69 +102,142 @@ const NowPage = () => {
             .
           </p>
 
-          <div
-            className="now-fade"
-            style={{
-              marginTop: 60,
+          {now && (
+            <div className="now-fade" style={{
+              marginTop: 48,
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+              gap: 20,
+              padding: '24px 0',
               borderTop: '1px solid var(--rule)',
-            }}
-          >
-            {now ? (
-              entries.map((e, i) => (
-                <div
-                  key={e.label}
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: '60px 1fr 2fr',
-                    gap: 24,
-                    padding: '28px 0',
-                    borderBottom: '1px solid var(--rule)',
-                    alignItems: 'baseline',
-                  }}
-                >
-                  <span className="numtag">/{String(i + 1).padStart(2, '0')}</span>
-                  <span
-                    style={{
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: 11,
-                      letterSpacing: '0.2em',
-                      textTransform: 'uppercase',
-                      color: 'var(--ink-muted)',
-                    }}
-                  >
-                    {e.label}
-                  </span>
-                  <span
-                    style={{
-                      fontFamily: 'var(--font-display)',
-                      fontStyle: i % 2 === 1 ? 'italic' : 'normal',
-                      fontSize: 'clamp(1.2rem, 2.2vw, 1.8rem)',
-                      letterSpacing: '-0.01em',
-                      color: 'var(--ink)',
-                    }}
-                  >
-                    {e.value || '—'}
-                  </span>
-                </div>
-              ))
-            ) : (
-              <div
-                style={{
-                  padding: '48px 0',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 12,
-                  letterSpacing: '0.2em',
-                  textTransform: 'uppercase',
-                  color: 'var(--ink-muted)',
-                }}
-              >
-                Loading index card…
+              borderBottom: '1px solid var(--rule)',
+            }}>
+              <div>
+                <span className="now-meta-label">Location</span>
+                <span className="now-meta-value">{now.location} · {time} IST</span>
               </div>
-            )}
+              <div>
+                <span className="now-meta-label">Status</span>
+                <span className="now-meta-value">{now.status}</span>
+              </div>
+              <div>
+                <span className="now-meta-label">Reading</span>
+                <span className="now-meta-value">{now.currently_reading}</span>
+              </div>
+              <div>
+                <span className="now-meta-label">Listening</span>
+                <span className="now-meta-value">{now.currently_listening}</span>
+              </div>
+            </div>
+          )}
+
+          {!now && (
+            <div className="now-fade" style={{
+              padding: '48px 0',
+              fontFamily: 'var(--font-mono)',
+              fontSize: 12,
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              color: 'var(--ink-muted)',
+            }}>
+              Loading index card...
+            </div>
+          )}
+
+          <div className="now-fade now-cards-grid" style={{ marginTop: 56 }}>
+            {focusCards.map((card) => (
+              <div key={card.label} className="now-card">
+                <h3 className="now-card-label">{card.label}</h3>
+                <ul className="now-card-list">
+                  {card.items.map(item => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          <div className="now-fade" style={{
+            marginTop: 48,
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase',
+            color: 'var(--ink-muted)',
+          }}>
+            Last updated: {now ? new Date(now.updated_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '...'}
           </div>
         </div>
       </section>
       <Footer />
+
+      <style>{`
+        .now-meta-label {
+          display: block;
+          font-family: var(--font-mono);
+          font-size: 9px;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: var(--ink-muted);
+          margin-bottom: 6px;
+        }
+        .now-meta-value {
+          display: block;
+          font-family: var(--font-display);
+          font-style: italic;
+          font-size: clamp(1rem, 1.6vw, 1.2rem);
+          color: var(--ink);
+          letter-spacing: -0.01em;
+        }
+        .now-cards-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 24px;
+        }
+        .now-card {
+          border: 1px solid var(--rule);
+          padding: 28px 24px;
+          transition: border-color 0.3s ease;
+        }
+        .now-card:hover { border-color: var(--ember); }
+        .now-card-label {
+          font-family: var(--font-mono);
+          font-size: 11px;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: var(--ember);
+          margin: 0 0 16px;
+          font-weight: 600;
+        }
+        .now-card-list {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+        .now-card-list li {
+          font-size: 15px;
+          line-height: 1.5;
+          color: var(--ink-soft);
+          padding-left: 16px;
+          position: relative;
+        }
+        .now-card-list li::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 9px;
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: var(--rule-strong);
+        }
+        @media (max-width: 640px) {
+          .now-cards-grid { grid-template-columns: 1fr; }
+        }
+      `}</style>
     </main>
   );
 };

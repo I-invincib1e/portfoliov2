@@ -26,9 +26,9 @@ const NewsletterCTA = ({ compact = false }: Props) => {
   return (
     <section
       style={{
-        padding: compact ? '60px 0' : '120px 0',
+        padding: compact ? '60px 0' : 'clamp(80px, 12vw, 140px) 0',
         background: compact ? 'transparent' : 'var(--paper)',
-        borderTop: compact ? '1px solid var(--rule)' : '1px solid var(--rule)',
+        borderTop: '1px solid var(--rule)',
         borderBottom: compact ? '1px solid var(--rule)' : undefined,
       }}
     >
@@ -40,7 +40,7 @@ const NewsletterCTA = ({ compact = false }: Props) => {
           alignItems: compact ? 'center' : 'end',
         }} className="nl-grid">
           <div>
-            {!compact && <div className="hairline" style={{ marginBottom: 14 }}>Newsletter</div>}
+            {!compact && <div className="hairline" style={{ marginBottom: 14 }}>Builder Notes</div>}
             <h3 style={{
               fontSize: compact ? 'clamp(1.2rem, 2.4vw, 1.8rem)' : 'clamp(1.8rem, 4.5vw, 3.4rem)',
               fontWeight: 400,
@@ -49,21 +49,20 @@ const NewsletterCTA = ({ compact = false }: Props) => {
               margin: 0,
             }}>
               {compact ? (
-                <>Get weekly notes on <em style={{ color: 'var(--ember)' }}>AI systems</em> & startup experiments.</>
+                <>Join <em style={{ color: 'var(--ember)' }}>Builder Notes</em> — raw notes on AI products & systems.</>
               ) : (
-                <>Weekly notes on AI systems, startup experiments,<br />
-                  and <em style={{ color: 'var(--ember)' }}>security breakdowns.</em></>
+                <>Join <em style={{ color: 'var(--ember)' }}>Builder Notes</em></>
               )}
             </h3>
             {!compact && (
               <p style={{
-                marginTop: 14,
+                marginTop: 16,
                 color: 'var(--ink-soft)',
                 fontSize: 15,
                 maxWidth: 520,
-                lineHeight: 1.55,
+                lineHeight: 1.6,
               }}>
-                No slop, no recycled listicles. What I'm building, what broke, and what actually worked.
+                Occasional notes on AI products, systems, voice agents, and what I'm learning while building.
               </p>
             )}
           </div>
@@ -74,7 +73,7 @@ const NewsletterCTA = ({ compact = false }: Props) => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
+                placeholder="you@example.com"
                 required
                 style={{
                   flex: 1,
@@ -95,7 +94,7 @@ const NewsletterCTA = ({ compact = false }: Props) => {
                 className="btn-ink"
                 style={{ cursor: state === 'loading' ? 'wait' : 'pointer' }}
               >
-                {state === 'loading' ? 'Sending…' : 'Subscribe →'}
+                {state === 'loading' ? 'Sending...' : 'Subscribe'}
               </button>
             </div>
             {msg && (
@@ -106,6 +105,17 @@ const NewsletterCTA = ({ compact = false }: Props) => {
                 letterSpacing: '0.08em',
               }}>
                 {msg}
+              </div>
+            )}
+            {!msg && !compact && (
+              <div style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 10,
+                color: 'var(--ink-muted)',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+              }}>
+                No spam. Only useful build notes.
               </div>
             )}
           </form>

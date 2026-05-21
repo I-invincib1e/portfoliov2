@@ -1,5 +1,6 @@
 import Hero from '../components/Hero';
 import ProofStrip from '../components/ProofStrip';
+import FeaturedProjects from '../components/FeaturedProjects';
 import Adloom from '../components/Adloom';
 import BuildLogsStrip from '../components/BuildLogsStrip';
 import About from '../components/About';
@@ -12,10 +13,21 @@ type Props = { ready?: boolean };
 
 const HomePage = ({ ready }: Props) => {
   useSeo({
-    title: 'Rushikesh Pawar — AI Product Engineer',
-    description: 'Rushikesh Pawar — AI Product Engineer building SaaS, voice AI systems and automation tools. Shopify app shipped, voice AI infrastructure in progress.',
+    title: 'Rushikesh Pawar — AI Product Engineer & Builder',
+    description: 'I build AI-powered products, voice systems, automation workflows, and product experiments using React, Python, Supabase, and modern AI tools.',
     path: '/',
-    keywords: ['Rushikesh Pawar', 'AI Product Engineer', 'Shopify app developer', 'Adloom', 'Voice AI', 'React engineer', 'automation tools', 'technical founder'],
+    keywords: [
+      'Rushikesh Pawar',
+      'AI Product Engineer',
+      'voice AI builder',
+      'SaaS developer',
+      'automation tools',
+      'React engineer',
+      'AI agents',
+      'builder notes',
+      'technical founder',
+      'Mumbai developer',
+    ],
     jsonLd: [
       {
         '@context': 'https://schema.org',
@@ -27,6 +39,7 @@ const HomePage = ({ ready }: Props) => {
         sameAs: [
           'https://github.com/I-invincib1e',
           'https://www.linkedin.com/in/devrex/',
+          'https://www.instagram.com/i_invincib1e/',
         ],
       },
       {
@@ -34,7 +47,7 @@ const HomePage = ({ ready }: Props) => {
         '@type': 'WebSite',
         '@id': `${SITE_URL}/#website`,
         url: SITE_URL,
-        name: 'Rushikesh Pawar',
+        name: 'Rushikesh Pawar — AI Product Engineer & Builder',
         publisher: { '@id': `${SITE_URL}/#person` },
       },
     ],
@@ -43,6 +56,7 @@ const HomePage = ({ ready }: Props) => {
     <main id="main">
       <Hero ready={ready} />
       <ProofStrip />
+      <FeaturedProjects />
       <Adloom />
       <Work />
       <BuildLogsStrip />

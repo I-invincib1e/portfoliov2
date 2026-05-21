@@ -52,7 +52,7 @@ const Hero = ({ ready = true }: HeroProps) => {
       style={{
         minHeight: '100vh',
         position: 'relative',
-        paddingTop: 'clamp(140px, 20vh, 200px)',
+        paddingTop: 'clamp(140px, 20vh, 220px)',
         paddingBottom: '40px',
         display: 'flex',
         flexDirection: 'column',
@@ -60,57 +60,68 @@ const Hero = ({ ready = true }: HeroProps) => {
       }}
     >
       <div className="container-ed" style={{ position: 'relative', zIndex: 2 }}>
-        <div className="hero-fade" style={{ marginBottom: 28 }}>
-          <div className="eyebrow">Rushikesh Pawar · AI Product Engineer</div>
+        <div className="hero-fade" style={{ marginBottom: 32 }}>
+          <div className="eyebrow">Rushikesh Pawar · Builder & AI Product Engineer</div>
         </div>
 
         <h1
           style={{
-            fontSize: 'clamp(2.6rem, 8vw, 7.5rem)',
+            fontSize: 'clamp(2.4rem, 7.5vw, 6.5rem)',
             lineHeight: 0.95,
             letterSpacing: '-0.035em',
             margin: 0,
-            maxWidth: '16ch',
+            maxWidth: '18ch',
           }}
         >
           <div className="mask hero-mask">
             <span style={{ fontWeight: 300 }}>
-              Building <em style={{ fontStyle: 'italic', fontWeight: 400, color: 'var(--ember)' }}>AI products</em>
+              I build <em style={{ fontStyle: 'italic', fontWeight: 400, color: 'var(--ember)' }}>AI-powered</em> products,
             </span>
           </div>
           <div className="mask hero-mask">
             <span style={{ fontWeight: 300 }}>
-              people actually use.
+              voice systems, and
+            </span>
+          </div>
+          <div className="mask hero-mask">
+            <span style={{ fontWeight: 300 }}>
+              operational tools.
             </span>
           </div>
         </h1>
 
         <p className="hero-fade" style={{
-          marginTop: 32,
-          maxWidth: 560,
+          marginTop: 36,
+          maxWidth: 600,
           fontFamily: 'var(--font-sans)',
-          fontSize: 'clamp(1.05rem, 1.6vw, 1.25rem)',
-          lineHeight: 1.55,
+          fontSize: 'clamp(1.05rem, 1.5vw, 1.2rem)',
+          lineHeight: 1.6,
           color: 'var(--ink-soft)',
         }}>
-          SaaS, voice AI systems, automation tools. Built and launched Adloom on Shopify.
-          Currently building voice AI infrastructure.
+          Currently exploring AI agents, workflow automation, product systems, and voice-first interfaces.
         </p>
 
-        <div className="hero-fade" style={{ marginTop: 40, display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
-          <a
-            href="#adloom"
+        <div className="hero-fade" style={{ marginTop: 44, display: 'flex', gap: 14, alignItems: 'center', flexWrap: 'wrap' }}>
+          <Link
+            to="/projects"
             className="btn-ink hero-cta"
             data-magnetic
-            onClick={(e) => {
-              e.preventDefault();
-              document.getElementById('adloom')?.scrollIntoView({ behavior: 'smooth' });
-            }}
           >
-            See what I ship <span aria-hidden>→</span>
-          </a>
+            View Projects <span aria-hidden>→</span>
+          </Link>
           <Link
             to="/writing"
+            className="btn-outline hero-cta"
+            data-magnetic
+            style={{
+              borderColor: 'var(--ink)',
+              color: 'var(--ink)',
+            }}
+          >
+            Read Builder Notes
+          </Link>
+          <Link
+            to="/contact"
             style={{
               fontSize: 14,
               color: 'var(--ink-soft)',
@@ -118,9 +129,10 @@ const Hero = ({ ready = true }: HeroProps) => {
               fontFamily: 'var(--font-sans)',
               fontWeight: 500,
               transition: 'color 0.3s var(--ease-out)',
+              padding: '10px 0',
             }}
           >
-            or read build logs →
+            Contact Me →
           </Link>
         </div>
 
@@ -138,7 +150,7 @@ const Hero = ({ ready = true }: HeroProps) => {
               textTransform: 'uppercase',
             }}
           >
-            résumé ↗
+            resume ↗
           </a>
         </div>
       </div>
@@ -163,7 +175,6 @@ const Hero = ({ ready = true }: HeroProps) => {
       <style>{`
         @media (max-width: 768px) {
           .hero-root { padding-top: 120px !important; }
-          .hero-cta-col { align-items: flex-start !important; margin-top: 8px; }
         }
         @media (max-width: 640px) {
           .hero-root { min-height: auto !important; padding-bottom: 24px !important; }

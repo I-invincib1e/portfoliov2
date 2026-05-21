@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { submitContactMessage } from '../lib/supabase';
 
-const projectTypes = ['AI Product Build', 'Voice AI System', 'Automation / Workflow', 'SaaS MVP', 'Consulting', 'Other'];
+const projectTypes = ['AI Product Build', 'Voice AI System', 'Automation / Workflow', 'SaaS MVP', 'Consulting', 'Collaboration / Partnership', 'Other'];
 const budgets = ['Under $2k', '$2k–$5k', '$5k–$15k', '$15k+'];
 const timelines = ['ASAP', '1–3 months', '3–6 months', 'Flexible'];
 
@@ -54,11 +54,11 @@ const Contact = () => {
           <div style={{ gridColumn: 'span 5' }}>
             <div className="hairline">Contact / 04</div>
             <h1 style={{ fontSize: 'clamp(2.8rem, 7vw, 6rem)', marginTop: 18, letterSpacing: '-0.03em', lineHeight: 0.96 }}>
-              Tell me about <em style={{ color: 'var(--ember)' }}>your idea.</em>
+              Let's build something <em style={{ color: 'var(--ember)' }}>worth shipping.</em>
             </h1>
-            <p style={{ marginTop: 18, color: 'var(--ink-soft)', fontSize: 16, maxWidth: 380, lineHeight: 1.6 }}>
-              The more you share, the better I can write back. I usually
-              respond within two working days from Mumbai.
+            <p style={{ marginTop: 18, color: 'var(--ink-soft)', fontSize: 15, maxWidth: 420, lineHeight: 1.6 }}>
+              I work on AI product builds, voice AI systems, automation workflows, SaaS MVPs, and collaborations.
+              The more you share, the better I can write back. I usually respond within two working days from Mumbai.
             </p>
           </div>
           <div style={{ gridColumn: 'span 1' }} />

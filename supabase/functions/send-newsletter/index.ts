@@ -46,7 +46,7 @@ Deno.serve(async (req: Request) => {
     const { data: subscribers, error: subErr } = await sb
       .from('subscribers')
       .select('email')
-      .eq('active', true);
+      .eq('status', 'active');
 
     if (subErr || !subscribers || subscribers.length === 0) {
       return new Response(

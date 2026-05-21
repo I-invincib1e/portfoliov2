@@ -2,9 +2,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { fetchPosts, fetchBuildLogs, fetchSeries, Post, BuildLog, Series } from '../lib/supabase';
 import Footer from '../components/Footer';
+import NewsletterCTA from '../components/NewsletterCTA';
 import { useSeo, SITE_URL, breadcrumbJsonLd } from '../lib/seo';
 
-type Tab = 'all' | 'field-notes' | 'build-logs';
+type Tab = 'all' | 'build-logs' | 'system-design' | 'ai-experiments' | 'product-thinking';
 
 const fmtDate = (iso: string) =>
   new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -22,22 +23,22 @@ const WritingPage = () => {
   const [loading, setLoading] = useState(true);
 
   useSeo({
-    title: 'Writing — Rushikesh Pawar | Build Logs & Field Notes',
-    description: 'Build logs and field notes from Rushikesh Pawar — tactical shipping updates, engineering breakdowns, and everything learned building AI products in public.',
+    title: 'Builder Notes — Rushikesh Pawar | Build Logs, AI Experiments & Systems',
+    description: 'Builder Notes from Rushikesh Pawar — build logs, system design breakdowns, AI experiments, and product thinking. Raw notes from building AI products in public.',
     path: '/writing',
-    keywords: ['Rushikesh Pawar blog', 'build logs', 'field notes', 'building in public', 'AI product engineer blog', 'engineering journal'],
+    keywords: ['builder notes', 'build logs', 'AI experiments', 'system design', 'product thinking', 'building in public'],
     jsonLd: [
       {
         '@context': 'https://schema.org',
         '@type': 'Blog',
         '@id': `${SITE_URL}/writing#blog`,
-        name: 'Writing — Build Logs & Field Notes',
+        name: 'Builder Notes',
         url: `${SITE_URL}/writing`,
         author: { '@id': `${SITE_URL}/#person` },
       },
       breadcrumbJsonLd([
         { name: 'Home', url: `${SITE_URL}/` },
-        { name: 'Writing', url: `${SITE_URL}/writing` },
+        { name: 'Builder Notes', url: `${SITE_URL}/writing` },
       ]),
     ],
   });
@@ -57,27 +58,47 @@ const WritingPage = () => {
     return [...m.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12);
   }, [posts]);
 
+  const tagMap: Record<string, string[]> = {
+    'system-design': ['system-design', 'architecture', 'infrastructure'],
+    'ai-experiments': ['ai', 'llm', 'agents', 'voice-ai', 'machine-learning'],
+    'product-thinking': ['product', 'strategy', 'growth', 'distribution'],
+  };
+
+  const filteredPosts = useMemo(() => {
+    if (!posts) return [];
+    if (tab === 'all' || tab === 'build-logs') return posts;
+    const allowedTags = tagMap[tab] ?? [];
+    return posts.filter(p => p.tags.some(t => allowedTags.includes(t.toLowerCase())));
+  }, [posts, tab]);
+
   const setTab = (t: Tab) => {
     setParams(t === 'all' ? {} : { tab: t });
   };
 
+  const countByCategory = (cat: string) => {
+    const allowed = tagMap[cat] ?? [];
+    return posts?.filter(p => p.tags.some(t => allowed.includes(t.toLowerCase()))).length ?? 0;
+  };
+
   const tabs: { id: Tab; label: string; count: number }[] = [
     { id: 'all', label: 'All', count: (posts?.length ?? 0) + logs.length },
-    { id: 'field-notes', label: 'Field Notes', count: posts?.length ?? 0 },
     { id: 'build-logs', label: 'Build Logs', count: logs.length },
+    { id: 'system-design', label: 'System Design', count: countByCategory('system-design') },
+    { id: 'ai-experiments', label: 'AI Experiments', count: countByCategory('ai-experiments') },
+    { id: 'product-thinking', label: 'Product Thinking', count: countByCategory('product-thinking') },
   ];
 
   return (
     <main id="main">
       <section style={{ padding: 'clamp(120px, 16vw, 180px) 0 48px' }}>
         <div className="container-ed">
-          <div className="hairline">Writing</div>
+          <div className="hairline">Builder Notes</div>
           <h1 style={{ fontSize: 'clamp(2.6rem, 9vw, 7rem)', marginTop: 18, letterSpacing: '-0.04em', lineHeight: 0.95 }}>
-            Build logs &amp; <em style={{ color: 'var(--ember)' }}>field notes.</em>
+            Builder <em style={{ color: 'var(--ember)' }}>Notes.</em>
           </h1>
           <p style={{ marginTop: 18, maxWidth: 620, color: 'var(--ink-soft)', fontSize: 16, lineHeight: 1.6 }}>
-            Tactical shipping updates and deeper engineering breakdowns — what broke,
-            what shipped, what I learned building AI products in public.
+            Raw notes on AI products, system design, experiments, and product thinking.
+            What I'm building, what broke, and what actually worked.
           </p>
 
           <div style={{ marginTop: 32, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -127,15 +148,12 @@ const WritingPage = () => {
       )}
 
       {/* FIELD NOTES — Magazine card grid */}
-      {!loading && (tab === 'all' || tab === 'field-notes') && posts && posts.length > 0 && (
+      {!loading && tab !== 'build-logs' && filteredPosts.length > 0 && (
         <section style={{ padding: 'clamp(48px, 8vw, 80px) 0' }}>
           <div className="container-ed">
             {tab === 'all' && (
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 28 }}>
                 <div className="hairline">Field Notes</div>
-                <button onClick={() => setTab('field-notes')} className="ed-link" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
-                  View all →
-                </button>
               </div>
             )}
 
@@ -154,7 +172,7 @@ const WritingPage = () => {
             )}
 
             <div className="notes-grid">
-              {(tab === 'all' ? posts.slice(0, 6) : posts).map((post, i) => (
+              {(tab === 'all' ? filteredPosts.slice(0, 6) : filteredPosts).map((post, i) => (
                 <Link
                   key={post.id}
                   to={`/journal/${post.slug}`}
@@ -229,6 +247,7 @@ const WritingPage = () => {
         </section>
       )}
 
+      <NewsletterCTA compact />
       <Footer />
 
       <style>{`

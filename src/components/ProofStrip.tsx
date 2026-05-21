@@ -5,10 +5,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 const proofItems = [
-  { label: 'Published Shopify App', detail: 'Loom Offer & Sales' },
-  { label: 'Building Voice AI Platform', detail: 'Realtime infrastructure' },
-  { label: 'AI Automation Projects', detail: 'Multiple shipped' },
-  { label: 'Building in Public', detail: 'MCA · Mumbai' },
+  { label: 'AI Product Experiments', detail: 'Agents, voice, automation' },
+  { label: 'Voice Systems', detail: 'Realtime AI infrastructure' },
+  { label: 'React / Python / Supabase', detail: 'Full-stack builder' },
+  { label: 'Builder Logs & Field Notes', detail: 'Building in public' },
 ];
 
 const ProofStrip = () => {
