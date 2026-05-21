@@ -186,5 +186,17 @@ export type ContactPayload = {
 };
 
 export async function submitContactMessage(payload: ContactPayload) {
-  return supabase.from('contact_messages').insert(payload);
+  const result = await supabase.from('contact_messages').insert(payload);
+  if (!result.error) {
+    // Fire-and-forget notification email
+    fetch(`${url}/functions/v1/contact-notify`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${anon}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    }).catch(() => {});
+  }
+  return result;
 }
