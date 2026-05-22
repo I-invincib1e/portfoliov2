@@ -7,12 +7,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 const flagships = [
   {
-    title: 'AI Receptionist',
-    value: 'Voice-first AI that handles inbound calls, routes conversations, and books appointments — no hold queues.',
-    tags: ['Voice AI', 'Python', 'Real-time'],
-    status: 'Building',
-  },
-  {
     title: 'SkillBarter',
     value: 'Credit-based skill exchange where professionals trade expertise without money. Fair, liquid, trust-scored.',
     tags: ['React', 'Supabase', 'Product Design'],
@@ -23,6 +17,12 @@ const flagships = [
     value: 'AI agent that autonomously searches, synthesizes, and returns structured research reports with citations.',
     tags: ['AI Agents', 'LangChain', 'RAG'],
     status: 'Building',
+  },
+  {
+    title: 'Pyscrape',
+    value: 'Multi-backend Python scraper that picks the right engine per site — data pipelines ship instead of stalling on fetchers.',
+    tags: ['Python', 'Automation', 'Web Scraping'],
+    status: 'Live',
   },
 ];
 

@@ -18,20 +18,6 @@ export type StaticProject = {
 
 export const allProjects: StaticProject[] = [
   {
-    slug: 'ai-receptionist',
-    title: 'AI Receptionist',
-    description: 'A voice-first AI system that handles inbound calls, routes conversations, books appointments, and responds in natural language — replacing hold queues with instant, intelligent interactions.',
-    image: '',
-    tags: ['Voice AI', 'Python', 'Real-time', 'Telephony'],
-    link: '',
-    github: '',
-    featured: true,
-    status: 'Building',
-    role: 'Builder',
-    problemSolved: 'Small businesses lose leads because no one answers after-hours calls or during peak volume.',
-    outcome: 'MVP handles inbound routing, appointment scheduling, and natural voice responses with sub-2s latency.',
-  },
-  {
     slug: 'skillbarter',
     title: 'SkillBarter',
     description: 'A credit-based skill exchange platform where professionals trade expertise without money — design a logo, get accounting help. Credits keep the marketplace fair and liquid.',

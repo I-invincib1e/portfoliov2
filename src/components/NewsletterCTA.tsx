@@ -62,7 +62,7 @@ const NewsletterCTA = ({ compact = false }: Props) => {
                 maxWidth: 520,
                 lineHeight: 1.6,
               }}>
-                Occasional notes on AI products, systems, voice agents, and what I'm learning while building.
+                Occasional notes on AI products, systems, and what I'm learning while building.
               </p>
             )}
           </div>

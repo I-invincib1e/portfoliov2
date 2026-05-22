@@ -7,15 +7,15 @@ import Footer from '../components/Footer';
 const focusCards = [
   {
     label: 'Currently Building',
-    items: ['AI Receptionist MVP', 'SkillBarter product system', 'Portfolio content engine'],
+    items: ['SkillBarter product system', 'Deep Research Agent', 'Portfolio content engine'],
   },
   {
     label: 'Currently Learning',
-    items: ['AI agents & tool-use patterns', 'Voice workflows (Twilio, Deepgram)', 'Supabase architecture at scale', 'Product distribution channels'],
+    items: ['AI agents & tool-use patterns', 'Supabase architecture at scale', 'Product distribution channels'],
   },
   {
     label: 'Current Experiments',
-    items: ['Deep research agent with RAG', 'Automated build log publishing', 'Voice-first interface prototypes'],
+    items: ['Deep research agent with RAG', 'Automated build log publishing', 'AI workflow automation'],
   },
   {
     label: 'Open To',
@@ -30,7 +30,7 @@ const NowPage = () => {
 
   useSeo({
     title: 'Now — Rushikesh Pawar | Current Focus & Availability',
-    description: 'What Rushikesh Pawar is currently building, learning, and open to. AI receptionist, SkillBarter, voice workflows, and more.',
+    description: 'What Rushikesh Pawar is currently building, learning, and open to. SkillBarter, Deep Research Agent, AI workflows, and more.',
     path: '/now',
   });
 

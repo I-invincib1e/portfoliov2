@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { submitContactMessage } from '../lib/supabase';
 
-const projectTypes = ['AI Product Build', 'Voice AI System', 'Automation / Workflow', 'SaaS MVP', 'Consulting', 'Collaboration / Partnership', 'Other'];
+const projectTypes = ['AI Product Build', 'Automation / Workflow', 'SaaS MVP', 'Consulting', 'Collaboration / Partnership', 'Other'];
 const budgets = ['Under $2k', '$2k–$5k', '$5k–$15k', '$15k+'];
 const timelines = ['ASAP', '1–3 months', '3–6 months', 'Flexible'];
 
@@ -57,7 +57,7 @@ const Contact = () => {
               Let's build something <em style={{ color: 'var(--ember)' }}>worth shipping.</em>
             </h1>
             <p style={{ marginTop: 18, color: 'var(--ink-soft)', fontSize: 15, maxWidth: 420, lineHeight: 1.6 }}>
-              I work on AI product builds, voice AI systems, automation workflows, SaaS MVPs, and collaborations.
+              I work on AI product builds, automation workflows, SaaS MVPs, and collaborations.
               The more you share, the better I can write back. I usually respond within two working days from Mumbai.
             </p>
           </div>

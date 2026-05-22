@@ -5,8 +5,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 const proofItems = [
-  { label: 'AI Product Experiments', detail: 'Agents, voice, automation' },
-  { label: 'Voice Systems', detail: 'Realtime AI infrastructure' },
+  { label: 'AI Product Experiments', detail: 'Agents & automation' },
+  { label: 'SaaS & Dev Tools', detail: 'End-to-end products' },
   { label: 'React / Python / Supabase', detail: 'Full-stack builder' },
   { label: 'Builder Logs & Field Notes', detail: 'Building in public' },
 ];

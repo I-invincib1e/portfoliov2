@@ -75,17 +75,12 @@ const Hero = ({ ready = true }: HeroProps) => {
         >
           <div className="mask hero-mask">
             <span style={{ fontWeight: 300 }}>
-              I build <em style={{ fontStyle: 'italic', fontWeight: 400, color: 'var(--ember)' }}>AI-powered</em> products,
+              I build <em style={{ fontStyle: 'italic', fontWeight: 400, color: 'var(--ember)' }}>AI-powered</em> products
             </span>
           </div>
           <div className="mask hero-mask">
             <span style={{ fontWeight: 300 }}>
-              voice systems, and
-            </span>
-          </div>
-          <div className="mask hero-mask">
-            <span style={{ fontWeight: 300 }}>
-              operational tools.
+              and operational tools.
             </span>
           </div>
         </h1>
@@ -98,7 +93,7 @@ const Hero = ({ ready = true }: HeroProps) => {
           lineHeight: 1.6,
           color: 'var(--ink-soft)',
         }}>
-          Currently exploring AI agents, workflow automation, product systems, and voice-first interfaces.
+          Currently exploring AI agents, workflow automation, and product systems.
         </p>
 
         <div className="hero-fade" style={{ marginTop: 44, display: 'flex', gap: 14, alignItems: 'center', flexWrap: 'wrap' }}>

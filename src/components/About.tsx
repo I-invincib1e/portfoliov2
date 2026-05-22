@@ -62,7 +62,7 @@ const About = () => {
                 fontStyle: 'italic',
                 color: 'var(--ember)',
               }}>I</span>
-              build AI-powered SaaS, voice AI systems and automation tools —
+              build AI-powered SaaS and automation tools —
               products made for a wide audience, not demo reels. Every pixel
               treated like printed matter; every interaction tuned to hold up
               under real use.

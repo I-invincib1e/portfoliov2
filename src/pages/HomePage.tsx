@@ -14,12 +14,12 @@ type Props = { ready?: boolean };
 const HomePage = ({ ready }: Props) => {
   useSeo({
     title: 'Rushikesh Pawar — AI Product Engineer & Builder',
-    description: 'I build AI-powered products, voice systems, automation workflows, and product experiments using React, Python, Supabase, and modern AI tools.',
+    description: 'I build AI-powered products, automation workflows, and product experiments using React, Python, Supabase, and modern AI tools.',
     path: '/',
     keywords: [
       'Rushikesh Pawar',
       'AI Product Engineer',
-      'voice AI builder',
+      'AI agents builder',
       'SaaS developer',
       'automation tools',
       'React engineer',

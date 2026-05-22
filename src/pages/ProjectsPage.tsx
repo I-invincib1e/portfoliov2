@@ -56,10 +56,10 @@ gsap.registerPlugin(ScrollTrigger);
 
 const ProjectsPage = () => {
   useSeo({
-    title: 'Projects — Rushikesh Pawar | AI Products & Systems',
-    description: 'AI products, voice systems, automation tools, and SaaS experiments by Rushikesh Pawar. Each project solves a real problem — from AI receptionists to data pipelines.',
+    title: 'Projects — Rushikesh Pawar | AI Products & Tools',
+    description: 'AI products, automation tools, and SaaS experiments by Rushikesh Pawar. Each project solves a real problem — from research agents to data pipelines.',
     path: '/projects',
-    keywords: ['AI product projects', 'voice AI systems', 'SaaS MVP', 'automation tools', 'Rushikesh Pawar work'],
+    keywords: ['AI product projects', 'SaaS MVP', 'automation tools', 'AI agents', 'Rushikesh Pawar work'],
     jsonLd: [
       {
         '@context': 'https://schema.org',
@@ -111,7 +111,7 @@ const ProjectsPage = () => {
             The <em style={{ color: 'var(--ember)' }}>archive.</em>
           </h1>
           <p style={{ marginTop: 18, maxWidth: 560, color: 'var(--ink-soft)', fontSize: 16, lineHeight: 1.6 }}>
-            AI products, voice systems, automation tools, and experiments.
+            AI products, automation tools, and experiments.
             Each one solves a real problem — or teaches something worth documenting.
           </p>
         </div>
