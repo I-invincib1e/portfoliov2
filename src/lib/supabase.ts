@@ -142,7 +142,18 @@ export async function incrementPostView(slug: string): Promise<void> {
 }
 
 export async function subscribeNewsletter(email: string) {
-  return supabase.from('subscribers').insert({ email, status: 'pending' });
+  const result = await supabase.from('subscribers').insert({ email, status: 'pending' });
+  if (!result.error) {
+    fetch(`${url}/functions/v1/newsletter-welcome`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${anon}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    }).catch(() => {});
+  }
+  return result;
 }
 
 export type BuildLog = {
