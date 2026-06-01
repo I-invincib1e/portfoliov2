@@ -2,4 +2,22 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://rushikeshpawar.com/sitemap.xml
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: AdsBot-Google
+Disallow: /
+
+Sitemap: https://rushikeshpawar.dev/sitemap.xml

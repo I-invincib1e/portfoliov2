@@ -1,11 +1,13 @@
 {
-  "name": "Rushikesh Pawar — Portfolio",
+  "name": "Rushikesh Pawar — AI Product Engineer & Builder",
   "short_name": "Rushikesh",
-  "description": "Editorial portfolio of Rushikesh Pawar — Frontend & AI Engineer based in Mumbai.",
+  "description": "Portfolio and builder notes from Rushikesh Pawar — AI products, automation tools, and open development from Mumbai.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#efe9df",
   "theme_color": "#efe9df",
+  "categories": ["portfolio", "technology", "education"],
   "icons": [
     { "src": "/favicon-32x32.png", "sizes": "32x32", "type": "image/png" },
     { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }

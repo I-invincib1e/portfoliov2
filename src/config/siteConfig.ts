@@ -5,7 +5,7 @@ import { skills } from '../data/skills';
 export const siteConfig = {
   name: 'Rushikesh Pawar',
   title: 'AI Product Engineer',
-  email: 'rishipawar8999@gmail.com',
+  email: 'hello@rushikeshpawar.dev',
   location: 'Mumbai, India',
   social: {
     github: 'https://github.com/I-invincib1e',

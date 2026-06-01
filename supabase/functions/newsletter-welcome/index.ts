@@ -8,7 +8,7 @@ const corsHeaders = {
 };
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!;
-const SITE_URL = Deno.env.get("SITE_URL") ?? "https://rushikeshpawar.com";
+const SITE_URL = Deno.env.get("SITE_URL") ?? "https://rushikeshpawar.dev";
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
@@ -77,7 +77,7 @@ Deno.serve(async (req: Request) => {
         Rushikesh Pawar &middot; AI Product Engineer &middot; Mumbai
       </p>
       <p style="margin:0;">
-        <a href="${SITE_URL}" style="color:#a09888;text-decoration:underline;">rushikeshpawar.com</a>
+        <a href="${SITE_URL}" style="color:#a09888;text-decoration:underline;">rushikeshpawar.dev</a>
       </p>
     </div>
 
@@ -92,7 +92,7 @@ Deno.serve(async (req: Request) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Rishi's Newsletter <newsletter@rushikeshpawar.com>",
+        from: "Rishi's Newsletter <newsletter@rushikeshpawar.dev>",
         to: [email],
         subject: "Welcome to Rishi's Newsletter",
         html,
