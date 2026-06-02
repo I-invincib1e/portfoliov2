@@ -20,4 +20,4 @@ Allow: /
 User-agent: AdsBot-Google
 Disallow: /
 
-Sitemap: https://rushikeshpawar.dev/sitemap.xml
+Sitemap: https://www.rushikeshpawar.dev/sitemap.xml

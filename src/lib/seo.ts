@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 
-const SITE_URL = 'https://rushikeshpawar.dev';
-// TODO: Replace with custom branded OG image at public/og-image.png (1200x630)
-const DEFAULT_OG = 'https://rushikeshpawar.dev/og-image.png';
+const SITE_URL = 'https://www.rushikeshpawar.dev';
+const DEFAULT_OG = 'https://www.rushikeshpawar.dev/og-image.png';
 
 export type SeoMeta = {
   title: string;

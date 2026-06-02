@@ -2,7 +2,7 @@ import { writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { createClient } from '@supabase/supabase-js';
 
-const SITE_URL = process.env.VITE_SITE_URL || 'https://rushikeshpawar.dev';
+const SITE_URL = process.env.VITE_SITE_URL || 'https://www.rushikeshpawar.dev';
 const url = process.env.VITE_SUPABASE_URL;
 const key = process.env.VITE_SUPABASE_ANON_KEY;
 

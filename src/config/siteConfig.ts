@@ -10,7 +10,6 @@ export const siteConfig = {
   social: {
     github: 'https://github.com/I-invincib1e',
     linkedin: 'https://www.linkedin.com/in/devrex/',
-    twitter: 'https://twitter.com/username',
     instagram: 'https://www.instagram.com/i_invincib1e/',
     telegram: 'https://t.me/iamproasfuck',
   },
