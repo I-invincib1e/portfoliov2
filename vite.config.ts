@@ -16,8 +16,7 @@ export default defineConfig(({ mode }) => {
       }),
     ],
     optimizeDeps: {
-      exclude: ['lucide-react'],
-      include: ['gsap', 'react', 'react-dom', 'react-router-dom'],
+      include: ['react', 'react-dom', 'react-router-dom', 'gsap', 'lucide-react'],
     },
     build: {
       sourcemap: false,
