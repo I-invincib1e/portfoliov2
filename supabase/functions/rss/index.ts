@@ -7,7 +7,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Client-Info, Apikey',
 };
 
-const SITE_URL = Deno.env.get('SITE_URL') ?? 'https://rushikeshpawar.dev';
+const SITE_URL = Deno.env.get('SITE_URL') ?? 'https://www.rushikeshpawar.dev';
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 

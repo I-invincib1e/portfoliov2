@@ -8,7 +8,7 @@ const corsHeaders = {
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')!;
 const NOTIFY_EMAIL = Deno.env.get('NOTIFY_EMAIL') ?? 'hello@rushikeshpawar.dev';
-const SITE_URL = Deno.env.get('SITE_URL') ?? 'https://rushikeshpawar.dev';
+const SITE_URL = Deno.env.get('SITE_URL') ?? 'https://www.rushikeshpawar.dev';
 
 function buildOwnerNotification(name: string, email: string, project_type: string, budget: string, timeline: string, message: string): string {
   return `
@@ -122,7 +122,7 @@ Deno.serve(async (req: Request) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Portfolio <notifications@rushikeshpawar.dev>',
+        from: 'Portfolio <hello@rushikeshpawar.dev>',
         to: [NOTIFY_EMAIL],
         reply_to: email,
         subject: `New inquiry from ${name} — ${project_type}`,

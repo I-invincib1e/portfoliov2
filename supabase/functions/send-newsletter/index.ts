@@ -10,7 +10,7 @@ const corsHeaders = {
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')!;
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-const SITE_URL = Deno.env.get('SITE_URL') ?? 'https://rushikeshpawar.dev';
+const SITE_URL = Deno.env.get('SITE_URL') ?? 'https://www.rushikeshpawar.dev';
 
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
@@ -101,9 +101,9 @@ Deno.serve(async (req: Request) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          from: 'Rushikesh Pawar <newsletter@rushikeshpawar.dev>',
+          from: 'Rushikesh Pawar <hello@rushikeshpawar.dev>',
           bcc: batch,
-          to: ['newsletter@rushikeshpawar.dev'],
+          to: ['hello@rushikeshpawar.dev'],
           subject,
           html,
         }),
